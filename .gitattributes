@@ -1,0 +1,3 @@
+# Preserve original CSV bytes and avoid line-ending normalization/diff noise.
+LionDEExam/candidate_package/**/*.csv binary
+LionDEExam/candidate_package/**/*.json binary

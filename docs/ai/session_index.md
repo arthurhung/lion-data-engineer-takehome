@@ -1,0 +1,17 @@
+# AI Session Index
+
+本索引用於將各 Phase 的 AI 協作紀錄連回任務、驗證證據與人工決策。Task ID 只能協助追蹤，
+不能取代題目要求的完整 transcript。完整 transcript 應由應試者從 Codex 匯出後放入
+`docs/ai/transcripts/`，提交前須移除 secret 與無關個資。
+
+| Phase | 日期 | 工具 / session | 任務摘要 | Transcript | 驗證與決策狀態 |
+|---:|---|---|---|---|---|
+| 0 | 2026-08-25 | Codex task `01a0385e-5109-7862-8ac0-a55fbe2e2553`，標題「執行 Phase 0 Repo 初始化」 | 唯讀盤點、需求對照、骨架、setup/lint/smoke test | **待人工匯出（未完成）**：請將完整對話保存為 `docs/ai/transcripts/phase_00_bootstrap.md`；保留 task ID 供追蹤 | 自動驗證完成；等待 transcript 匯出與應試者 review |
+
+## 每次更新規則
+
+1. 一個 Phase 至少建立一筆可追溯 session。
+2. Transcript 保留 user prompt、AI 回覆、tool command 與實際輸出；不可只存摘要冒充完整紀錄。
+3. AI 建議、實際驗證證據與應試者最終決策分開記錄。
+4. 只有 transcript 中實際發生的錯誤或不足才能列入協作報告。
+5. 提交前檢查檔案可開啟、索引路徑有效，並完成 secret / 個資清理。

@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+
+# Editors and operating systems
+.DS_Store
+~$*.docx
+.idea/
+.vscode/
+
+# Generated outputs
+output/*
+!output/.gitkeep
+*.duckdb
+*.duckdb.wal
+
+# Local secrets
+.env
+.env.*
+!.env.example
