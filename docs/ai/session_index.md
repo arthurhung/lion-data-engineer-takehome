@@ -4,9 +4,9 @@
 不能取代題目要求的完整 transcript。完整 transcript 應由應試者從 Codex 匯出後放入
 `docs/ai/transcripts/`，提交前須移除 secret 與無關個資。
 
-| Phase | 日期 | 工具 / session | 任務摘要 | Transcript | 驗證與決策狀態 |
-|---:|---|---|---|---|---|
-| 0 | 2026-08-25 | Codex task `01a0385e-5109-7862-8ac0-a55fbe2e2553`，標題「執行 Phase 0 Repo 初始化」 | 唯讀盤點、需求對照、骨架、setup/lint/smoke test | **待人工匯出（未完成）**：請將完整對話保存為 `docs/ai/transcripts/phase_00_bootstrap.md`；保留 task ID 供追蹤 | 自動驗證完成；等待 transcript 匯出與應試者 review |
+| Phase | 日期 | 工具 / session | 任務摘要 | Transcript | Implementation commit | 狀態 |
+|---:|---|---|---|---|---|---|
+| 0 | 2026-08-25 | Codex task `01a0385e-5109-7862-8ac0-a55fbe2e2553`，標題「執行 Phase 0 Repo 初始化」 | 唯讀盤點、需求對照、骨架、setup/lint/smoke test | [`transcripts/phase_00_bootstrap.jsonl`](transcripts/phase_00_bootstrap.jsonl) | `68e77762` | Completed |
 
 ## 每次更新規則
 
