@@ -14,8 +14,9 @@
   ],
   "phase_2_candidate_decisions": {
     "amount_semantics": "Candidate: amount is original-currency order-line total; do not multiply quantity again during FX conversion.",
-    "birth_date_change": "Quarantine as identity/correction ambiguity; observed member_name and register_date change counts are zero.",
+    "birth_date_semantics": "Preserve raw birth_date. Normalize 1900-01-01 to canonical NULL with birth_date_sentinel=true. Sentinel-only members remain eligible with birth_date_unknown=true; sentinel plus one distinct non-sentinel date is a correction/restatement candidate; two or more distinct non-sentinel dates quarantine the member as identity ambiguity.",
     "currency": "Preserve raw currency; normalize source-specific NTD to canonical TWD. Only TWD/NTD use exact rate 1; never COALESCE a missing rate to 1.",
+    "exact_duplicate_order_event": "Retain all raw rows and lineage; canonical staging deduplicates complete canonical event identity/row hash and records duplicate count. Exact duplicates do not quarantine the order business key.",
     "fx_business_date": "Use Asia/Taipei date of normalized order_created_at; original amount times rate_to_twd yields TWD; coupon_discount is already TWD.",
     "member_tracked_attributes": [
       "member_level",
@@ -25,13 +26,15 @@
     "naive_order_created_at": "Normalize source-specific YYYY/MM/DD HH:MM:SS as Asia/Taipei, retain raw, and set timezone_assumed=true.",
     "negative_amount": "Quarantine; no refund status or negative-amount semantics supplied.",
     "negative_coupon_discount": "Quarantine; do not repair -1 to zero or NULL.",
-    "same_day_member_conflict": "Quarantine the entire member_id + extract_date conflict set; retain all raw snapshots and do not select by row hash or file order."
+    "same_day_member_conflict": "Quarantine the entire member_id + extract_date conflict set; retain all raw snapshots and do not select by row hash or file order.",
+    "same_timestamp_conflicting_order_event": "Different payloads at the same order_id + updated_at quarantine the entire order business key; no source-row, file-order, or row-hash winner."
   },
   "schema_version": 1,
-  "status": "all_dispositions_are_proposed_pending_human_acceptance",
+  "status": "birth_date_and_duplicate_correction_policies_human_approved; phase_1_correction_implementation_complete_acceptance_pending",
   "treatments": [
     {
       "detection_severity": "ERROR",
+      "disposition_status": "proposed_pending_human_acceptance",
       "finding_type": "CONTROL_CHECK",
       "issue_id": "FX-001",
       "pending_human_decision": "確認是否有 intraday rate 或來源優先序。",
@@ -41,6 +44,7 @@
     },
     {
       "detection_severity": "CRITICAL",
+      "disposition_status": "proposed_pending_human_acceptance",
       "finding_type": "CONTROL_CHECK",
       "issue_id": "FX-002",
       "pending_human_decision": "確認權威 rate selection。",
@@ -50,6 +54,7 @@
     },
     {
       "detection_severity": "ERROR",
+      "disposition_status": "proposed_pending_human_acceptance",
       "finding_type": "CONTROL_CHECK",
       "issue_id": "FX-003",
       "pending_human_decision": "確認支援幣別與 rate domain。",
@@ -59,6 +64,7 @@
     },
     {
       "detection_severity": "WARNING",
+      "disposition_status": "proposed_pending_human_acceptance",
       "finding_type": "CONTROL_CHECK",
       "issue_id": "FX-004",
       "pending_human_decision": "確認 FX calendar 與 carry-forward 規則。",
@@ -68,6 +74,7 @@
     },
     {
       "detection_severity": "ERROR",
+      "disposition_status": "proposed_pending_human_acceptance",
       "finding_type": "CONTROL_CHECK",
       "issue_id": "MEM-001",
       "pending_human_decision": "確認重複快照 winner policy。",
@@ -77,6 +84,7 @@
     },
     {
       "detection_severity": "ERROR",
+      "disposition_status": "proposed_pending_human_acceptance",
       "finding_type": "DATA_QUALITY_ISSUE",
       "issue_id": "MEM-002",
       "pending_human_decision": "確認同日 snapshot tie-breaker。",
@@ -86,6 +94,7 @@
     },
     {
       "detection_severity": "CRITICAL",
+      "disposition_status": "proposed_pending_human_acceptance",
       "finding_type": "DATA_QUALITY_ISSUE",
       "issue_id": "MEM-003",
       "pending_human_decision": "取得上游 sequence 或決定整組隔離。",
@@ -95,6 +104,7 @@
     },
     {
       "detection_severity": "ERROR",
+      "disposition_status": "proposed_pending_human_acceptance",
       "finding_type": "CONTROL_CHECK",
       "issue_id": "MEM-004",
       "pending_human_decision": "確認是否有合法 legacy key。",
@@ -104,6 +114,7 @@
     },
     {
       "detection_severity": "WARNING",
+      "disposition_status": "proposed_pending_human_acceptance",
       "finding_type": "CONTROL_CHECK",
       "issue_id": "MEM-005",
       "pending_human_decision": "確認會員等級合法清單與 alias。",
@@ -113,6 +124,7 @@
     },
     {
       "detection_severity": "ERROR",
+      "disposition_status": "proposed_pending_human_acceptance",
       "finding_type": "CONTROL_CHECK",
       "issue_id": "MEM-006",
       "pending_human_decision": "確認空 birth_date 是否允許及日期格式。",
@@ -122,6 +134,7 @@
     },
     {
       "detection_severity": "ERROR",
+      "disposition_status": "proposed_pending_human_acceptance",
       "finding_type": "CONTROL_CHECK",
       "issue_id": "MEM-007",
       "pending_human_decision": "確認最小註冊年齡與歷史資料邊界。",
@@ -131,6 +144,7 @@
     },
     {
       "detection_severity": "INFO",
+      "disposition_status": "proposed_pending_human_acceptance",
       "finding_type": "CONTROL_CHECK",
       "issue_id": "MEM-008",
       "pending_human_decision": "確認各 attribute 的 null 語意與 tracked 狀態。",
@@ -139,16 +153,18 @@
       "rationale": "先量化變化，不在 Phase 1 實作 SCD2。"
     },
     {
-      "detection_severity": "WARNING",
-      "finding_type": "DATA_QUALITY_ISSUE",
+      "detection_severity": "ERROR",
+      "disposition_status": "human_approved_phase_1_correction_policy",
+      "finding_type": "CONTROL_CHECK",
       "issue_id": "MEM-009",
-      "pending_human_decision": "member_name 與 register_date 本次 change count 均為 0；不輸出姓名值。",
-      "post_treatment_validation_proposal": "birth_date change 全數隔離，欄位別 counts 與遮罩 sample 可重現。",
+      "pending_human_decision": "不得依 earliest、latest、檔案順序或 row hash 選擇生日。",
+      "post_treatment_validation_proposal": "所有 ambiguity member 整組隔離；non-sentinel distinct count 可重現。",
       "proposed_disposition": "QUARANTINE",
-      "rationale": "birth_date change 採整個 member identity/correction ambiguity quarantine。"
+      "rationale": "只有多個不同非 sentinel 日期才構成 canonical identity ambiguity。"
     },
     {
       "detection_severity": "INFO",
+      "disposition_status": "proposed_pending_human_acceptance",
       "finding_type": "EXPECTED_CONDITION",
       "issue_id": "MEM-010",
       "pending_human_decision": "人工決策採 Phase 2 候選 SCD2 tracked attributes；本階段只 ACCEPT 與量化。",
@@ -157,16 +173,28 @@
       "rationale": "本檢查只量化變化，不建立 SCD2 或指定 tracked attributes。"
     },
     {
-      "detection_severity": "ERROR",
+      "detection_severity": "WARNING",
+      "disposition_status": "human_approved_phase_1_correction_policy",
+      "finding_type": "DATA_QUALITY_ISSUE",
+      "issue_id": "MEM-011",
+      "pending_human_decision": "只有 sentinel 的會員仍可進維度；sentinel 加唯一非 sentinel 視為 correction candidate。",
+      "post_treatment_validation_proposal": "canonical NULL、birth_date_sentinel／birth_date_unknown 與 raw lineage counts 一致。",
+      "proposed_disposition": "NORMALIZE",
+      "rationale": "大量會員共享極端日期；保留 raw value 並將 canonical birth_date 正規化為 NULL。"
+    },
+    {
+      "detection_severity": "WARNING",
+      "disposition_status": "human_approved_phase_1_correction_policy",
       "finding_type": "CONTROL_CHECK",
       "issue_id": "ORD-001",
-      "pending_human_decision": "確認完全重複事件的 deterministic winner policy。",
-      "post_treatment_validation_proposal": "去重候選集合、winner 與 loser count 可重現。",
-      "proposed_disposition": "QUARANTINE",
-      "rationale": "Phase 1 不直接去重；先保留所有 lineage。"
+      "pending_human_decision": "完全相同的 duplicate 不隔離整個 order；保留 duplicate count 與 lineage。",
+      "post_treatment_validation_proposal": "canonical event 唯一，raw/canonical/duplicate counts 與 lineage 可重現。",
+      "proposed_disposition": "NORMALIZE",
+      "rationale": "保留全部 raw rows；canonical staging 依完整 event identity／row hash 去重。"
     },
     {
       "detection_severity": "INFO",
+      "disposition_status": "proposed_pending_human_acceptance",
       "finding_type": "EXPECTED_CONDITION",
       "issue_id": "ORD-002",
       "pending_human_decision": "確認 latest-state grain 與保留事件歷史的方式。",
@@ -176,15 +204,17 @@
     },
     {
       "detection_severity": "CRITICAL",
+      "disposition_status": "human_approved_phase_1_correction_policy",
       "finding_type": "CONTROL_CHECK",
       "issue_id": "ORD-003",
-      "pending_human_decision": "決定是否有上游 sequence 或其他權威 tie-breaker。",
-      "post_treatment_validation_proposal": "所有同時點衝突均被隔離或以核准規則唯一決定。",
+      "pending_human_decision": "整個 order business key 隔離；不以 source row、file order 或 row hash 選 winner。",
+      "post_treatment_validation_proposal": "所有同時點 conflicting payload 的 order business key 均整組隔離。",
       "proposed_disposition": "QUARANTINE",
       "rationale": "相同業務時間無法可靠決定勝出事件。"
     },
     {
       "detection_severity": "ERROR",
+      "disposition_status": "proposed_pending_human_acceptance",
       "finding_type": "DATA_QUALITY_ISSUE",
       "issue_id": "ORD-004",
       "pending_human_decision": "QUARANTINE 整個衝突 order business key；保留所有 raw events。",
@@ -194,6 +224,7 @@
     },
     {
       "detection_severity": "ERROR",
+      "disposition_status": "proposed_pending_human_acceptance",
       "finding_type": "CONTROL_CHECK",
       "issue_id": "ORD-005",
       "pending_human_decision": "確認相同 latest timestamp 的 duplicate/conflict policy。",
@@ -203,6 +234,7 @@
     },
     {
       "detection_severity": "ERROR",
+      "disposition_status": "proposed_pending_human_acceptance",
       "finding_type": "CONTROL_CHECK",
       "issue_id": "ORD-006",
       "pending_human_decision": "確認上游是否有合法新狀態或 alias。",
@@ -212,6 +244,7 @@
     },
     {
       "detection_severity": "WARNING",
+      "disposition_status": "proposed_pending_human_acceptance",
       "finding_type": "CONTROL_CHECK",
       "issue_id": "ORD-007",
       "pending_human_decision": "確認通路 alias 與 canonical value。",
@@ -221,6 +254,7 @@
     },
     {
       "detection_severity": "ERROR",
+      "disposition_status": "proposed_pending_human_acceptance",
       "finding_type": "CONTROL_CHECK",
       "issue_id": "ORD-008",
       "pending_human_decision": "確認 quantity 是否允許零或退貨負數。",
@@ -230,6 +264,7 @@
     },
     {
       "detection_severity": "WARNING",
+      "disposition_status": "proposed_pending_human_acceptance",
       "finding_type": "DATA_QUALITY_ISSUE",
       "issue_id": "ORD-009",
       "pending_human_decision": "此 mapping 已核准為 Phase 2 候選，但 Phase 1 不實作 ETL。",
@@ -239,6 +274,7 @@
     },
     {
       "detection_severity": "ERROR",
+      "disposition_status": "proposed_pending_human_acceptance",
       "finding_type": "DATA_QUALITY_ISSUE",
       "issue_id": "ORD-010",
       "pending_human_decision": "確認零額訂單及負數退款是否可能。",
@@ -248,6 +284,7 @@
     },
     {
       "detection_severity": "ERROR",
+      "disposition_status": "proposed_pending_human_acceptance",
       "finding_type": "DATA_QUALITY_ISSUE",
       "issue_id": "ORD-011",
       "pending_human_decision": "確認負折扣、補款與 coupon 單位語意。",
@@ -257,6 +294,7 @@
     },
     {
       "detection_severity": "WARNING",
+      "disposition_status": "proposed_pending_human_acceptance",
       "finding_type": "DATA_QUALITY_ISSUE",
       "issue_id": "ORD-012",
       "pending_human_decision": "規則只限本題來源；保留 raw value 並加 timezone_assumed=true。",
@@ -266,6 +304,7 @@
     },
     {
       "detection_severity": "ERROR",
+      "disposition_status": "proposed_pending_human_acceptance",
       "finding_type": "CONTROL_CHECK",
       "issue_id": "ORD-013",
       "pending_human_decision": "確認 updated_at 的上游語意與 timezone。",
@@ -275,6 +314,7 @@
     },
     {
       "detection_severity": "ERROR",
+      "disposition_status": "proposed_pending_human_acceptance",
       "finding_type": "CONTROL_CHECK",
       "issue_id": "ORD-014",
       "pending_human_decision": "確認是否允許事後補登訂單。",
@@ -284,6 +324,7 @@
     },
     {
       "detection_severity": "ERROR",
+      "disposition_status": "proposed_pending_human_acceptance",
       "finding_type": "CONTROL_CHECK",
       "issue_id": "ORD-015",
       "pending_human_decision": "決定 unknown member 或 quarantine 策略。",
@@ -293,6 +334,7 @@
     },
     {
       "detection_severity": "ERROR",
+      "disposition_status": "proposed_pending_human_acceptance",
       "finding_type": "DATA_QUALITY_ISSUE",
       "issue_id": "ORD-016",
       "pending_human_decision": "Phase 1 不建立 Unknown Product，也不因 reference missing 刪除 order。",
@@ -302,6 +344,7 @@
     },
     {
       "detection_severity": "ERROR",
+      "disposition_status": "proposed_pending_human_acceptance",
       "finding_type": "CONTROL_CHECK",
       "issue_id": "ORD-017",
       "pending_human_decision": "確認 FX date、TWD 處理與 missing-rate policy。",
@@ -311,6 +354,7 @@
     },
     {
       "detection_severity": "WARNING",
+      "disposition_status": "proposed_pending_human_acceptance",
       "finding_type": "DATA_QUALITY_ISSUE",
       "issue_id": "ORD-018",
       "pending_human_decision": "需要上游正式 state machine；不得宣稱 completed/cancelled 絕對 terminal。",
@@ -320,6 +364,7 @@
     },
     {
       "detection_severity": "ERROR",
+      "disposition_status": "proposed_pending_human_acceptance",
       "finding_type": "CONTROL_CHECK",
       "issue_id": "ORD-019",
       "pending_human_decision": "確認是否存在合法 legacy key 格式。",
@@ -329,6 +374,7 @@
     },
     {
       "detection_severity": "ERROR",
+      "disposition_status": "proposed_pending_human_acceptance",
       "finding_type": "CONTROL_CHECK",
       "issue_id": "ORD-020",
       "pending_human_decision": "確認 amount 是否已含 quantity、FX date、rounding 與折扣語意。",
@@ -338,6 +384,7 @@
     },
     {
       "detection_severity": "ERROR",
+      "disposition_status": "proposed_pending_human_acceptance",
       "finding_type": "CONTROL_CHECK",
       "issue_id": "ORD-021",
       "pending_human_decision": "確認 base 範圍是否以建立日定義且邊界是否 inclusive。",
@@ -347,6 +394,7 @@
     },
     {
       "detection_severity": "INFO",
+      "disposition_status": "proposed_pending_human_acceptance",
       "finding_type": "EXPECTED_CONDITION",
       "issue_id": "ORD-022",
       "pending_human_decision": "確認 batch date、event date 與 order created date 的正式語意。",
@@ -356,6 +404,7 @@
     },
     {
       "detection_severity": "WARNING",
+      "disposition_status": "proposed_pending_human_acceptance",
       "finding_type": "DATA_QUALITY_ISSUE",
       "issue_id": "ORD-023",
       "pending_human_decision": "確認 amount 是否為整單金額、quantity 語意及合理價格容忍區間。",
@@ -365,6 +414,7 @@
     },
     {
       "detection_severity": "ERROR",
+      "disposition_status": "proposed_pending_human_acceptance",
       "finding_type": "CONTROL_CHECK",
       "issue_id": "ORD-024",
       "pending_human_decision": "來源沒有其他日期格式或修補規則；Phase 1 不自行補值。",
@@ -374,6 +424,7 @@
     },
     {
       "detection_severity": "ERROR",
+      "disposition_status": "proposed_pending_human_acceptance",
       "finding_type": "CONTROL_CHECK",
       "issue_id": "PROD-001",
       "pending_human_decision": "確認重複產品 winner policy。",
@@ -383,6 +434,7 @@
     },
     {
       "detection_severity": "ERROR",
+      "disposition_status": "proposed_pending_human_acceptance",
       "finding_type": "CONTROL_CHECK",
       "issue_id": "PROD-002",
       "pending_human_decision": "確認是否存在產品版本語意。",
@@ -392,6 +444,7 @@
     },
     {
       "detection_severity": "ERROR",
+      "disposition_status": "proposed_pending_human_acceptance",
       "finding_type": "CONTROL_CHECK",
       "issue_id": "PROD-003",
       "pending_human_decision": "確認合法 legacy product key。",
@@ -401,6 +454,7 @@
     },
     {
       "detection_severity": "ERROR",
+      "disposition_status": "proposed_pending_human_acceptance",
       "finding_type": "CONTROL_CHECK",
       "issue_id": "PROD-004",
       "pending_human_decision": "確認各文字欄位是否必填。",
@@ -410,6 +464,7 @@
     },
     {
       "detection_severity": "ERROR",
+      "disposition_status": "proposed_pending_human_acceptance",
       "finding_type": "CONTROL_CHECK",
       "issue_id": "PROD-005",
       "pending_human_decision": "確認零天、零價與 active alias 是否可能。",
@@ -419,6 +474,7 @@
     },
     {
       "detection_severity": "INFO",
+      "disposition_status": "proposed_pending_human_acceptance",
       "finding_type": "CONTROL_CHECK",
       "issue_id": "PROD-006",
       "pending_human_decision": "確認相同描述是否代表不同可售 SKU。",
@@ -428,6 +484,7 @@
     },
     {
       "detection_severity": "ERROR",
+      "disposition_status": "proposed_pending_human_acceptance",
       "finding_type": "CONTROL_CHECK",
       "issue_id": "SRC-001",
       "pending_human_decision": "確認各欄位 nullability 與是否存在可修補來源。",
@@ -437,6 +494,7 @@
     },
     {
       "detection_severity": "WARNING",
+      "disposition_status": "proposed_pending_human_acceptance",
       "finding_type": "CONTROL_CHECK",
       "issue_id": "SRC-002",
       "pending_human_decision": "確認所有識別碼與分類欄位均允許 trim。",

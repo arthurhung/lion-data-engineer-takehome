@@ -187,7 +187,9 @@ def _evidence_documents(
     analyses: dict[str, object],
 ) -> dict[str, object]:
     analysis_by_issue = {
-        "MEM-009": analyses["member_identity_field_breakdown"],
+        "MEM-009": analyses["birth_date_semantic_analysis"]["canonical_identity_ambiguity"],
+        "MEM-011": analyses["birth_date_semantic_analysis"],
+        "ORD-001": analyses["exact_duplicate_order_event_analysis"],
         "ORD-004": analyses["order_invariant_field_breakdown"],
         "ORD-012": analyses["timestamp_format_field_breakdown"],
         "ORD-018": analyses["status_transition_pair_breakdown"],
@@ -200,6 +202,15 @@ def _evidence_documents(
         "schema_version": 1,
         "authoritative_detector_implementation": "sql/quality_checks.sql",
         "sample_limit_per_issue": 3,
+        "count_overlap_warning": (
+            "Detector row counts may overlap and must not be summed as a total anomaly count; "
+            "MEM-011 records sentinel rows while MEM-009 independently controls canonical "
+            "identity ambiguity."
+        ),
+        "correction_record": (
+            "Phase 2 model-design review found that Phase 1 had treated a parse-valid sentinel "
+            "date as identity change; reproducible profiling corrected the semantic rule."
+        ),
         "finding_summary": finding_summary(issues),
         "issues": issues,
     }
@@ -216,7 +227,10 @@ def _evidence_documents(
     }
     treatment = {
         "schema_version": 1,
-        "status": "all_dispositions_are_proposed_pending_human_acceptance",
+        "status": (
+            "birth_date_and_duplicate_correction_policies_human_approved; "
+            "phase_1_correction_implementation_complete_acceptance_pending"
+        ),
         "allowed_detection_severities": ["INFO", "WARNING", "ERROR", "CRITICAL"],
         "allowed_proposed_dispositions": [
             "ACCEPT",
@@ -231,6 +245,7 @@ def _evidence_documents(
                 "finding_type": issue["finding_type"],
                 "detection_severity": issue["detection_severity"],
                 "proposed_disposition": issue["proposed_disposition"],
+                "disposition_status": issue["disposition_status"],
                 "rationale": issue["rationale"],
                 "pending_human_decision": issue["pending_human_decision"],
                 "post_treatment_validation_proposal": issue["post_treatment_validation_proposal"],
@@ -247,9 +262,21 @@ def _evidence_documents(
                 "Quarantine the entire member_id + extract_date conflict set; retain all raw "
                 "snapshots and do not select by row hash or file order."
             ),
-            "birth_date_change": (
-                "Quarantine as identity/correction ambiguity; observed member_name and "
-                "register_date change counts are zero."
+            "birth_date_semantics": (
+                "Preserve raw birth_date. Normalize 1900-01-01 to canonical NULL with "
+                "birth_date_sentinel=true. Sentinel-only members remain eligible with "
+                "birth_date_unknown=true; sentinel plus one distinct non-sentinel date is a "
+                "correction/restatement candidate; two or more distinct non-sentinel dates "
+                "quarantine the member as identity ambiguity."
+            ),
+            "exact_duplicate_order_event": (
+                "Retain all raw rows and lineage; canonical staging deduplicates complete "
+                "canonical event identity/row hash and records duplicate count. Exact "
+                "duplicates do not quarantine the order business key."
+            ),
+            "same_timestamp_conflicting_order_event": (
+                "Different payloads at the same order_id + updated_at quarantine the entire "
+                "order business key; no source-row, file-order, or row-hash winner."
             ),
             "missing_product_reference": (
                 "Retain raw order; candidate Unknown Product surrogate key plus quality flag. "

@@ -10,7 +10,7 @@ from lion_de_exam.profiling import (
     DEFAULT_SQL_FILE,
     run_profile,
 )
-from lion_de_exam.source_contract import CONTRACTS
+from lion_de_exam.source_contract import CONTRACTS, normalize_birth_date
 
 
 def test_typed_contract_has_explicit_columns_and_no_float_authority() -> None:
@@ -38,6 +38,27 @@ def test_typed_contract_has_explicit_columns_and_no_float_authority() -> None:
     currency = order_columns["currency"]
     assert currency.domain == ("JPY", "NTD", "TWD", "USD")
     assert "NTD" in str(currency.normalization_assumption)
+
+    member_columns = {column.name: column for column in CONTRACTS[1].columns}
+    birth_date = member_columns["birth_date"]
+    assert birth_date.semantic_sentinel_values == ("1900-01-01",)
+    assert birth_date.canonical_nullable is True
+    assert birth_date.semantic_quality_flags == (
+        "birth_date_sentinel",
+        "birth_date_unknown",
+    )
+    assert "canonical NULL" in str(birth_date.semantic_normalization)
+
+
+def test_birth_date_sentinel_parses_but_normalizes_to_null_and_retains_raw() -> None:
+    normalized = normalize_birth_date("1900-01-01")
+
+    assert normalized == {
+        "raw_birth_date": "1900-01-01",
+        "birth_date": None,
+        "birth_date_sentinel": True,
+        "birth_date_unknown": True,
+    }
 
 
 def test_two_clean_profiles_have_identical_canonical_evidence(tmp_path: Path) -> None:
@@ -116,5 +137,5 @@ def test_quality_report_table_matches_machine_readable_issue_counts() -> None:
         for item in evidence["issues"]
     }
 
-    assert len(report_counts) == 46
+    assert len(report_counts) == 47
     assert report_counts == evidence_counts

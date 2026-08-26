@@ -39,6 +39,55 @@
     },
     "threshold_rationale": "A deliberately wide review band around reference price; base_price_twd is a reference, not a required transaction price. Validate against p01/p50/p99."
   },
+  "birth_date_semantic_analysis": {
+    "canonical_identity_ambiguity": {
+      "affected_member_count": 0,
+      "affected_snapshot_row_count": 0,
+      "definition": "member has two or more distinct non-sentinel birth_date values"
+    },
+    "canonical_value": null,
+    "multiple_distinct_non_sentinel_member_count": 0,
+    "non_sentinel_observed_max": "2003-10-17",
+    "non_sentinel_observed_min": "1960-01-03",
+    "only_sentinel_member_count": 61,
+    "raw_birth_date_change": {
+      "affected_member_count": 19,
+      "affected_snapshot_row_count": 38,
+      "definition": "member has two or more distinct raw birth_date values"
+    },
+    "raw_date_parse_result": "valid_DATE",
+    "sentinel_affected_member_count": 80,
+    "sentinel_affected_row_count": 81,
+    "sentinel_extract_date_distribution": [
+      {
+        "affected_row_count": 76,
+        "extract_date": "2026-04-30"
+      },
+      {
+        "affected_row_count": 2,
+        "extract_date": "2026-05-31"
+      },
+      {
+        "affected_row_count": 3,
+        "extract_date": "2026-06-30"
+      }
+    ],
+    "sentinel_normalized_birth_date_change": {
+      "affected_member_count": 19,
+      "affected_snapshot_row_count": 38,
+      "definition": "member has sentinel normalized to NULL and at least one non-sentinel value"
+    },
+    "sentinel_plus_single_non_sentinel_member_count": 19,
+    "sentinel_raw_value": "1900-01-01"
+  },
+  "exact_duplicate_order_event_analysis": {
+    "canonical_event_count_within_duplicate_groups": 0,
+    "canonical_policy": "Retain all raw rows and lineage; canonical staging deduplicates by the complete canonical event identity/row hash and retains duplicate_count. Exact duplicates do not quarantine the order business key.",
+    "conflicting_same_timestamp_policy": "Different payloads for the same order_id + updated_at quarantine the entire order business key; source row, file order, and row hash are not winners.",
+    "duplicate_group_count": 0,
+    "duplicate_loser_count": 0,
+    "raw_row_count_within_duplicate_groups": 0
+  },
   "member_identity_field_breakdown": [
     {
       "affected_member_count": 0,

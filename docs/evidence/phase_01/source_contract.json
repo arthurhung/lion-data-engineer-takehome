@@ -1,6 +1,6 @@
 {
-  "contract_status": "proposed_pending_human_acceptance",
-  "raw_value_policy": "Raw CSV text remains immutable; typed values are derived only for profiling.",
+  "contract_status": "phase_1_correction_implementation_complete_acceptance_pending",
+  "raw_value_policy": "Raw CSV text and raw semantic values remain immutable; typed/canonical values are derived separately and preserve lineage.",
   "row_count_definition": "CSV data rows excluding the header row",
   "schema_version": 1,
   "sources": [
@@ -11,6 +11,7 @@
       "columns": [
         {
           "accepted_raw_formats": [],
+          "canonical_nullable": null,
           "canonical_typed_format": null,
           "decimal_scale": null,
           "description": "訂單來源識別碼",
@@ -22,10 +23,14 @@
           "normalization_quality_flag": null,
           "nullable": false,
           "pattern": "^ORD[0-9]{8}$",
+          "semantic_normalization": null,
+          "semantic_quality_flags": [],
+          "semantic_sentinel_values": [],
           "sensitive": false
         },
         {
           "accepted_raw_formats": [],
+          "canonical_nullable": null,
           "canonical_typed_format": null,
           "decimal_scale": null,
           "description": "會員來源識別碼",
@@ -37,10 +42,14 @@
           "normalization_quality_flag": null,
           "nullable": false,
           "pattern": "^M[0-9]{6}$",
+          "semantic_normalization": null,
+          "semantic_quality_flags": [],
+          "semantic_sentinel_values": [],
           "sensitive": false
         },
         {
           "accepted_raw_formats": [],
+          "canonical_nullable": null,
           "canonical_typed_format": null,
           "decimal_scale": null,
           "description": "產品來源識別碼",
@@ -52,10 +61,14 @@
           "normalization_quality_flag": null,
           "nullable": false,
           "pattern": "^P[0-9]{5}$",
+          "semantic_normalization": null,
+          "semantic_quality_flags": [],
+          "semantic_sentinel_values": [],
           "sensitive": false
         },
         {
           "accepted_raw_formats": [],
+          "canonical_nullable": null,
           "canonical_typed_format": null,
           "decimal_scale": null,
           "description": "訂購通路",
@@ -72,10 +85,14 @@
           "normalization_quality_flag": null,
           "nullable": false,
           "pattern": null,
+          "semantic_normalization": null,
+          "semantic_quality_flags": [],
+          "semantic_sentinel_values": [],
           "sensitive": false
         },
         {
           "accepted_raw_formats": [],
+          "canonical_nullable": null,
           "canonical_typed_format": null,
           "decimal_scale": null,
           "description": "訂單事件狀態",
@@ -92,10 +109,14 @@
           "normalization_quality_flag": null,
           "nullable": false,
           "pattern": null,
+          "semantic_normalization": null,
+          "semantic_quality_flags": [],
+          "semantic_sentinel_values": [],
           "sensitive": false
         },
         {
           "accepted_raw_formats": [],
+          "canonical_nullable": null,
           "canonical_typed_format": null,
           "decimal_scale": null,
           "description": "訂購數量",
@@ -107,10 +128,14 @@
           "normalization_quality_flag": null,
           "nullable": false,
           "pattern": null,
+          "semantic_normalization": null,
+          "semantic_quality_flags": [],
+          "semantic_sentinel_values": [],
           "sensitive": false
         },
         {
           "accepted_raw_formats": [],
+          "canonical_nullable": null,
           "canonical_typed_format": null,
           "decimal_scale": null,
           "description": "原幣別；NTD 僅在本來源正規化為 canonical TWD",
@@ -127,10 +152,14 @@
           "normalization_quality_flag": null,
           "nullable": false,
           "pattern": null,
+          "semantic_normalization": null,
+          "semantic_quality_flags": [],
+          "semantic_sentinel_values": [],
           "sensitive": false
         },
         {
           "accepted_raw_formats": [],
+          "canonical_nullable": null,
           "canonical_typed_format": null,
           "decimal_scale": 4,
           "description": "原幣別金額",
@@ -142,10 +171,14 @@
           "normalization_quality_flag": null,
           "nullable": false,
           "pattern": null,
+          "semantic_normalization": null,
+          "semantic_quality_flags": [],
+          "semantic_sentinel_values": [],
           "sensitive": false
         },
         {
           "accepted_raw_formats": [],
+          "canonical_nullable": null,
           "canonical_typed_format": null,
           "decimal_scale": 4,
           "description": "題目定義為 TWD 的折扣",
@@ -157,6 +190,9 @@
           "normalization_quality_flag": null,
           "nullable": false,
           "pattern": null,
+          "semantic_normalization": null,
+          "semantic_quality_flags": [],
+          "semantic_sentinel_values": [],
           "sensitive": false
         },
         {
@@ -164,6 +200,7 @@
             "ISO_8601_WITH_OFFSET",
             "YYYY/MM/DD HH:MM:SS"
           ],
+          "canonical_nullable": null,
           "canonical_typed_format": "TIMESTAMPTZ",
           "decimal_scale": null,
           "description": "訂單建立時間；來源預期帶 offset",
@@ -175,10 +212,14 @@
           "normalization_quality_flag": "timezone_assumed=true",
           "nullable": false,
           "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(Z|[+-][0-9]{2}:[0-9]{2})$",
+          "semantic_normalization": null,
+          "semantic_quality_flags": [],
+          "semantic_sentinel_values": [],
           "sensitive": false
         },
         {
           "accepted_raw_formats": [],
+          "canonical_nullable": null,
           "canonical_typed_format": null,
           "decimal_scale": null,
           "description": "出發日",
@@ -190,12 +231,16 @@
           "normalization_quality_flag": null,
           "nullable": false,
           "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+          "semantic_normalization": null,
+          "semantic_quality_flags": [],
+          "semantic_sentinel_values": [],
           "sensitive": false
         },
         {
           "accepted_raw_formats": [
             "ISO_8601_WITH_OFFSET"
           ],
+          "canonical_nullable": null,
           "canonical_typed_format": "TIMESTAMPTZ",
           "decimal_scale": null,
           "description": "訂單事件更新時間；來源預期帶 offset",
@@ -207,6 +252,9 @@
           "normalization_quality_flag": null,
           "nullable": false,
           "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(Z|[+-][0-9]{2}:[0-9]{2})$",
+          "semantic_normalization": null,
+          "semantic_quality_flags": [],
+          "semantic_sentinel_values": [],
           "sensitive": false
         }
       ],
@@ -226,6 +274,7 @@
       "columns": [
         {
           "accepted_raw_formats": [],
+          "canonical_nullable": null,
           "canonical_typed_format": null,
           "decimal_scale": null,
           "description": "會員來源識別碼",
@@ -237,10 +286,14 @@
           "normalization_quality_flag": null,
           "nullable": false,
           "pattern": "^M[0-9]{6}$",
+          "semantic_normalization": null,
+          "semantic_quality_flags": [],
+          "semantic_sentinel_values": [],
           "sensitive": false
         },
         {
           "accepted_raw_formats": [],
+          "canonical_nullable": null,
           "canonical_typed_format": null,
           "decimal_scale": null,
           "description": "會員姓名",
@@ -252,10 +305,14 @@
           "normalization_quality_flag": null,
           "nullable": false,
           "pattern": null,
+          "semantic_normalization": null,
+          "semantic_quality_flags": [],
+          "semantic_sentinel_values": [],
           "sensitive": true
         },
         {
           "accepted_raw_formats": [],
+          "canonical_nullable": null,
           "canonical_typed_format": null,
           "decimal_scale": null,
           "description": "會員等級",
@@ -272,10 +329,14 @@
           "normalization_quality_flag": null,
           "nullable": false,
           "pattern": null,
+          "semantic_normalization": null,
+          "semantic_quality_flags": [],
+          "semantic_sentinel_values": [],
           "sensitive": false
         },
         {
           "accepted_raw_formats": [],
+          "canonical_nullable": null,
           "canonical_typed_format": null,
           "decimal_scale": null,
           "description": "居住城市",
@@ -287,13 +348,17 @@
           "normalization_quality_flag": null,
           "nullable": false,
           "pattern": null,
+          "semantic_normalization": null,
+          "semantic_quality_flags": [],
+          "semantic_sentinel_values": [],
           "sensitive": false
         },
         {
           "accepted_raw_formats": [],
+          "canonical_nullable": true,
           "canonical_typed_format": null,
           "decimal_scale": null,
-          "description": "出生日期",
+          "description": "出生日期；raw parse-valid sentinel 需與 canonical identity value 分離",
           "domain": [],
           "duckdb_type": "DATE",
           "logical_type": "date",
@@ -302,10 +367,19 @@
           "normalization_quality_flag": null,
           "nullable": true,
           "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+          "semantic_normalization": "Preserve raw value; normalize source sentinel 1900-01-01 to canonical NULL. A member with sentinel plus exactly one distinct non-sentinel date may use that non-sentinel date as a correction/restatement candidate. Two or more distinct non-sentinel dates are identity ambiguity and require quarantine.",
+          "semantic_quality_flags": [
+            "birth_date_sentinel",
+            "birth_date_unknown"
+          ],
+          "semantic_sentinel_values": [
+            "1900-01-01"
+          ],
           "sensitive": true
         },
         {
           "accepted_raw_formats": [],
+          "canonical_nullable": null,
           "canonical_typed_format": null,
           "decimal_scale": null,
           "description": "註冊日期",
@@ -317,10 +391,14 @@
           "normalization_quality_flag": null,
           "nullable": false,
           "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+          "semantic_normalization": null,
+          "semantic_quality_flags": [],
+          "semantic_sentinel_values": [],
           "sensitive": false
         },
         {
           "accepted_raw_formats": [],
+          "canonical_nullable": null,
           "canonical_typed_format": null,
           "decimal_scale": null,
           "description": "快照萃取日期",
@@ -332,6 +410,9 @@
           "normalization_quality_flag": null,
           "nullable": false,
           "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+          "semantic_normalization": null,
+          "semantic_quality_flags": [],
+          "semantic_sentinel_values": [],
           "sensitive": false
         }
       ],
@@ -347,6 +428,7 @@
       "columns": [
         {
           "accepted_raw_formats": [],
+          "canonical_nullable": null,
           "canonical_typed_format": null,
           "decimal_scale": null,
           "description": "產品來源識別碼",
@@ -358,10 +440,14 @@
           "normalization_quality_flag": null,
           "nullable": false,
           "pattern": "^P[0-9]{5}$",
+          "semantic_normalization": null,
+          "semantic_quality_flags": [],
+          "semantic_sentinel_values": [],
           "sensitive": false
         },
         {
           "accepted_raw_formats": [],
+          "canonical_nullable": null,
           "canonical_typed_format": null,
           "decimal_scale": null,
           "description": "產品名稱",
@@ -373,10 +459,14 @@
           "normalization_quality_flag": null,
           "nullable": false,
           "pattern": null,
+          "semantic_normalization": null,
+          "semantic_quality_flags": [],
+          "semantic_sentinel_values": [],
           "sensitive": false
         },
         {
           "accepted_raw_formats": [],
+          "canonical_nullable": null,
           "canonical_typed_format": null,
           "decimal_scale": null,
           "description": "產品類型",
@@ -388,10 +478,14 @@
           "normalization_quality_flag": null,
           "nullable": false,
           "pattern": null,
+          "semantic_normalization": null,
+          "semantic_quality_flags": [],
+          "semantic_sentinel_values": [],
           "sensitive": false
         },
         {
           "accepted_raw_formats": [],
+          "canonical_nullable": null,
           "canonical_typed_format": null,
           "decimal_scale": null,
           "description": "目的地國家",
@@ -403,10 +497,14 @@
           "normalization_quality_flag": null,
           "nullable": false,
           "pattern": null,
+          "semantic_normalization": null,
+          "semantic_quality_flags": [],
+          "semantic_sentinel_values": [],
           "sensitive": false
         },
         {
           "accepted_raw_formats": [],
+          "canonical_nullable": null,
           "canonical_typed_format": null,
           "decimal_scale": null,
           "description": "目的地城市",
@@ -418,10 +516,14 @@
           "normalization_quality_flag": null,
           "nullable": false,
           "pattern": null,
+          "semantic_normalization": null,
+          "semantic_quality_flags": [],
+          "semantic_sentinel_values": [],
           "sensitive": false
         },
         {
           "accepted_raw_formats": [],
+          "canonical_nullable": null,
           "canonical_typed_format": null,
           "decimal_scale": null,
           "description": "行程天數",
@@ -433,10 +535,14 @@
           "normalization_quality_flag": null,
           "nullable": false,
           "pattern": null,
+          "semantic_normalization": null,
+          "semantic_quality_flags": [],
+          "semantic_sentinel_values": [],
           "sensitive": false
         },
         {
           "accepted_raw_formats": [],
+          "canonical_nullable": null,
           "canonical_typed_format": null,
           "decimal_scale": 4,
           "description": "TWD 牌價",
@@ -448,10 +554,14 @@
           "normalization_quality_flag": null,
           "nullable": false,
           "pattern": null,
+          "semantic_normalization": null,
+          "semantic_quality_flags": [],
+          "semantic_sentinel_values": [],
           "sensitive": false
         },
         {
           "accepted_raw_formats": [],
+          "canonical_nullable": null,
           "canonical_typed_format": null,
           "decimal_scale": null,
           "description": "產品啟用旗標",
@@ -466,6 +576,9 @@
           "normalization_quality_flag": null,
           "nullable": false,
           "pattern": null,
+          "semantic_normalization": null,
+          "semantic_quality_flags": [],
+          "semantic_sentinel_values": [],
           "sensitive": false
         }
       ],
@@ -482,6 +595,7 @@
       "columns": [
         {
           "accepted_raw_formats": [],
+          "canonical_nullable": null,
           "canonical_typed_format": null,
           "decimal_scale": null,
           "description": "匯率適用日期",
@@ -493,10 +607,14 @@
           "normalization_quality_flag": null,
           "nullable": false,
           "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+          "semantic_normalization": null,
+          "semantic_quality_flags": [],
+          "semantic_sentinel_values": [],
           "sensitive": false
         },
         {
           "accepted_raw_formats": [],
+          "canonical_nullable": null,
           "canonical_typed_format": null,
           "decimal_scale": null,
           "description": "原幣別代碼",
@@ -511,10 +629,14 @@
           "normalization_quality_flag": null,
           "nullable": false,
           "pattern": null,
+          "semantic_normalization": null,
+          "semantic_quality_flags": [],
+          "semantic_sentinel_values": [],
           "sensitive": false
         },
         {
           "accepted_raw_formats": [],
+          "canonical_nullable": null,
           "canonical_typed_format": null,
           "decimal_scale": 8,
           "description": "一單位原幣乘此 rate 換算為 TWD",
@@ -526,6 +648,9 @@
           "normalization_quality_flag": null,
           "nullable": false,
           "pattern": null,
+          "semantic_normalization": null,
+          "semantic_quality_flags": [],
+          "semantic_sentinel_values": [],
           "sensitive": false
         }
       ],

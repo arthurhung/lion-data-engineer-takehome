@@ -1,6 +1,6 @@
 {
   "algorithm": "SHA-256",
-  "canonical_bundle_sha256": "f326a97e6833d55071b2752581cae31fe5049d7b8efde016e8cfc5048843fa39",
+  "canonical_bundle_sha256": "5cd9bf274d171f7007c4b160addb6fe281f3be1da13939b35c52ecf14a1d9ee8",
   "canonicalization": "UTF-8, LF, JSON sorted keys, indent=2, trailing LF; fixed record order",
   "excluded_from_checksum": [
     "execution_time",
@@ -11,7 +11,7 @@
   "files": [
     {
       "file": "source_contract.json",
-      "sha256": "a6108ea7de950b6aa7d1df4c8dd3c5459e5df37b41e28187a3e821ac93f84c2c"
+      "sha256": "e2df75ad253d59ec5f862626126aa62c5d6a88fe33894ae1f1a6819cb7a1ebfc"
     },
     {
       "file": "source_profile.json",
@@ -19,19 +19,19 @@
     },
     {
       "file": "issue_summary.json",
-      "sha256": "ba67856753e8a2f8e048acc1f21385e34cdf0b82cd31f0f65c16da67d9a6399a"
+      "sha256": "01439b0b87a070763dbfbeae4e7a30bde2e3872b20af19b2eb40fa3532d95c33"
     },
     {
       "file": "analysis_summary.json",
-      "sha256": "54183ee20c951eb4c67ce0a31dab517f2adf433643d2c07d08228867c8ee3304"
+      "sha256": "54e2b80b890223507489d99a401d87df66e7a4f6d9800857df8bfbdc0788c94d"
     },
     {
       "file": "representative_samples.json",
-      "sha256": "89904cea21d9434f3d49ded54d7d90d2f837dd6071f66753b8887fed94ac519d"
+      "sha256": "c0af3191b1d3a9b0b98613df30dc809cb5d6f0532b1e3ca8abc01f47446a822c"
     },
     {
       "file": "treatment_matrix.json",
-      "sha256": "60c635964b5d2d2ab1c4846cc9be803d67887b7e57ec76386b34c1065671cd99"
+      "sha256": "cdc1a673aeaa7582357ba03c486c0b65de68b67c8e16f27267b44a0ee6181480"
     }
   ],
   "schema_version": 1

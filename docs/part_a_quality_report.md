@@ -6,6 +6,10 @@
 issues 與 proposed treatment。狀態為 `implementation_complete_acceptance_pending`；尚未建立 SCD2、
 dimension、fact、warehouse database 或 incremental merge。
 
+Correction note：Phase 2 model-design review 發現 Phase 1 將 parse-valid sentinel date
+`1900-01-01` 誤判成 identity change；經 repo 內 DuckDB detector 重新 profiling 後，已修正 semantic
+rule。birth-date 與 duplicate correction policy 已由應試者核准，本次 implementation 仍待人工驗收。
+
 DuckDB 可執行的 [`sql/quality_checks.sql`](../sql/quality_checks.sql) 是 detector 與 supporting
 analysis 的唯一權威實作。Python 只負責載入 raw text、執行 SQL、固定排序與 canonical evidence
 輸出。Reviewer evidence：
@@ -19,7 +23,7 @@ analysis 的唯一權威實作。Python 只負責載入 raw text、執行 SQL、
 - [`evidence_manifest.json`](evidence/phase_01/evidence_manifest.json)
 
 Canonical bundle SHA-256：
-`f326a97e6833d55071b2752581cae31fe5049d7b8efde016e8cfc5048843fa39`。
+`5cd9bf274d171f7007c4b160addb6fe281f3be1da13939b35c52ecf14a1d9ee8`。
 
 ```bash
 make profile
@@ -32,11 +36,11 @@ make profile OUTPUT_DIR=/tmp/lion-profile-run1 EVIDENCE_DIR=/tmp/lion-profile-ru
 
 | 指標 | 實際結果 |
 |---|---:|
-| 執行 detector 總數 | 46 |
+| 執行 detector 總數 | 47 |
 | non-zero detector 結果數 | 14 |
 | candidate `DATA_QUALITY_ISSUE` 數 | 11 |
 | non-zero `EXPECTED_CONDITION` 數 | 3 |
-| zero-result `CONTROL_CHECK` 數 | 32 |
+| zero-result `CONTROL_CHECK` 數 | 33 |
 
 `ORD-002`、`ORD-022` 與 `MEM-010` 是題目或歷史模型預期情境，不列為資料品質錯誤：
 
@@ -60,9 +64,10 @@ make profile OUTPUT_DIR=/tmp/lion-profile-run1 EVIDENCE_DIR=/tmp/lion-profile-ru
 | `MEM-006` | 0 | 0 | CONTROL_CHECK | ERROR | QUARANTINE |
 | `MEM-007` | 0 | 0 | CONTROL_CHECK | ERROR | QUARANTINE |
 | `MEM-008` | 0 | 0 | CONTROL_CHECK | INFO | ACCEPT |
-| `MEM-009` | 38 | 19 | DATA_QUALITY_ISSUE | WARNING | QUARANTINE |
+| `MEM-009` | 0 | 0 | CONTROL_CHECK | ERROR | QUARANTINE |
 | `MEM-010` | 804 | 803 | EXPECTED_CONDITION | INFO | ACCEPT |
-| `ORD-001` | 0 | 0 | CONTROL_CHECK | ERROR | QUARANTINE |
+| `MEM-011` | 81 | 80 | DATA_QUALITY_ISSUE | WARNING | NORMALIZE |
+| `ORD-001` | 0 | 0 | CONTROL_CHECK | WARNING | NORMALIZE |
 | `ORD-002` | 3,799 | 1,889 | EXPECTED_CONDITION | INFO | ACCEPT |
 | `ORD-003` | 0 | 0 | CONTROL_CHECK | CRITICAL | QUARANTINE |
 | `ORD-004` | 3,613 | 1,796 | DATA_QUALITY_ISSUE | ERROR | QUARANTINE |
@@ -116,19 +121,53 @@ row 覆蓋。整體 `ORD-004` 是 3,613 event rows、1,796 order IDs。欄位別
 Proposed decision：`QUARANTINE` 整個衝突 order business key，保留所有 raw events；不使用
 source row、檔案順序或 row hash 宣稱任一 payload 具有業務正確性。
 
-## `MEM-009` identity 欄位拆解
+## Birth-date sentinel correction：`MEM-009` 與 `MEM-011`
 
 | Field | Members | Snapshot rows | 實際結論 |
 |---|---:|---:|---|
 | `member_name` | 0 | 0 | 本次沒有姓名變更 |
-| `birth_date` | 19 | 38 | 唯一非零 identity candidate 欄位 |
+| `birth_date` | 19 | 38 | raw change；19 members 均為 sentinel 與唯一非 sentinel 並存 |
 | `register_date` | 0 | 0 | 本次沒有註冊日變更 |
 
-`birth_date` 值不進 evidence，sample 只保留 member ID、extract date 與 `value_present`。Proposed
-decision 是視為 identity/correction ambiguity 並 `QUARANTINE`；不得將本次 finding 摘要成姓名變更。
+`birth_date` 值不進 deterministic samples。`MEM-011` sample 只保留 `member_id`、`extract_date`、
+`birth_date_sentinel`、non-sentinel distinct count、source file 與 source row number；不輸出姓名或
+實際生日。
+
+| Semantic metric | 實際結果 |
+|---|---:|
+| `1900-01-01` rows / members | 81 / 80 |
+| Extract date `2026-04-30` / `2026-05-31` / `2026-06-30` | 76 / 2 / 3 rows |
+| 只有 sentinel、沒有 non-sentinel 的 members | 61 |
+| Sentinel 與唯一 non-sentinel 並存的 members | 19 |
+| 兩個以上不同 non-sentinel birth dates 的 members | 0 |
+| Non-sentinel observed min / max | `1960-01-03` / `2003-10-17` |
+
+三種 count 的定義刻意分開：raw birth-date change 是 19 members／38 snapshots；將 sentinel
+normalize 為 `NULL` 後的 sentinel-to-known correction/restatement 候選仍是 19／38；真正的
+canonical identity ambiguity（兩個以上 distinct non-sentinel dates）是 0／0。因此 `MEM-009`
+保留為 zero-result `CONTROL_CHECK`，證明已檢查；`MEM-011` 是 81 rows／80 members 的
+`DATA_QUALITY_ISSUE`。兩者與其他 detectors 可能在 raw row 層級重疊，不得相加成總異常量。
+
+核准 treatment：raw `1900-01-01` 保留，canonical `birth_date=NULL`，並設定
+`birth_date_sentinel=true`。只有 sentinel 的 member 不 quarantine，設定 `birth_date_unknown=true`；
+sentinel 加唯一 non-sentinel 是 correction/restatement assumption，不產生 business-state version；
+兩個以上不同 non-sentinel dates 才整個 member `QUARANTINE`，不得任選 winner。
+
+Typed source contract 亦明確分離兩層：raw parse contract 接受 `1900-01-01` 為合法 `DATE` 字串；
+semantic contract 將它定義為本來源的 unknown/sentinel。Canonical `birth_date` nullable，raw value
+持續保留，quality flags 為 `birth_date_sentinel` 與 `birth_date_unknown`；只有兩個以上 distinct
+non-sentinel dates 才觸發 identity ambiguity。
 
 另外，`MEM-002`／`MEM-003` 的同 member、同 extract date 衝突為 60 rows、30 members；整組
 `QUARANTINE`，保留所有 raw snapshots，不依 row hash 或檔案順序選 winner。
+
+## Exact duplicate 與 conflicting duplicate policy
+
+`ORD-001` 完全相同 event row 本次為 0，維持 zero-result control。核准 policy 是保留全部 raw
+rows 與 lineage；canonical staging 依完整 canonical event identity／row hash deduplicate，保留
+`duplicate_count`，不因 exact duplicate 隔離整個 order。`ORD-003` 同一 `order_id + updated_at`
+但 payload 不同本次亦為 0；此情境仍整個 order business key `QUARANTINE`，不得用 source row、
+file order 或 row hash 選 winner。兩者不可混為同一 duplicate 類型。
 
 ## `ORD-012` timestamp 欄位拆解與 normalization contract
 

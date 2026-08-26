@@ -468,16 +468,26 @@ WHERE seq > 1 AND ((member_name IS NULL OR trim(member_name) = '') != prior_name
 
 -- detector: MEM-009
 WITH bad_keys AS (
-    SELECT member_id FROM raw_members GROUP BY member_id
-    HAVING count(DISTINCT member_name) > 1 OR count(DISTINCT birth_date) > 1
-        OR count(DISTINCT register_date) > 1
+    SELECT member_id
+    FROM raw_members
+    GROUP BY member_id
+    HAVING count(DISTINCT CASE WHEN birth_date != '1900-01-01' THEN birth_date END) >= 2
+), member_stats AS (
+    SELECT member_id,
+           count(DISTINCT CASE WHEN birth_date != '1900-01-01' THEN birth_date END)
+             AS non_sentinel_birth_date_count
+    FROM raw_members
+    GROUP BY member_id
 )
 SELECT m.member_id AS business_key,
        m.member_id || '|' || m.extract_date || '|' || lpad(m.source_row_number::VARCHAR, 12, '0') AS sample_sort_key,
        json_object('member_id', m.member_id, 'extract_date', m.extract_date,
-                   'birth_date_present', m.birth_date IS NOT NULL AND trim(m.birth_date) != '',
+                   'birth_date_sentinel', m.birth_date = '1900-01-01',
+                   'non_sentinel_birth_date_count', s.non_sentinel_birth_date_count,
                    'source_file', m.source_file, 'source_row_number', m.source_row_number) AS sample_json
-FROM raw_members m JOIN bad_keys b USING (member_id);
+FROM raw_members m
+JOIN bad_keys b USING (member_id)
+JOIN member_stats s USING (member_id);
 
 -- detector: MEM-010
 WITH sequenced AS (
@@ -496,6 +506,24 @@ SELECT member_id AS business_key,
 FROM sequenced
 WHERE seq > 1
   AND (member_level IS DISTINCT FROM prior_level OR city IS DISTINCT FROM prior_city);
+
+-- detector: MEM-011
+WITH member_stats AS (
+    SELECT member_id,
+           count(DISTINCT CASE WHEN birth_date != '1900-01-01' THEN birth_date END)
+             AS non_sentinel_birth_date_count
+    FROM raw_members
+    GROUP BY member_id
+)
+SELECT m.member_id AS business_key,
+       m.member_id || '|' || m.extract_date || '|' || lpad(m.source_row_number::VARCHAR, 12, '0') AS sample_sort_key,
+       json_object('member_id', m.member_id, 'extract_date', m.extract_date,
+                   'birth_date_sentinel', true,
+                   'non_sentinel_birth_date_count', s.non_sentinel_birth_date_count,
+                   'source_file', m.source_file, 'source_row_number', m.source_row_number) AS sample_json
+FROM raw_members m
+JOIN member_stats s USING (member_id)
+WHERE m.birth_date = '1900-01-01';
 
 -- detector: PROD-001
 WITH marked AS (
@@ -655,6 +683,34 @@ SELECT c.field_name, m.member_id AS business_key, m.source_file, m.source_row_nu
          WHEN 'register_date' THEN m.register_date IS NOT NULL AND trim(m.register_date) != ''
        END AS value_present
 FROM raw_members m JOIN conflict_keys c USING (member_id);
+
+-- analysis: MEM-BIRTH-DATE-SEMANTICS
+WITH member_stats AS (
+    SELECT member_id,
+           count(DISTINCT birth_date) AS raw_birth_date_count,
+           count(*) FILTER (WHERE birth_date = '1900-01-01') > 0 AS has_sentinel,
+           count(DISTINCT CASE WHEN birth_date != '1900-01-01' THEN birth_date END)
+             AS non_sentinel_birth_date_count
+    FROM raw_members
+    GROUP BY member_id
+)
+SELECT m.member_id, m.source_file, m.source_row_number, m.extract_date,
+       m.birth_date = '1900-01-01' AS birth_date_sentinel,
+       s.raw_birth_date_count, s.has_sentinel, s.non_sentinel_birth_date_count,
+       CASE WHEN m.birth_date != '1900-01-01' THEN try_cast(m.birth_date AS DATE) END
+         AS non_sentinel_birth_date
+FROM raw_members m
+JOIN member_stats s USING (member_id);
+
+-- analysis: ORD-001-EXACT-DUPLICATE-POLICY
+SELECT order_id, updated_at,
+       count(*)::BIGINT AS raw_duplicate_count,
+       1::BIGINT AS canonical_event_count,
+       count(*)::BIGINT - 1 AS duplicate_loser_count
+FROM raw_orders
+GROUP BY order_id, member_id, product_id, channel, order_status, quantity, currency,
+         amount, coupon_discount, order_created_at, departure_date, updated_at
+HAVING count(*) > 1;
 
 -- analysis: ORD-012-TIMESTAMP-BREAKDOWN
 SELECT 'order_created_at' AS field_name, order_id AS business_key, source_file,

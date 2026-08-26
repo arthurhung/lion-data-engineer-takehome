@@ -18,6 +18,7 @@ SECTION_MARKER = re.compile(
 )
 RESULT_COLUMNS = ("business_key", "sample_sort_key", "sample_json")
 EXPECTED_CONDITION_IDS = {"MEM-010", "ORD-002", "ORD-022"}
+APPROVED_CORRECTION_POLICY_IDS = {"MEM-009", "MEM-011", "ORD-001", "ORD-003"}
 INVARIANT_FIELDS = (
     "member_id",
     "product_id",
@@ -171,7 +172,11 @@ def execute_detectors(
                 "business_impact": metadata.business_impact,
                 "detection_severity": metadata.detection_severity,
                 "proposed_disposition": metadata.proposed_disposition,
-                "disposition_status": "proposed_pending_human_acceptance",
+                "disposition_status": (
+                    "human_approved_phase_1_correction_policy"
+                    if metadata.issue_id in APPROVED_CORRECTION_POLICY_IDS
+                    else "proposed_pending_human_acceptance"
+                ),
                 "rationale": metadata.rationale,
                 "pending_human_decision": metadata.pending_human_decision,
                 "post_treatment_validation_proposal": metadata.post_treatment_validation_proposal,
@@ -218,7 +223,9 @@ def execute_supporting_analyses(
     connection: duckdb.DuckDBPyConnection, analysis_sql: dict[str, str]
 ) -> dict[str, object]:
     expected_ids = {
+        "MEM-BIRTH-DATE-SEMANTICS",
         "MEM-009-IDENTITY-BREAKDOWN",
+        "ORD-001-EXACT-DUPLICATE-POLICY",
         "ORD-004-FIELD-BREAKDOWN",
         "ORD-012-TIMESTAMP-BREAKDOWN",
         "ORD-018-TRANSITION-PAIRS",
@@ -280,6 +287,104 @@ def execute_supporting_analyses(
                 ],
             }
         )
+
+    birth_date_rows = connection.execute(
+        analysis_sql["MEM-BIRTH-DATE-SEMANTICS"]
+    ).fetchall()
+    member_birth_stats = {
+        row[0]: {
+            "raw_birth_date_count": row[5],
+            "has_sentinel": row[6],
+            "non_sentinel_birth_date_count": row[7],
+        }
+        for row in birth_date_rows
+    }
+    sentinel_rows = [row for row in birth_date_rows if row[4]]
+    extract_date_counts: dict[str, int] = defaultdict(int)
+    for row in sentinel_rows:
+        extract_date_counts[str(row[3])] += 1
+    non_sentinel_dates = [row[8] for row in birth_date_rows if row[8] is not None]
+    raw_change_members = {
+        member_id
+        for member_id, stats in member_birth_stats.items()
+        if stats["raw_birth_date_count"] >= 2
+    }
+    sentinel_normalized_change_members = {
+        member_id
+        for member_id, stats in member_birth_stats.items()
+        if stats["has_sentinel"] and stats["non_sentinel_birth_date_count"] >= 1
+    }
+    multiple_non_sentinel_members = {
+        member_id
+        for member_id, stats in member_birth_stats.items()
+        if stats["non_sentinel_birth_date_count"] >= 2
+    }
+    birth_date_semantics = {
+        "sentinel_raw_value": "1900-01-01",
+        "raw_date_parse_result": "valid_DATE",
+        "canonical_value": None,
+        "sentinel_affected_row_count": len(sentinel_rows),
+        "sentinel_affected_member_count": len({row[0] for row in sentinel_rows}),
+        "sentinel_extract_date_distribution": [
+            {"extract_date": extract_date, "affected_row_count": extract_date_counts[extract_date]}
+            for extract_date in sorted(extract_date_counts)
+        ],
+        "only_sentinel_member_count": sum(
+            int(stats["has_sentinel"] and stats["non_sentinel_birth_date_count"] == 0)
+            for stats in member_birth_stats.values()
+        ),
+        "sentinel_plus_single_non_sentinel_member_count": sum(
+            int(stats["has_sentinel"] and stats["non_sentinel_birth_date_count"] == 1)
+            for stats in member_birth_stats.values()
+        ),
+        "multiple_distinct_non_sentinel_member_count": len(multiple_non_sentinel_members),
+        "raw_birth_date_change": {
+            "definition": "member has two or more distinct raw birth_date values",
+            "affected_member_count": len(raw_change_members),
+            "affected_snapshot_row_count": sum(
+                int(row[0] in raw_change_members) for row in birth_date_rows
+            ),
+        },
+        "sentinel_normalized_birth_date_change": {
+            "definition": (
+                "member has sentinel normalized to NULL and at least one non-sentinel value"
+            ),
+            "affected_member_count": len(sentinel_normalized_change_members),
+            "affected_snapshot_row_count": sum(
+                int(row[0] in sentinel_normalized_change_members) for row in birth_date_rows
+            ),
+        },
+        "canonical_identity_ambiguity": {
+            "definition": "member has two or more distinct non-sentinel birth_date values",
+            "affected_member_count": len(multiple_non_sentinel_members),
+            "affected_snapshot_row_count": sum(
+                int(row[0] in multiple_non_sentinel_members) for row in birth_date_rows
+            ),
+        },
+        "non_sentinel_observed_min": min(non_sentinel_dates).isoformat(),
+        "non_sentinel_observed_max": max(non_sentinel_dates).isoformat(),
+    }
+
+    exact_duplicate_rows = connection.execute(
+        analysis_sql["ORD-001-EXACT-DUPLICATE-POLICY"]
+    ).fetchall()
+    exact_duplicate_analysis = {
+        "duplicate_group_count": len(exact_duplicate_rows),
+        "raw_row_count_within_duplicate_groups": sum(row[2] for row in exact_duplicate_rows),
+        "canonical_event_count_within_duplicate_groups": sum(
+            row[3] for row in exact_duplicate_rows
+        ),
+        "duplicate_loser_count": sum(row[4] for row in exact_duplicate_rows),
+        "canonical_policy": (
+            "Retain all raw rows and lineage; canonical staging deduplicates by the complete "
+            "canonical event identity/row hash and retains duplicate_count. Exact duplicates "
+            "do not quarantine the order business key."
+        ),
+        "conflicting_same_timestamp_policy": (
+            "Different payloads for the same order_id + updated_at quarantine the entire "
+            "order business key; source row, file order, and row hash are not winners."
+        ),
+    }
 
     timestamp_rows = connection.execute(analysis_sql["ORD-012-TIMESTAMP-BREAKDOWN"]).fetchall()
     timestamp_breakdown: list[dict[str, object]] = []
@@ -352,6 +457,8 @@ def execute_supporting_analyses(
         for row in sorted(amount_rows, key=lambda row: row[0])
     ]
     return {
+        "birth_date_semantic_analysis": birth_date_semantics,
+        "exact_duplicate_order_event_analysis": exact_duplicate_analysis,
         "order_invariant_field_breakdown": invariant_breakdown,
         "member_identity_field_breakdown": identity_breakdown,
         "timestamp_format_field_breakdown": timestamp_breakdown,

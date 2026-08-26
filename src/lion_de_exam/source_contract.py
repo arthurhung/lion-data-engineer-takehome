@@ -3,12 +3,14 @@
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
+from datetime import date
 
 DATE_PATTERN = r"^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
 TIMESTAMP_OFFSET_PATTERN = (
     r"^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}"
     r"(Z|[+-][0-9]{2}:[0-9]{2})$"
 )
+BIRTH_DATE_SENTINEL = "1900-01-01"
 
 
 @dataclass(frozen=True)
@@ -26,6 +28,10 @@ class ColumnContract:
     canonical_typed_format: str | None = None
     normalization_assumption: str | None = None
     normalization_quality_flag: str | None = None
+    semantic_sentinel_values: tuple[str, ...] = ()
+    canonical_nullable: bool | None = None
+    semantic_normalization: str | None = None
+    semantic_quality_flags: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -51,6 +57,10 @@ def column(
     canonical_typed_format: str | None = None,
     normalization_assumption: str | None = None,
     normalization_quality_flag: str | None = None,
+    semantic_sentinel_values: tuple[str, ...] = (),
+    canonical_nullable: bool | None = None,
+    semantic_normalization: str | None = None,
+    semantic_quality_flags: tuple[str, ...] = (),
 ) -> ColumnContract:
     return ColumnContract(
         name=name,
@@ -66,6 +76,10 @@ def column(
         canonical_typed_format=canonical_typed_format,
         normalization_assumption=normalization_assumption,
         normalization_quality_flag=normalization_quality_flag,
+        semantic_sentinel_values=semantic_sentinel_values,
+        canonical_nullable=canonical_nullable,
+        semantic_normalization=semantic_normalization,
+        semantic_quality_flags=semantic_quality_flags,
     )
 
 
@@ -156,10 +170,19 @@ CONTRACTS: tuple[SourceContract, ...] = (
                 "birth_date",
                 "date",
                 "DATE",
-                "出生日期",
+                "出生日期；raw parse-valid sentinel 需與 canonical identity value 分離",
                 nullable=True,
                 pattern=DATE_PATTERN,
                 sensitive=True,
+                semantic_sentinel_values=(BIRTH_DATE_SENTINEL,),
+                canonical_nullable=True,
+                semantic_normalization=(
+                    "Preserve raw value; normalize source sentinel 1900-01-01 to canonical NULL. "
+                    "A member with sentinel plus exactly one distinct non-sentinel date may use "
+                    "that non-sentinel date as a correction/restatement candidate. Two or more "
+                    "distinct non-sentinel dates are identity ambiguity and require quarantine."
+                ),
+                semantic_quality_flags=("birth_date_sentinel", "birth_date_unknown"),
             ),
             column("register_date", "date", "DATE", "註冊日期", pattern=DATE_PATTERN),
             column("extract_date", "date", "DATE", "快照萃取日期", pattern=DATE_PATTERN),
@@ -204,13 +227,33 @@ CONTRACTS: tuple[SourceContract, ...] = (
 CONTRACT_BY_DATASET = {contract.dataset: contract for contract in CONTRACTS}
 
 
+def normalize_birth_date(raw_value: str | None) -> dict[str, object]:
+    """Apply the Phase 1 birth-date semantic contract while retaining the raw value."""
+    if raw_value is None or raw_value.strip() == "":
+        return {
+            "raw_birth_date": raw_value,
+            "birth_date": None,
+            "birth_date_sentinel": False,
+            "birth_date_unknown": True,
+        }
+    parsed = date.fromisoformat(raw_value)
+    sentinel = raw_value == BIRTH_DATE_SENTINEL
+    return {
+        "raw_birth_date": raw_value,
+        "birth_date": None if sentinel else parsed,
+        "birth_date_sentinel": sentinel,
+        "birth_date_unknown": sentinel,
+    }
+
+
 def canonical_contract() -> dict[str, object]:
     """Return a JSON-serializable contract with deterministic record ordering."""
     return {
-        "contract_status": "proposed_pending_human_acceptance",
+        "contract_status": "phase_1_correction_implementation_complete_acceptance_pending",
         "row_count_definition": "CSV data rows excluding the header row",
         "raw_value_policy": (
-            "Raw CSV text remains immutable; typed values are derived only for profiling."
+            "Raw CSV text and raw semantic values remain immutable; typed/canonical values "
+            "are derived separately and preserve lineage."
         ),
         "sources": [asdict(contract) for contract in CONTRACTS],
     }

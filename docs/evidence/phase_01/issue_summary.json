@@ -1,11 +1,13 @@
 {
   "authoritative_detector_implementation": "sql/quality_checks.sql",
+  "correction_record": "Phase 2 model-design review found that Phase 1 had treated a parse-valid sentinel date as identity change; reproducible profiling corrected the semantic rule.",
+  "count_overlap_warning": "Detector row counts may overlap and must not be summed as a total anomaly count; MEM-011 records sentinel rows while MEM-009 independently controls canonical identity ambiguity.",
   "finding_summary": {
     "candidate_data_quality_issue_count": 11,
-    "detector_total": 46,
+    "detector_total": 47,
     "expected_condition_count": 3,
     "nonzero_detector_result_count": 14,
-    "zero_result_control_check_count": 32
+    "zero_result_control_check_count": 33
   },
   "issues": [
     {
@@ -263,93 +265,26 @@
       "rationale": "先量化變化，不在 Phase 1 實作 SCD2。"
     },
     {
-      "affected_business_key_count": 19,
-      "affected_row_count": 38,
-      "business_impact": "本次非零欄位只有 birth_date，可能是 correction 或 identity collision。",
+      "affected_business_key_count": 0,
+      "affected_row_count": 0,
+      "business_impact": "無權威規則可判定哪個非 sentinel 出生日期代表正確 identity。",
       "dataset": "members",
-      "description": "同一 member_id 的 identity candidate 欄位跨快照改變",
-      "detection_severity": "WARNING",
+      "description": "同一 member_id 有兩個以上不同的非 sentinel birth_date",
+      "detection_severity": "ERROR",
       "detector": "sql/quality_checks.sql#MEM-009",
-      "deterministic_sample": [
-        {
-          "birth_date_present": true,
-          "extract_date": "2026-04-30",
-          "member_id": "M000552",
-          "source_file": "members.csv",
-          "source_row_number": 2155
-        },
-        {
-          "birth_date_present": true,
-          "extract_date": "2026-06-30",
-          "member_id": "M000552",
-          "source_file": "members.csv",
-          "source_row_number": 5243
-        },
-        {
-          "birth_date_present": true,
-          "extract_date": "2026-04-30",
-          "member_id": "M000708",
-          "source_file": "members.csv",
-          "source_row_number": 551
-        }
-      ],
-      "disposition_status": "proposed_pending_human_acceptance",
-      "finding_type": "DATA_QUALITY_ISSUE",
+      "deterministic_sample": [],
+      "disposition_status": "human_approved_phase_1_correction_policy",
+      "finding_type": "CONTROL_CHECK",
       "issue_id": "MEM-009",
-      "pending_human_decision": "member_name 與 register_date 本次 change count 均為 0；不輸出姓名值。",
-      "post_treatment_validation_proposal": "birth_date change 全數隔離，欄位別 counts 與遮罩 sample 可重現。",
+      "pending_human_decision": "不得依 earliest、latest、檔案順序或 row hash 選擇生日。",
+      "post_treatment_validation_proposal": "所有 ambiguity member 整組隔離；non-sentinel distinct count 可重現。",
       "proposed_disposition": "QUARANTINE",
-      "rationale": "birth_date change 採整個 member identity/correction ambiguity quarantine。",
-      "supporting_analysis": [
-        {
-          "affected_member_count": 0,
-          "affected_snapshot_row_count": 0,
-          "deterministic_sample": [],
-          "field_name": "member_name",
-          "source_file_distribution": []
-        },
-        {
-          "affected_member_count": 19,
-          "affected_snapshot_row_count": 38,
-          "deterministic_sample": [
-            {
-              "extract_date": "2026-04-30",
-              "member_id": "M000552",
-              "source_file": "members.csv",
-              "source_row_number": 2155,
-              "value_present": true
-            },
-            {
-              "extract_date": "2026-06-30",
-              "member_id": "M000552",
-              "source_file": "members.csv",
-              "source_row_number": 5243,
-              "value_present": true
-            },
-            {
-              "extract_date": "2026-04-30",
-              "member_id": "M000708",
-              "source_file": "members.csv",
-              "source_row_number": 551,
-              "value_present": true
-            }
-          ],
-          "field_name": "birth_date",
-          "source_file_distribution": [
-            {
-              "affected_event_row_count": 38,
-              "source_file": "members.csv"
-            }
-          ]
-        },
-        {
-          "affected_member_count": 0,
-          "affected_snapshot_row_count": 0,
-          "deterministic_sample": [],
-          "field_name": "register_date",
-          "source_file_distribution": []
-        }
-      ]
+      "rationale": "只有多個不同非 sentinel 日期才構成 canonical identity ambiguity。",
+      "supporting_analysis": {
+        "affected_member_count": 0,
+        "affected_snapshot_row_count": 0,
+        "definition": "member has two or more distinct non-sentinel birth_date values"
+      }
     },
     {
       "affected_business_key_count": 803,
@@ -400,21 +335,112 @@
       "rationale": "本檢查只量化變化，不建立 SCD2 或指定 tracked attributes。"
     },
     {
+      "affected_business_key_count": 80,
+      "affected_row_count": 81,
+      "business_impact": "若當成真實生日，年齡分析、identity 判定與日期維度範圍會失真。",
+      "dataset": "members",
+      "description": "parse-valid birth_date sentinel 1900-01-01",
+      "detection_severity": "WARNING",
+      "detector": "sql/quality_checks.sql#MEM-011",
+      "deterministic_sample": [
+        {
+          "birth_date_sentinel": true,
+          "extract_date": "2026-04-30",
+          "member_id": "M000270",
+          "non_sentinel_birth_date_count": 0,
+          "source_file": "members.csv",
+          "source_row_number": 6447
+        },
+        {
+          "birth_date_sentinel": true,
+          "extract_date": "2026-04-30",
+          "member_id": "M000304",
+          "non_sentinel_birth_date_count": 0,
+          "source_file": "members.csv",
+          "source_row_number": 327
+        },
+        {
+          "birth_date_sentinel": true,
+          "extract_date": "2026-04-30",
+          "member_id": "M000416",
+          "non_sentinel_birth_date_count": 0,
+          "source_file": "members.csv",
+          "source_row_number": 1233
+        }
+      ],
+      "disposition_status": "human_approved_phase_1_correction_policy",
+      "finding_type": "DATA_QUALITY_ISSUE",
+      "issue_id": "MEM-011",
+      "pending_human_decision": "只有 sentinel 的會員仍可進維度；sentinel 加唯一非 sentinel 視為 correction candidate。",
+      "post_treatment_validation_proposal": "canonical NULL、birth_date_sentinel／birth_date_unknown 與 raw lineage counts 一致。",
+      "proposed_disposition": "NORMALIZE",
+      "rationale": "大量會員共享極端日期；保留 raw value 並將 canonical birth_date 正規化為 NULL。",
+      "supporting_analysis": {
+        "canonical_identity_ambiguity": {
+          "affected_member_count": 0,
+          "affected_snapshot_row_count": 0,
+          "definition": "member has two or more distinct non-sentinel birth_date values"
+        },
+        "canonical_value": null,
+        "multiple_distinct_non_sentinel_member_count": 0,
+        "non_sentinel_observed_max": "2003-10-17",
+        "non_sentinel_observed_min": "1960-01-03",
+        "only_sentinel_member_count": 61,
+        "raw_birth_date_change": {
+          "affected_member_count": 19,
+          "affected_snapshot_row_count": 38,
+          "definition": "member has two or more distinct raw birth_date values"
+        },
+        "raw_date_parse_result": "valid_DATE",
+        "sentinel_affected_member_count": 80,
+        "sentinel_affected_row_count": 81,
+        "sentinel_extract_date_distribution": [
+          {
+            "affected_row_count": 76,
+            "extract_date": "2026-04-30"
+          },
+          {
+            "affected_row_count": 2,
+            "extract_date": "2026-05-31"
+          },
+          {
+            "affected_row_count": 3,
+            "extract_date": "2026-06-30"
+          }
+        ],
+        "sentinel_normalized_birth_date_change": {
+          "affected_member_count": 19,
+          "affected_snapshot_row_count": 38,
+          "definition": "member has sentinel normalized to NULL and at least one non-sentinel value"
+        },
+        "sentinel_plus_single_non_sentinel_member_count": 19,
+        "sentinel_raw_value": "1900-01-01"
+      }
+    },
+    {
       "affected_business_key_count": 0,
       "affected_row_count": 0,
       "business_impact": "重複計算訂單、數量與金額。",
       "dataset": "orders",
       "description": "完全相同的訂單事件列重複出現",
-      "detection_severity": "ERROR",
+      "detection_severity": "WARNING",
       "detector": "sql/quality_checks.sql#ORD-001",
       "deterministic_sample": [],
-      "disposition_status": "proposed_pending_human_acceptance",
+      "disposition_status": "human_approved_phase_1_correction_policy",
       "finding_type": "CONTROL_CHECK",
       "issue_id": "ORD-001",
-      "pending_human_decision": "確認完全重複事件的 deterministic winner policy。",
-      "post_treatment_validation_proposal": "去重候選集合、winner 與 loser count 可重現。",
-      "proposed_disposition": "QUARANTINE",
-      "rationale": "Phase 1 不直接去重；先保留所有 lineage。"
+      "pending_human_decision": "完全相同的 duplicate 不隔離整個 order；保留 duplicate count 與 lineage。",
+      "post_treatment_validation_proposal": "canonical event 唯一，raw/canonical/duplicate counts 與 lineage 可重現。",
+      "proposed_disposition": "NORMALIZE",
+      "rationale": "保留全部 raw rows；canonical staging 依完整 event identity／row hash 去重。",
+      "supporting_analysis": {
+        "canonical_event_count_within_duplicate_groups": 0,
+        "canonical_policy": "Retain all raw rows and lineage; canonical staging deduplicates by the complete canonical event identity/row hash and retains duplicate_count. Exact duplicates do not quarantine the order business key.",
+        "conflicting_same_timestamp_policy": "Different payloads for the same order_id + updated_at quarantine the entire order business key; source row, file order, and row hash are not winners.",
+        "duplicate_group_count": 0,
+        "duplicate_loser_count": 0,
+        "raw_row_count_within_duplicate_groups": 0
+      }
     },
     {
       "affected_business_key_count": 1889,
@@ -464,11 +490,11 @@
       "detection_severity": "CRITICAL",
       "detector": "sql/quality_checks.sql#ORD-003",
       "deterministic_sample": [],
-      "disposition_status": "proposed_pending_human_acceptance",
+      "disposition_status": "human_approved_phase_1_correction_policy",
       "finding_type": "CONTROL_CHECK",
       "issue_id": "ORD-003",
-      "pending_human_decision": "決定是否有上游 sequence 或其他權威 tie-breaker。",
-      "post_treatment_validation_proposal": "所有同時點衝突均被隔離或以核准規則唯一決定。",
+      "pending_human_decision": "整個 order business key 隔離；不以 source row、file order 或 row hash 選 winner。",
+      "post_treatment_validation_proposal": "所有同時點 conflicting payload 的 order business key 均整組隔離。",
       "proposed_disposition": "QUARANTINE",
       "rationale": "相同業務時間無法可靠決定勝出事件。"
     },

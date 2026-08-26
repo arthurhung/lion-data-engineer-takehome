@@ -100,29 +100,7 @@
       "issue_id": "MEM-008"
     },
     {
-      "deterministic_sample": [
-        {
-          "birth_date_present": true,
-          "extract_date": "2026-04-30",
-          "member_id": "M000552",
-          "source_file": "members.csv",
-          "source_row_number": 2155
-        },
-        {
-          "birth_date_present": true,
-          "extract_date": "2026-06-30",
-          "member_id": "M000552",
-          "source_file": "members.csv",
-          "source_row_number": 5243
-        },
-        {
-          "birth_date_present": true,
-          "extract_date": "2026-04-30",
-          "member_id": "M000708",
-          "source_file": "members.csv",
-          "source_row_number": 551
-        }
-      ],
+      "deterministic_sample": [],
       "issue_id": "MEM-009"
     },
     {
@@ -159,6 +137,35 @@
         }
       ],
       "issue_id": "MEM-010"
+    },
+    {
+      "deterministic_sample": [
+        {
+          "birth_date_sentinel": true,
+          "extract_date": "2026-04-30",
+          "member_id": "M000270",
+          "non_sentinel_birth_date_count": 0,
+          "source_file": "members.csv",
+          "source_row_number": 6447
+        },
+        {
+          "birth_date_sentinel": true,
+          "extract_date": "2026-04-30",
+          "member_id": "M000304",
+          "non_sentinel_birth_date_count": 0,
+          "source_file": "members.csv",
+          "source_row_number": 327
+        },
+        {
+          "birth_date_sentinel": true,
+          "extract_date": "2026-04-30",
+          "member_id": "M000416",
+          "non_sentinel_birth_date_count": 0,
+          "source_file": "members.csv",
+          "source_row_number": 1233
+        }
+      ],
+      "issue_id": "MEM-011"
     },
     {
       "deterministic_sample": [],

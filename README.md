@@ -1,7 +1,8 @@
 # 雄獅資訊資料工程師 Take-home
 
 本 repository 用於建立可在本機重現的資料工程解法。Phase 0 已完成；Phase 1 的 profiling、
-typed source contract、quality detectors 與 evidence 已完成本機實作，狀態為
+typed source contract、quality detectors 與 evidence 已完成本機實作；birth-date sentinel 與
+duplicate policy correction 狀態為
 `implementation_complete_acceptance_pending`，等待應試者人工驗收。尚未開始星型模型、SCD2、
 incremental ETL、Part B、Part C 或 Module F 正式答案。
 
@@ -40,6 +41,10 @@ make profile OUTPUT_DIR=/tmp/lion-profile-run1 EVIDENCE_DIR=/tmp/lion-profile-ru
 `docs/evidence/phase_01/`。完整結果與待人工決策見
 [`docs/part_a_quality_report.md`](docs/part_a_quality_report.md)。所有 treatment 仍是 proposed，
 目前沒有任何 Phase 2 warehouse object 或 transformation。
+
+目前 canonical evidence checksum 為
+`5cd9bf274d171f7007c4b160addb6fe281f3be1da13939b35c52ecf14a1d9ee8`；其中 birth-date 與
+exact/conflicting duplicate correction policy 已由應試者核准，其餘 treatment 仍待後續人工決策。
 
 ## 目錄責任
 
