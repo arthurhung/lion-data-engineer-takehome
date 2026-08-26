@@ -1,9 +1,8 @@
 # 雄獅資訊資料工程師 Take-home
 
-本 repository 用於建立可在本機重現的資料工程解法。Phase 0～2 已完成；Phase 3 incremental
-warehouse、batch registry、replay proof 與 deterministic evidence 狀態為
-`implementation_complete_acceptance_pending`，等待應試者人工驗收。尚未開始 Part B、Part C 或
-Module F 正式答案。
+本 repository 用於建立可在本機重現的資料工程解法。Phase 0～3 已完成；Phase 3 incremental
+warehouse、batch registry、replay proof、deterministic evidence 與 AI evidence closeout 皆已完成。
+尚未開始 Part B、Part C 或 Module F 正式答案。
 
 > 文件狀態修正：Phase 0 transcript 已存在並完成索引，因此移除舊版「等待 transcript 匯出」文字；
 > 此修正不是 Phase 1 功能。
@@ -106,7 +105,7 @@ LionDEExam/                唯讀原始考題與資料包
 | 原始考題要求 | `SPEC.md` Phase | 預定交付物 | Phase 0 狀態 |
 |---|---:|---|---|
 | Part A 星型模型與 `dim_member` SCD Type 2 | 2 | schema、transformation、model design、tests | 本機實作完成，待人工驗收 |
-| Part A base 與三個 increment、冪等重跑 | 3 | ETL CLI、batch audit、rerun evidence | 本機實作完成，待人工驗收 |
+| Part A base 與三個 increment、冪等重跑 | 3 | ETL CLI、batch audit、rerun evidence | Completed（implementation + AI evidence closeout） |
 | Part A 資料品質檢核報告 | 1–3 | detectors、treatment matrix、quality report | Phase 1 本機實作完成，待人工驗收 |
 | Part B AI PySpark code review | 4 | `docs/part_b_code_review.md` | 未作答 |
 | Part C Microsoft Fabric 架構與取捨 | 5 | `docs/part_c_fabric_architecture.md` | 未作答 |
