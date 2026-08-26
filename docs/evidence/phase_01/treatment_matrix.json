@@ -1,0 +1,448 @@
+{
+  "allowed_detection_severities": [
+    "INFO",
+    "WARNING",
+    "ERROR",
+    "CRITICAL"
+  ],
+  "allowed_proposed_dispositions": [
+    "ACCEPT",
+    "NORMALIZE",
+    "REPAIR",
+    "QUARANTINE",
+    "REJECT"
+  ],
+  "phase_2_candidate_decisions": {
+    "amount_semantics": "Candidate: amount is original-currency order-line total; do not multiply quantity again during FX conversion.",
+    "birth_date_change": "Quarantine as identity/correction ambiguity; observed member_name and register_date change counts are zero.",
+    "currency": "Preserve raw currency; normalize source-specific NTD to canonical TWD. Only TWD/NTD use exact rate 1; never COALESCE a missing rate to 1.",
+    "fx_business_date": "Use Asia/Taipei date of normalized order_created_at; original amount times rate_to_twd yields TWD; coupon_discount is already TWD.",
+    "member_tracked_attributes": [
+      "member_level",
+      "city"
+    ],
+    "missing_product_reference": "Retain raw order; candidate Unknown Product surrogate key plus quality flag. Do not build Unknown Product in Phase 1.",
+    "naive_order_created_at": "Normalize source-specific YYYY/MM/DD HH:MM:SS as Asia/Taipei, retain raw, and set timezone_assumed=true.",
+    "negative_amount": "Quarantine; no refund status or negative-amount semantics supplied.",
+    "negative_coupon_discount": "Quarantine; do not repair -1 to zero or NULL.",
+    "same_day_member_conflict": "Quarantine the entire member_id + extract_date conflict set; retain all raw snapshots and do not select by row hash or file order."
+  },
+  "schema_version": 1,
+  "status": "all_dispositions_are_proposed_pending_human_acceptance",
+  "treatments": [
+    {
+      "detection_severity": "ERROR",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "FX-001",
+      "pending_human_decision": "確認是否有 intraday rate 或來源優先序。",
+      "post_treatment_validation_proposal": "每個核准 FX key 恰有一筆 rate。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "匯率 key 應唯一。"
+    },
+    {
+      "detection_severity": "CRITICAL",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "FX-002",
+      "pending_human_decision": "確認權威 rate selection。",
+      "post_treatment_validation_proposal": "每個核准 FX key 恰有一個 rate。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "沒有 rate timestamp 或來源優先序。"
+    },
+    {
+      "detection_severity": "ERROR",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "FX-003",
+      "pending_human_decision": "確認支援幣別與 rate domain。",
+      "post_treatment_validation_proposal": "接受 FX row 均符合核准 contract。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "rate 必須為正 Decimal 且 currency 已核准。"
+    },
+    {
+      "detection_severity": "WARNING",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "FX-004",
+      "pending_human_decision": "確認 FX calendar 與 carry-forward 規則。",
+      "post_treatment_validation_proposal": "依核准 calendar 規則後不存在未解釋缺口。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "週末/假日是否允許 carry-forward 尚未確認。"
+    },
+    {
+      "detection_severity": "ERROR",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "MEM-001",
+      "pending_human_decision": "確認重複快照 winner policy。",
+      "post_treatment_validation_proposal": "候選 snapshot key 唯一且 loser lineage 保留。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "Phase 1 保留原始列，不任意 drop_duplicates。"
+    },
+    {
+      "detection_severity": "ERROR",
+      "finding_type": "DATA_QUALITY_ISSUE",
+      "issue_id": "MEM-002",
+      "pending_human_decision": "確認同日 snapshot tie-breaker。",
+      "post_treatment_validation_proposal": "每個 snapshot key 唯一或整組隔離。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "來源沒有同日 sequence。"
+    },
+    {
+      "detection_severity": "CRITICAL",
+      "finding_type": "DATA_QUALITY_ISSUE",
+      "issue_id": "MEM-003",
+      "pending_human_decision": "取得上游 sequence 或決定整組隔離。",
+      "post_treatment_validation_proposal": "每個 snapshot key 恰有一個核准 payload。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "相同快照日期衝突不能任意選取。"
+    },
+    {
+      "detection_severity": "ERROR",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "MEM-004",
+      "pending_human_decision": "確認是否有合法 legacy key。",
+      "post_treatment_validation_proposal": "所有接受 member_id 符合核准格式。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "不自行改寫 business key。"
+    },
+    {
+      "detection_severity": "WARNING",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "MEM-005",
+      "pending_human_decision": "確認會員等級合法清單與 alias。",
+      "post_treatment_validation_proposal": "正規化後 level 僅含核准 domain。",
+      "proposed_disposition": "NORMALIZE",
+      "rationale": "可能是 alias，需保留 raw 並確認 mapping。"
+    },
+    {
+      "detection_severity": "ERROR",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "MEM-006",
+      "pending_human_decision": "確認空 birth_date 是否允許及日期格式。",
+      "post_treatment_validation_proposal": "所有接受日期可解析，nullable 規則符合 contract。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "日期無權威修補來源。"
+    },
+    {
+      "detection_severity": "ERROR",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "MEM-007",
+      "pending_human_decision": "確認最小註冊年齡與歷史資料邊界。",
+      "post_treatment_validation_proposal": "所有接受 snapshot 符合核准 chronology。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "不可自行改寫日期。"
+    },
+    {
+      "detection_severity": "INFO",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "MEM-008",
+      "pending_human_decision": "確認各 attribute 的 null 語意與 tracked 狀態。",
+      "post_treatment_validation_proposal": "Phase 2 以 null-safe 比較測試涵蓋已觀察 transition。",
+      "proposed_disposition": "ACCEPT",
+      "rationale": "先量化變化，不在 Phase 1 實作 SCD2。"
+    },
+    {
+      "detection_severity": "WARNING",
+      "finding_type": "DATA_QUALITY_ISSUE",
+      "issue_id": "MEM-009",
+      "pending_human_decision": "member_name 與 register_date 本次 change count 均為 0；不輸出姓名值。",
+      "post_treatment_validation_proposal": "birth_date change 全數隔離，欄位別 counts 與遮罩 sample 可重現。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "birth_date change 採整個 member identity/correction ambiguity quarantine。"
+    },
+    {
+      "detection_severity": "INFO",
+      "finding_type": "EXPECTED_CONDITION",
+      "issue_id": "MEM-010",
+      "pending_human_decision": "人工決策採 Phase 2 候選 SCD2 tracked attributes；本階段只 ACCEPT 與量化。",
+      "post_treatment_validation_proposal": "Phase 2 以版本測試覆蓋所有已觀察 attribute change。",
+      "proposed_disposition": "ACCEPT",
+      "rationale": "本檢查只量化變化，不建立 SCD2 或指定 tracked attributes。"
+    },
+    {
+      "detection_severity": "ERROR",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "ORD-001",
+      "pending_human_decision": "確認完全重複事件的 deterministic winner policy。",
+      "post_treatment_validation_proposal": "去重候選集合、winner 與 loser count 可重現。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "Phase 1 不直接去重；先保留所有 lineage。"
+    },
+    {
+      "detection_severity": "INFO",
+      "finding_type": "EXPECTED_CONDITION",
+      "issue_id": "ORD-002",
+      "pending_human_decision": "確認 latest-state grain 與保留事件歷史的方式。",
+      "post_treatment_validation_proposal": "每個 order 的事件序列與 latest candidate 可重現。",
+      "proposed_disposition": "ACCEPT",
+      "rationale": "題目明示增量可包含狀態更新。"
+    },
+    {
+      "detection_severity": "CRITICAL",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "ORD-003",
+      "pending_human_decision": "決定是否有上游 sequence 或其他權威 tie-breaker。",
+      "post_treatment_validation_proposal": "所有同時點衝突均被隔離或以核准規則唯一決定。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "相同業務時間無法可靠決定勝出事件。"
+    },
+    {
+      "detection_severity": "ERROR",
+      "finding_type": "DATA_QUALITY_ISSUE",
+      "issue_id": "ORD-004",
+      "pending_human_decision": "QUARANTINE 整個衝突 order business key；保留所有 raw events。",
+      "post_treatment_validation_proposal": "每個衝突 key 均整組隔離；不得用 row order 或 row hash 宣稱業務正確 winner。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "同 business key 的非狀態欄位衝突無 correction event type 或權威 sequence。"
+    },
+    {
+      "detection_severity": "ERROR",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "ORD-005",
+      "pending_human_decision": "確認相同 latest timestamp 的 duplicate/conflict policy。",
+      "post_treatment_validation_proposal": "每個 order 恰有一個 deterministic latest winner 或整組隔離。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "最大時間不保證唯一。"
+    },
+    {
+      "detection_severity": "ERROR",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "ORD-006",
+      "pending_human_decision": "確認上游是否有合法新狀態或 alias。",
+      "post_treatment_validation_proposal": "未知狀態為 0 或全數有核准 mapping。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "未知狀態不可自行映射。"
+    },
+    {
+      "detection_severity": "WARNING",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "ORD-007",
+      "pending_human_decision": "確認通路 alias 與 canonical value。",
+      "post_treatment_validation_proposal": "正規化後 channel 僅含核准 domain。",
+      "proposed_disposition": "NORMALIZE",
+      "rationale": "可能是大小寫或 alias，但需人工確認。"
+    },
+    {
+      "detection_severity": "ERROR",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "ORD-008",
+      "pending_human_decision": "確認 quantity 是否允許零或退貨負數。",
+      "post_treatment_validation_proposal": "curated 候選 quantity 均為核准範圍內整數。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "無法由其他欄位權威推導。"
+    },
+    {
+      "detection_severity": "WARNING",
+      "finding_type": "DATA_QUALITY_ISSUE",
+      "issue_id": "ORD-009",
+      "pending_human_decision": "此 mapping 已核准為 Phase 2 候選，但 Phase 1 不實作 ETL。",
+      "post_treatment_validation_proposal": "canonical currency 為 TWD、raw currency 保留，其他 missing FX 不得 COALESCE 為 1。",
+      "proposed_disposition": "NORMALIZE",
+      "rationale": "人工決策核准 NTD → TWD，保留 raw currency；只有 TWD/NTD 可使用 rate 1。"
+    },
+    {
+      "detection_severity": "ERROR",
+      "finding_type": "DATA_QUALITY_ISSUE",
+      "issue_id": "ORD-010",
+      "pending_human_decision": "確認零額訂單及負數退款是否可能。",
+      "post_treatment_validation_proposal": "接受資料的 amount 均可精確解析且符合核准 domain。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "金額不可用 binary float 或猜測修補。"
+    },
+    {
+      "detection_severity": "ERROR",
+      "finding_type": "DATA_QUALITY_ISSUE",
+      "issue_id": "ORD-011",
+      "pending_human_decision": "確認負折扣、補款與 coupon 單位語意。",
+      "post_treatment_validation_proposal": "折扣均可精確解析並符合核准 domain。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "折扣語意需保守處理。"
+    },
+    {
+      "detection_severity": "WARNING",
+      "finding_type": "DATA_QUALITY_ISSUE",
+      "issue_id": "ORD-012",
+      "pending_human_decision": "規則只限本題來源；保留 raw value 並加 timezone_assumed=true。",
+      "post_treatment_validation_proposal": "canonical type 為 TIMESTAMPTZ；欄位別 noncanonical count 與 flag count 一致。",
+      "proposed_disposition": "NORMALIZE",
+      "rationale": "本來源的 YYYY/MM/DD HH:MM:SS 依台灣業務與 updated_at +08:00 證據補 Asia/Taipei。"
+    },
+    {
+      "detection_severity": "ERROR",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "ORD-013",
+      "pending_human_decision": "確認 updated_at 的上游語意與 timezone。",
+      "post_treatment_validation_proposal": "異常時間線全數依核准策略處理。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "不應自行交換時間。"
+    },
+    {
+      "detection_severity": "ERROR",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "ORD-014",
+      "pending_human_decision": "確認是否允許事後補登訂單。",
+      "post_treatment_validation_proposal": "負 lead-time 全數有明確處理結果。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "可能是錯誤日期或特殊補登，需確認。"
+    },
+    {
+      "detection_severity": "ERROR",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "ORD-015",
+      "pending_human_decision": "決定 unknown member 或 quarantine 策略。",
+      "post_treatment_validation_proposal": "所有接受 order 可關聯會員，或明確對應核准 unknown。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "Phase 1 不先建立 unknown member。"
+    },
+    {
+      "detection_severity": "ERROR",
+      "finding_type": "DATA_QUALITY_ISSUE",
+      "issue_id": "ORD-016",
+      "pending_human_decision": "Phase 1 不建立 Unknown Product，也不因 reference missing 刪除 order。",
+      "post_treatment_validation_proposal": "所有 missing reference 保留 flag，Phase 2 可關聯唯一 Unknown Product candidate。",
+      "proposed_disposition": "ACCEPT",
+      "rationale": "保留 raw order；Phase 2 候選使用 Unknown Product surrogate key 加 quality flag。"
+    },
+    {
+      "detection_severity": "ERROR",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "ORD-017",
+      "pending_human_decision": "確認 FX date、TWD 處理與 missing-rate policy。",
+      "post_treatment_validation_proposal": "依核准 FX 規則後 coverage 為 100% 或全數隔離。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "檢查採候選 FX date，尚非正式 ETL 規則。"
+    },
+    {
+      "detection_severity": "WARNING",
+      "finding_type": "DATA_QUALITY_ISSUE",
+      "issue_id": "ORD-018",
+      "pending_human_decision": "需要上游正式 state machine；不得宣稱 completed/cancelled 絕對 terminal。",
+      "post_treatment_validation_proposal": "取得正式 state machine 後再對 transition pair 分類，現階段不 quarantine。",
+      "proposed_disposition": "ACCEPT",
+      "rationale": "不使用線性 rank；完整 transition pairs 只作 profiling evidence。"
+    },
+    {
+      "detection_severity": "ERROR",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "ORD-019",
+      "pending_human_decision": "確認是否存在合法 legacy key 格式。",
+      "post_treatment_validation_proposal": "所有接受 key 符合核准格式或具明確 mapping。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "不自行改寫來源 key。"
+    },
+    {
+      "detection_severity": "ERROR",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "ORD-020",
+      "pending_human_decision": "確認 amount 是否已含 quantity、FX date、rounding 與折扣語意。",
+      "post_treatment_validation_proposal": "依核准公式後所有負 net amount 均有明確處理。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "使用 Decimal 與 order_created_date rate 檢查，但金額公式尚待確認。"
+    },
+    {
+      "detection_severity": "ERROR",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "ORD-021",
+      "pending_human_decision": "確認 base 範圍是否以建立日定義且邊界是否 inclusive。",
+      "post_treatment_validation_proposal": "base 接受資料均符合核准來源期間。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "base 日期範圍直接來自題目 README。"
+    },
+    {
+      "detection_severity": "INFO",
+      "finding_type": "EXPECTED_CONDITION",
+      "issue_id": "ORD-022",
+      "pending_human_decision": "確認 batch date、event date 與 order created date 的正式語意。",
+      "post_treatment_validation_proposal": "增量流程分辨新訂單與既有訂單事件，且兩類筆數可 reconciliation。",
+      "proposed_disposition": "ACCEPT",
+      "rationale": "題目明示 incremental 可包含狀態更新，故先接受並量化。"
+    },
+    {
+      "detection_severity": "WARNING",
+      "finding_type": "DATA_QUALITY_ISSUE",
+      "issue_id": "ORD-023",
+      "pending_human_decision": "確認 amount 是否為整單金額、quantity 語意及合理價格容忍區間。",
+      "post_treatment_validation_proposal": "依核准價格規則重跑，所有 outlier 都有可追溯處理。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "以 Decimal 乘法做可重現 outlier detector，0.5–2 倍只是待核准候選範圍。"
+    },
+    {
+      "detection_severity": "ERROR",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "ORD-024",
+      "pending_human_decision": "來源沒有其他日期格式或修補規則；Phase 1 不自行補值。",
+      "post_treatment_validation_proposal": "所有接受 departure_date 均符合 YYYY-MM-DD 且可解析。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "將 date control 與 timestamp normalization finding 分離。"
+    },
+    {
+      "detection_severity": "ERROR",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "PROD-001",
+      "pending_human_decision": "確認重複產品 winner policy。",
+      "post_treatment_validation_proposal": "接受產品 business key 唯一。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "不任意去重。"
+    },
+    {
+      "detection_severity": "ERROR",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "PROD-002",
+      "pending_human_decision": "確認是否存在產品版本語意。",
+      "post_treatment_validation_proposal": "接受產品 business key 唯一。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "主檔 key 應唯一。"
+    },
+    {
+      "detection_severity": "ERROR",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "PROD-003",
+      "pending_human_decision": "確認合法 legacy product key。",
+      "post_treatment_validation_proposal": "所有接受 product_id 符合核准格式。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "不自行改寫 key。"
+    },
+    {
+      "detection_severity": "ERROR",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "PROD-004",
+      "pending_human_decision": "確認各文字欄位是否必填。",
+      "post_treatment_validation_proposal": "接受產品必要欄位均非 blank。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "無權威文字可補入。"
+    },
+    {
+      "detection_severity": "ERROR",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "PROD-005",
+      "pending_human_decision": "確認零天、零價與 active alias 是否可能。",
+      "post_treatment_validation_proposal": "接受產品數值及旗標符合核准 contract。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "數值與旗標不可猜測修補。"
+    },
+    {
+      "detection_severity": "INFO",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "PROD-006",
+      "pending_human_decision": "確認相同描述是否代表不同可售 SKU。",
+      "post_treatment_validation_proposal": "保留 key 唯一性並以核准產品 identity 規則驗證。",
+      "proposed_disposition": "ACCEPT",
+      "rationale": "business key 不同時不應自行合併。"
+    },
+    {
+      "detection_severity": "ERROR",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "SRC-001",
+      "pending_human_decision": "確認各欄位 nullability 與是否存在可修補來源。",
+      "post_treatment_validation_proposal": "處理後必填欄位 blank count 為 0，隔離數與 evidence 一致。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "無權威值可安全補入。"
+    },
+    {
+      "detection_severity": "WARNING",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "SRC-002",
+      "pending_human_decision": "確認所有識別碼與分類欄位均允許 trim。",
+      "post_treatment_validation_proposal": "正規化後無前後空白且 distinct mapping 可追溯。",
+      "proposed_disposition": "NORMALIZE",
+      "rationale": "trim 通常可逆，仍須保留 raw value。"
+    }
+  ]
+}

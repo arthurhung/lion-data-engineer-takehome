@@ -1,0 +1,38 @@
+{
+  "algorithm": "SHA-256",
+  "canonical_bundle_sha256": "f326a97e6833d55071b2752581cae31fe5049d7b8efde016e8cfc5048843fa39",
+  "canonicalization": "UTF-8, LF, JSON sorted keys, indent=2, trailing LF; fixed record order",
+  "excluded_from_checksum": [
+    "execution_time",
+    "absolute_paths",
+    "environment_metadata",
+    "random_identifiers"
+  ],
+  "files": [
+    {
+      "file": "source_contract.json",
+      "sha256": "a6108ea7de950b6aa7d1df4c8dd3c5459e5df37b41e28187a3e821ac93f84c2c"
+    },
+    {
+      "file": "source_profile.json",
+      "sha256": "07a1b33e3f0db519e63d3a462c09baff5ae87859308cc9f95a718d8792e99216"
+    },
+    {
+      "file": "issue_summary.json",
+      "sha256": "ba67856753e8a2f8e048acc1f21385e34cdf0b82cd31f0f65c16da67d9a6399a"
+    },
+    {
+      "file": "analysis_summary.json",
+      "sha256": "54183ee20c951eb4c67ce0a31dab517f2adf433643d2c07d08228867c8ee3304"
+    },
+    {
+      "file": "representative_samples.json",
+      "sha256": "89904cea21d9434f3d49ded54d7d90d2f837dd6071f66753b8887fed94ac519d"
+    },
+    {
+      "file": "treatment_matrix.json",
+      "sha256": "60c635964b5d2d2ab1c4846cc9be803d67887b7e57ec76386b34c1065671cd99"
+    }
+  ],
+  "schema_version": 1
+}

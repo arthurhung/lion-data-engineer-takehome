@@ -1,0 +1,1462 @@
+{
+  "distinct_count_definition": "COUNT(DISTINCT raw_value), excluding SQL NULL",
+  "files": [
+    {
+      "columns": [
+        {
+          "column": "order_id",
+          "domain_violation_count": 0,
+          "duckdb_type": "VARCHAR",
+          "logical_type": "business_key",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 100000,
+          "raw_max_length": 11,
+          "raw_min_length": 11,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "typed_parse_failure_count": 0
+        },
+        {
+          "column": "member_id",
+          "domain_violation_count": 0,
+          "duckdb_type": "VARCHAR",
+          "logical_type": "foreign_business_key",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 8000,
+          "raw_max_length": 7,
+          "raw_min_length": 7,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "typed_parse_failure_count": 0
+        },
+        {
+          "column": "product_id",
+          "domain_violation_count": 0,
+          "duckdb_type": "VARCHAR",
+          "logical_type": "foreign_business_key",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 420,
+          "raw_max_length": 6,
+          "raw_min_length": 6,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "typed_parse_failure_count": 0
+        },
+        {
+          "column": "channel",
+          "domain_violation_count": 0,
+          "duckdb_type": "VARCHAR",
+          "logical_type": "categorical",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 4,
+          "raw_max_length": 3,
+          "raw_min_length": 2,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "top_values": [
+            {
+              "raw_value": "門市",
+              "row_count": 25252
+            },
+            {
+              "raw_value": "app",
+              "row_count": 24994
+            },
+            {
+              "raw_value": "web",
+              "row_count": 24976
+            },
+            {
+              "raw_value": "電銷",
+              "row_count": 24818
+            }
+          ],
+          "typed_parse_failure_count": 0
+        },
+        {
+          "column": "order_status",
+          "domain_violation_count": 0,
+          "duckdb_type": "VARCHAR",
+          "logical_type": "categorical",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 4,
+          "raw_max_length": 9,
+          "raw_min_length": 4,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "top_values": [
+            {
+              "raw_value": "paid",
+              "row_count": 42894
+            },
+            {
+              "raw_value": "completed",
+              "row_count": 28612
+            },
+            {
+              "raw_value": "created",
+              "row_count": 14286
+            },
+            {
+              "raw_value": "cancelled",
+              "row_count": 14248
+            }
+          ],
+          "typed_parse_failure_count": 0
+        },
+        {
+          "column": "quantity",
+          "domain_violation_count": 0,
+          "duckdb_type": "INTEGER",
+          "logical_type": "integer",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 4,
+          "raw_max_length": 1,
+          "raw_min_length": 1,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "typed_max": "4",
+          "typed_min": "1",
+          "typed_parse_failure_count": 0,
+          "typed_quantiles": {
+            "p01": "1.0",
+            "p50": "2.0",
+            "p99": "4.0"
+          }
+        },
+        {
+          "column": "currency",
+          "domain_violation_count": 0,
+          "duckdb_type": "VARCHAR",
+          "logical_type": "currency_code",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 4,
+          "raw_max_length": 3,
+          "raw_min_length": 3,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "top_values": [
+            {
+              "raw_value": "TWD",
+              "row_count": 66690
+            },
+            {
+              "raw_value": "USD",
+              "row_count": 22128
+            },
+            {
+              "raw_value": "JPY",
+              "row_count": 11022
+            },
+            {
+              "raw_value": "NTD",
+              "row_count": 200
+            }
+          ],
+          "typed_parse_failure_count": 0
+        },
+        {
+          "column": "amount",
+          "domain_violation_count": 0,
+          "duckdb_type": "DECIMAL(24,4)",
+          "logical_type": "decimal",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 95523,
+          "raw_max_length": 12,
+          "raw_min_length": 4,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "typed_max": "3738074000.0000",
+          "typed_min": "-3087159.0000",
+          "typed_parse_failure_count": 0,
+          "typed_quantiles": {
+            "p01": "564.3572",
+            "p50": "157384.5000",
+            "p99": "2850546.8300"
+          }
+        },
+        {
+          "column": "coupon_discount",
+          "domain_violation_count": 0,
+          "duckdb_type": "DECIMAL(24,4)",
+          "logical_type": "decimal",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 21,
+          "raw_max_length": 5,
+          "raw_min_length": 3,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "typed_max": "950.0000",
+          "typed_min": "-1.0000",
+          "typed_parse_failure_count": 0,
+          "typed_quantiles": {
+            "p01": "0.0000",
+            "p50": "450.0000",
+            "p99": "950.0000"
+          }
+        },
+        {
+          "column": "order_created_at",
+          "domain_violation_count": 0,
+          "duckdb_type": "TIMESTAMPTZ",
+          "logical_type": "timestamp_with_timezone",
+          "nullable": false,
+          "pattern_violation_count": 3001,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 99226,
+          "raw_max_length": 25,
+          "raw_min_length": 19,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "typed_max": "2026-06-30T23:50:30+00:00",
+          "typed_min": "2026-04-30T16:01:46+00:00",
+          "typed_parse_failure_count": 0
+        },
+        {
+          "column": "departure_date",
+          "domain_violation_count": 0,
+          "duckdb_type": "DATE",
+          "logical_type": "date",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 173,
+          "raw_max_length": 10,
+          "raw_min_length": 10,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "typed_max": "2026-10-27",
+          "typed_min": "2026-05-08",
+          "typed_parse_failure_count": 0
+        },
+        {
+          "column": "updated_at",
+          "domain_violation_count": 0,
+          "duckdb_type": "TIMESTAMPTZ",
+          "logical_type": "timestamp_with_timezone",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 99080,
+          "raw_max_length": 25,
+          "raw_min_length": 25,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "typed_max": "2026-07-03T09:20:05+00:00",
+          "typed_min": "2026-04-30T17:49:27+00:00",
+          "typed_parse_failure_count": 0
+        }
+      ],
+      "data_row_count_excluding_header": 100040,
+      "dataset": "orders",
+      "duplicate_value_group_count": 0,
+      "source_file": "orders_base.csv",
+      "source_sha256": "11eae7dc9e763c627dd0d164767cc2dc75f17b44515be6b15f5feaef2fb324da"
+    },
+    {
+      "columns": [
+        {
+          "column": "order_id",
+          "domain_violation_count": 0,
+          "duckdb_type": "VARCHAR",
+          "logical_type": "business_key",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 4597,
+          "raw_max_length": 11,
+          "raw_min_length": 11,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "typed_parse_failure_count": 0
+        },
+        {
+          "column": "member_id",
+          "domain_violation_count": 0,
+          "duckdb_type": "VARCHAR",
+          "logical_type": "foreign_business_key",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 3474,
+          "raw_max_length": 7,
+          "raw_min_length": 7,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "typed_parse_failure_count": 0
+        },
+        {
+          "column": "product_id",
+          "domain_violation_count": 0,
+          "duckdb_type": "VARCHAR",
+          "logical_type": "foreign_business_key",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 300,
+          "raw_max_length": 6,
+          "raw_min_length": 6,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "typed_parse_failure_count": 0
+        },
+        {
+          "column": "channel",
+          "domain_violation_count": 0,
+          "duckdb_type": "VARCHAR",
+          "logical_type": "categorical",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 4,
+          "raw_max_length": 3,
+          "raw_min_length": 2,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "top_values": [
+            {
+              "raw_value": "web",
+              "row_count": 1189
+            },
+            {
+              "raw_value": "門市",
+              "row_count": 1168
+            },
+            {
+              "raw_value": "app",
+              "row_count": 1167
+            },
+            {
+              "raw_value": "電銷",
+              "row_count": 1091
+            }
+          ],
+          "typed_parse_failure_count": 0
+        },
+        {
+          "column": "order_status",
+          "domain_violation_count": 0,
+          "duckdb_type": "VARCHAR",
+          "logical_type": "categorical",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 4,
+          "raw_max_length": 9,
+          "raw_min_length": 4,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "top_values": [
+            {
+              "raw_value": "paid",
+              "row_count": 2626
+            },
+            {
+              "raw_value": "created",
+              "row_count": 1361
+            },
+            {
+              "raw_value": "completed",
+              "row_count": 321
+            },
+            {
+              "raw_value": "cancelled",
+              "row_count": 307
+            }
+          ],
+          "typed_parse_failure_count": 0
+        },
+        {
+          "column": "quantity",
+          "domain_violation_count": 0,
+          "duckdb_type": "INTEGER",
+          "logical_type": "integer",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 4,
+          "raw_max_length": 1,
+          "raw_min_length": 1,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "typed_max": "4",
+          "typed_min": "1",
+          "typed_parse_failure_count": 0,
+          "typed_quantiles": {
+            "p01": "1.0",
+            "p50": "3.0",
+            "p99": "4.0"
+          }
+        },
+        {
+          "column": "currency",
+          "domain_violation_count": 0,
+          "duckdb_type": "VARCHAR",
+          "logical_type": "currency_code",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 3,
+          "raw_max_length": 3,
+          "raw_min_length": 3,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "top_values": [
+            {
+              "raw_value": "TWD",
+              "row_count": 3069
+            },
+            {
+              "raw_value": "USD",
+              "row_count": 1022
+            },
+            {
+              "raw_value": "JPY",
+              "row_count": 524
+            }
+          ],
+          "typed_parse_failure_count": 0
+        },
+        {
+          "column": "amount",
+          "domain_violation_count": 0,
+          "duckdb_type": "DECIMAL(24,4)",
+          "logical_type": "decimal",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 4589,
+          "raw_max_length": 9,
+          "raw_min_length": 5,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "typed_max": "4804065.0000",
+          "typed_min": "94.1700",
+          "typed_parse_failure_count": 0,
+          "typed_quantiles": {
+            "p01": "637.9954",
+            "p50": "167878.0000",
+            "p99": "2993254.0399"
+          }
+        },
+        {
+          "column": "coupon_discount",
+          "domain_violation_count": 0,
+          "duckdb_type": "DECIMAL(24,4)",
+          "logical_type": "decimal",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 20,
+          "raw_max_length": 5,
+          "raw_min_length": 3,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "typed_max": "950.0000",
+          "typed_min": "0.0000",
+          "typed_parse_failure_count": 0,
+          "typed_quantiles": {
+            "p01": "0.0000",
+            "p50": "450.0000",
+            "p99": "950.0000"
+          }
+        },
+        {
+          "column": "order_created_at",
+          "domain_violation_count": 0,
+          "duckdb_type": "TIMESTAMPTZ",
+          "logical_type": "timestamp_with_timezone",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 4512,
+          "raw_max_length": 25,
+          "raw_min_length": 25,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "typed_max": "2026-07-01T15:58:41+00:00",
+          "typed_min": "2026-04-30T16:21:17+00:00",
+          "typed_parse_failure_count": 0
+        },
+        {
+          "column": "departure_date",
+          "domain_violation_count": 0,
+          "duckdb_type": "DATE",
+          "logical_type": "date",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 164,
+          "raw_max_length": 10,
+          "raw_min_length": 10,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "typed_max": "2026-10-28",
+          "typed_min": "2026-05-13",
+          "typed_parse_failure_count": 0
+        },
+        {
+          "column": "updated_at",
+          "domain_violation_count": 0,
+          "duckdb_type": "TIMESTAMPTZ",
+          "logical_type": "timestamp_with_timezone",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 4582,
+          "raw_max_length": 25,
+          "raw_min_length": 25,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "typed_max": "2026-07-05T03:19:50+00:00",
+          "typed_min": "2026-06-30T16:00:31+00:00",
+          "typed_parse_failure_count": 0
+        }
+      ],
+      "data_row_count_excluding_header": 4615,
+      "dataset": "orders",
+      "duplicate_value_group_count": 0,
+      "source_file": "orders_incremental_day1.csv",
+      "source_sha256": "d4eeec84138ecd6f7d5c96032ab6662ec34850655a587f1f8f182544d6878dcd"
+    },
+    {
+      "columns": [
+        {
+          "column": "order_id",
+          "domain_violation_count": 0,
+          "duckdb_type": "VARCHAR",
+          "logical_type": "business_key",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 4684,
+          "raw_max_length": 11,
+          "raw_min_length": 11,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "typed_parse_failure_count": 0
+        },
+        {
+          "column": "member_id",
+          "domain_violation_count": 0,
+          "duckdb_type": "VARCHAR",
+          "logical_type": "foreign_business_key",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 3535,
+          "raw_max_length": 7,
+          "raw_min_length": 7,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "typed_parse_failure_count": 0
+        },
+        {
+          "column": "product_id",
+          "domain_violation_count": 0,
+          "duckdb_type": "VARCHAR",
+          "logical_type": "foreign_business_key",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 300,
+          "raw_max_length": 6,
+          "raw_min_length": 6,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "typed_parse_failure_count": 0
+        },
+        {
+          "column": "channel",
+          "domain_violation_count": 0,
+          "duckdb_type": "VARCHAR",
+          "logical_type": "categorical",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 4,
+          "raw_max_length": 3,
+          "raw_min_length": 2,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "top_values": [
+            {
+              "raw_value": "web",
+              "row_count": 1215
+            },
+            {
+              "raw_value": "電銷",
+              "row_count": 1181
+            },
+            {
+              "raw_value": "門市",
+              "row_count": 1175
+            },
+            {
+              "raw_value": "app",
+              "row_count": 1129
+            }
+          ],
+          "typed_parse_failure_count": 0
+        },
+        {
+          "column": "order_status",
+          "domain_violation_count": 0,
+          "duckdb_type": "VARCHAR",
+          "logical_type": "categorical",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 4,
+          "raw_max_length": 9,
+          "raw_min_length": 4,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "top_values": [
+            {
+              "raw_value": "paid",
+              "row_count": 2714
+            },
+            {
+              "raw_value": "created",
+              "row_count": 1384
+            },
+            {
+              "raw_value": "completed",
+              "row_count": 313
+            },
+            {
+              "raw_value": "cancelled",
+              "row_count": 289
+            }
+          ],
+          "typed_parse_failure_count": 0
+        },
+        {
+          "column": "quantity",
+          "domain_violation_count": 0,
+          "duckdb_type": "INTEGER",
+          "logical_type": "integer",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 4,
+          "raw_max_length": 1,
+          "raw_min_length": 1,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "typed_max": "4",
+          "typed_min": "1",
+          "typed_parse_failure_count": 0,
+          "typed_quantiles": {
+            "p01": "1.0",
+            "p50": "2.0",
+            "p99": "4.0"
+          }
+        },
+        {
+          "column": "currency",
+          "domain_violation_count": 0,
+          "duckdb_type": "VARCHAR",
+          "logical_type": "currency_code",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 3,
+          "raw_max_length": 3,
+          "raw_min_length": 3,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "top_values": [
+            {
+              "raw_value": "TWD",
+              "row_count": 3150
+            },
+            {
+              "raw_value": "USD",
+              "row_count": 1019
+            },
+            {
+              "raw_value": "JPY",
+              "row_count": 531
+            }
+          ],
+          "typed_parse_failure_count": 0
+        },
+        {
+          "column": "amount",
+          "domain_violation_count": 0,
+          "duckdb_type": "DECIMAL(24,4)",
+          "logical_type": "decimal",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 4669,
+          "raw_max_length": 9,
+          "raw_min_length": 4,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "typed_max": "4489437.0000",
+          "typed_min": "86.4000",
+          "typed_parse_failure_count": 0,
+          "typed_quantiles": {
+            "p01": "613.6288",
+            "p50": "156765.0000",
+            "p99": "2817471.3300"
+          }
+        },
+        {
+          "column": "coupon_discount",
+          "domain_violation_count": 0,
+          "duckdb_type": "DECIMAL(24,4)",
+          "logical_type": "decimal",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 20,
+          "raw_max_length": 5,
+          "raw_min_length": 3,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "typed_max": "950.0000",
+          "typed_min": "0.0000",
+          "typed_parse_failure_count": 0,
+          "typed_quantiles": {
+            "p01": "0.0000",
+            "p50": "450.0000",
+            "p99": "950.0000"
+          }
+        },
+        {
+          "column": "order_created_at",
+          "domain_violation_count": 0,
+          "duckdb_type": "TIMESTAMPTZ",
+          "logical_type": "timestamp_with_timezone",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 4606,
+          "raw_max_length": 25,
+          "raw_min_length": 25,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "typed_max": "2026-07-02T15:58:27+00:00",
+          "typed_min": "2026-04-30T16:19:21+00:00",
+          "typed_parse_failure_count": 0
+        },
+        {
+          "column": "departure_date",
+          "domain_violation_count": 0,
+          "duckdb_type": "DATE",
+          "logical_type": "date",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 164,
+          "raw_max_length": 10,
+          "raw_min_length": 10,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "typed_max": "2026-10-29",
+          "typed_min": "2026-05-13",
+          "typed_parse_failure_count": 0
+        },
+        {
+          "column": "updated_at",
+          "domain_violation_count": 0,
+          "duckdb_type": "TIMESTAMPTZ",
+          "logical_type": "timestamp_with_timezone",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 4666,
+          "raw_max_length": 25,
+          "raw_min_length": 25,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "typed_max": "2026-07-05T10:08:56+00:00",
+          "typed_min": "2026-06-30T22:16:15+00:00",
+          "typed_parse_failure_count": 0
+        }
+      ],
+      "data_row_count_excluding_header": 4700,
+      "dataset": "orders",
+      "duplicate_value_group_count": 0,
+      "source_file": "orders_incremental_day2.csv",
+      "source_sha256": "423175c944aac7758c487735e829790b30e23e952a71bcdd2c0762a08a4667e5"
+    },
+    {
+      "columns": [
+        {
+          "column": "order_id",
+          "domain_violation_count": 0,
+          "duckdb_type": "VARCHAR",
+          "logical_type": "business_key",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 4598,
+          "raw_max_length": 11,
+          "raw_min_length": 11,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "typed_parse_failure_count": 0
+        },
+        {
+          "column": "member_id",
+          "domain_violation_count": 0,
+          "duckdb_type": "VARCHAR",
+          "logical_type": "foreign_business_key",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 3476,
+          "raw_max_length": 7,
+          "raw_min_length": 7,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "typed_parse_failure_count": 0
+        },
+        {
+          "column": "product_id",
+          "domain_violation_count": 0,
+          "duckdb_type": "VARCHAR",
+          "logical_type": "foreign_business_key",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 300,
+          "raw_max_length": 6,
+          "raw_min_length": 6,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "typed_parse_failure_count": 0
+        },
+        {
+          "column": "channel",
+          "domain_violation_count": 0,
+          "duckdb_type": "VARCHAR",
+          "logical_type": "categorical",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 4,
+          "raw_max_length": 3,
+          "raw_min_length": 2,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "top_values": [
+            {
+              "raw_value": "web",
+              "row_count": 1185
+            },
+            {
+              "raw_value": "電銷",
+              "row_count": 1161
+            },
+            {
+              "raw_value": "門市",
+              "row_count": 1155
+            },
+            {
+              "raw_value": "app",
+              "row_count": 1114
+            }
+          ],
+          "typed_parse_failure_count": 0
+        },
+        {
+          "column": "order_status",
+          "domain_violation_count": 0,
+          "duckdb_type": "VARCHAR",
+          "logical_type": "categorical",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 4,
+          "raw_max_length": 9,
+          "raw_min_length": 4,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "top_values": [
+            {
+              "raw_value": "paid",
+              "row_count": 2741
+            },
+            {
+              "raw_value": "created",
+              "row_count": 1271
+            },
+            {
+              "raw_value": "cancelled",
+              "row_count": 314
+            },
+            {
+              "raw_value": "completed",
+              "row_count": 289
+            }
+          ],
+          "typed_parse_failure_count": 0
+        },
+        {
+          "column": "quantity",
+          "domain_violation_count": 0,
+          "duckdb_type": "INTEGER",
+          "logical_type": "integer",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 4,
+          "raw_max_length": 1,
+          "raw_min_length": 1,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "typed_max": "4",
+          "typed_min": "1",
+          "typed_parse_failure_count": 0,
+          "typed_quantiles": {
+            "p01": "1.0",
+            "p50": "2.0",
+            "p99": "4.0"
+          }
+        },
+        {
+          "column": "currency",
+          "domain_violation_count": 0,
+          "duckdb_type": "VARCHAR",
+          "logical_type": "currency_code",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 3,
+          "raw_max_length": 3,
+          "raw_min_length": 3,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "top_values": [
+            {
+              "raw_value": "TWD",
+              "row_count": 3141
+            },
+            {
+              "raw_value": "USD",
+              "row_count": 953
+            },
+            {
+              "raw_value": "JPY",
+              "row_count": 521
+            }
+          ],
+          "typed_parse_failure_count": 0
+        },
+        {
+          "column": "amount",
+          "domain_violation_count": 0,
+          "duckdb_type": "DECIMAL(24,4)",
+          "logical_type": "decimal",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 4592,
+          "raw_max_length": 9,
+          "raw_min_length": 5,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "typed_max": "4456237.0000",
+          "typed_min": "83.2400",
+          "typed_parse_failure_count": 0,
+          "typed_quantiles": {
+            "p01": "619.1258",
+            "p50": "158385.0000",
+            "p99": "2782632.6399"
+          }
+        },
+        {
+          "column": "coupon_discount",
+          "domain_violation_count": 0,
+          "duckdb_type": "DECIMAL(24,4)",
+          "logical_type": "decimal",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 20,
+          "raw_max_length": 5,
+          "raw_min_length": 3,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "typed_max": "950.0000",
+          "typed_min": "0.0000",
+          "typed_parse_failure_count": 0,
+          "typed_quantiles": {
+            "p01": "0.0000",
+            "p50": "500.0000",
+            "p99": "950.0000"
+          }
+        },
+        {
+          "column": "order_created_at",
+          "domain_violation_count": 0,
+          "duckdb_type": "TIMESTAMPTZ",
+          "logical_type": "timestamp_with_timezone",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 4515,
+          "raw_max_length": 25,
+          "raw_min_length": 25,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "typed_max": "2026-07-03T15:58:03+00:00",
+          "typed_min": "2026-04-30T19:23:51+00:00",
+          "typed_parse_failure_count": 0
+        },
+        {
+          "column": "departure_date",
+          "domain_violation_count": 0,
+          "duckdb_type": "DATE",
+          "logical_type": "date",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 167,
+          "raw_max_length": 10,
+          "raw_min_length": 10,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "typed_max": "2026-10-30",
+          "typed_min": "2026-05-08",
+          "typed_parse_failure_count": 0
+        },
+        {
+          "column": "updated_at",
+          "domain_violation_count": 0,
+          "duckdb_type": "TIMESTAMPTZ",
+          "logical_type": "timestamp_with_timezone",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 4586,
+          "raw_max_length": 25,
+          "raw_min_length": 25,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "typed_max": "2026-07-06T09:03:32+00:00",
+          "typed_min": "2026-07-02T16:05:09+00:00",
+          "typed_parse_failure_count": 0
+        }
+      ],
+      "data_row_count_excluding_header": 4615,
+      "dataset": "orders",
+      "duplicate_value_group_count": 0,
+      "source_file": "orders_incremental_day3.csv",
+      "source_sha256": "f68d797b69c3d69b173e78efaf799dc4095f7f7d8aef9ebc7be85616b676057d"
+    },
+    {
+      "columns": [
+        {
+          "column": "member_id",
+          "domain_violation_count": 0,
+          "duckdb_type": "VARCHAR",
+          "logical_type": "business_key",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 8000,
+          "raw_max_length": 7,
+          "raw_min_length": 7,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "typed_parse_failure_count": 0
+        },
+        {
+          "column": "member_name",
+          "domain_violation_count": 0,
+          "duckdb_type": "VARCHAR",
+          "logical_type": "text",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 620,
+          "raw_max_length": 3,
+          "raw_min_length": 3,
+          "raw_null_count": 0,
+          "sensitive": true,
+          "typed_parse_failure_count": 0
+        },
+        {
+          "column": "member_level",
+          "domain_violation_count": 0,
+          "duckdb_type": "VARCHAR",
+          "logical_type": "categorical",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 4,
+          "raw_max_length": 2,
+          "raw_min_length": 2,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "top_values": [
+            {
+              "raw_value": "白金",
+              "row_count": 2340
+            },
+            {
+              "raw_value": "金卡",
+              "row_count": 2313
+            },
+            {
+              "raw_value": "銀卡",
+              "row_count": 2276
+            },
+            {
+              "raw_value": "一般",
+              "row_count": 2062
+            }
+          ],
+          "typed_parse_failure_count": 0
+        },
+        {
+          "column": "city",
+          "domain_violation_count": 0,
+          "duckdb_type": "VARCHAR",
+          "logical_type": "text",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 11,
+          "raw_max_length": 3,
+          "raw_min_length": 3,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "typed_parse_failure_count": 0
+        },
+        {
+          "column": "birth_date",
+          "domain_violation_count": 0,
+          "duckdb_type": "DATE",
+          "logical_type": "date",
+          "nullable": true,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 6230,
+          "raw_max_length": 10,
+          "raw_min_length": 10,
+          "raw_null_count": 0,
+          "sensitive": true,
+          "typed_max": "2003-10-17",
+          "typed_min": "1900-01-01",
+          "typed_parse_failure_count": 0
+        },
+        {
+          "column": "register_date",
+          "domain_violation_count": 0,
+          "duckdb_type": "DATE",
+          "logical_type": "date",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 3437,
+          "raw_max_length": 10,
+          "raw_min_length": 10,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "typed_max": "2025-12-13",
+          "typed_min": "2015-01-01",
+          "typed_parse_failure_count": 0
+        },
+        {
+          "column": "extract_date",
+          "domain_violation_count": 0,
+          "duckdb_type": "DATE",
+          "logical_type": "date",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 3,
+          "raw_max_length": 10,
+          "raw_min_length": 10,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "typed_max": "2026-06-30",
+          "typed_min": "2026-04-30",
+          "typed_parse_failure_count": 0
+        }
+      ],
+      "data_row_count_excluding_header": 8991,
+      "dataset": "members",
+      "duplicate_value_group_count": 0,
+      "source_file": "members.csv",
+      "source_sha256": "144eb0ed7282fbf1446cd8a557b5bc69ac3cc58f04b19246eb0e441faeb61c8a"
+    },
+    {
+      "columns": [
+        {
+          "column": "product_id",
+          "domain_violation_count": 0,
+          "duckdb_type": "VARCHAR",
+          "logical_type": "business_key",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 300,
+          "raw_max_length": 6,
+          "raw_min_length": 6,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "typed_parse_failure_count": 0
+        },
+        {
+          "column": "product_name",
+          "domain_violation_count": 0,
+          "duckdb_type": "VARCHAR",
+          "logical_type": "text",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 253,
+          "raw_max_length": 10,
+          "raw_min_length": 6,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "typed_parse_failure_count": 0
+        },
+        {
+          "column": "product_type",
+          "domain_violation_count": 0,
+          "duckdb_type": "VARCHAR",
+          "logical_type": "categorical",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 5,
+          "raw_max_length": 4,
+          "raw_min_length": 2,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "top_values": [
+            {
+              "raw_value": "團體旅遊",
+              "row_count": 66
+            },
+            {
+              "raw_value": "訂房",
+              "row_count": 63
+            },
+            {
+              "raw_value": "票券",
+              "row_count": 61
+            },
+            {
+              "raw_value": "自由行",
+              "row_count": 59
+            },
+            {
+              "raw_value": "機票",
+              "row_count": 51
+            }
+          ],
+          "typed_parse_failure_count": 0
+        },
+        {
+          "column": "destination_country",
+          "domain_violation_count": 0,
+          "duckdb_type": "VARCHAR",
+          "logical_type": "text",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 9,
+          "raw_max_length": 3,
+          "raw_min_length": 2,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "typed_parse_failure_count": 0
+        },
+        {
+          "column": "destination_city",
+          "domain_violation_count": 0,
+          "duckdb_type": "VARCHAR",
+          "logical_type": "text",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 12,
+          "raw_max_length": 4,
+          "raw_min_length": 2,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "typed_parse_failure_count": 0
+        },
+        {
+          "column": "trip_days",
+          "domain_violation_count": 0,
+          "duckdb_type": "INTEGER",
+          "logical_type": "integer",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 11,
+          "raw_max_length": 2,
+          "raw_min_length": 1,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "typed_max": "11",
+          "typed_min": "1",
+          "typed_parse_failure_count": 0,
+          "typed_quantiles": {
+            "p01": "1.0",
+            "p50": "6.0",
+            "p99": "11.0"
+          }
+        },
+        {
+          "column": "base_price_twd",
+          "domain_violation_count": 0,
+          "duckdb_type": "DECIMAL(24,4)",
+          "logical_type": "decimal",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 155,
+          "raw_max_length": 6,
+          "raw_min_length": 4,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "typed_max": "199000.0000",
+          "typed_min": "3000.0000",
+          "typed_parse_failure_count": 0,
+          "typed_quantiles": {
+            "p01": "3990.0000",
+            "p50": "103000.0000",
+            "p99": "197009.9999"
+          }
+        },
+        {
+          "column": "is_active",
+          "domain_violation_count": 0,
+          "duckdb_type": "VARCHAR",
+          "logical_type": "categorical",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 2,
+          "raw_max_length": 1,
+          "raw_min_length": 1,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "top_values": [
+            {
+              "raw_value": "Y",
+              "row_count": 287
+            },
+            {
+              "raw_value": "N",
+              "row_count": 13
+            }
+          ],
+          "typed_parse_failure_count": 0
+        }
+      ],
+      "data_row_count_excluding_header": 300,
+      "dataset": "products",
+      "duplicate_value_group_count": 0,
+      "source_file": "products.csv",
+      "source_sha256": "62a6ec5f3b29301ac2c3ea3a3101e911e8a78953ecc7ac3339a727d65a7de168"
+    },
+    {
+      "columns": [
+        {
+          "column": "rate_date",
+          "domain_violation_count": 0,
+          "duckdb_type": "DATE",
+          "logical_type": "date",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 67,
+          "raw_max_length": 10,
+          "raw_min_length": 10,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "typed_max": "2026-07-03",
+          "typed_min": "2026-04-28",
+          "typed_parse_failure_count": 0
+        },
+        {
+          "column": "currency",
+          "domain_violation_count": 0,
+          "duckdb_type": "VARCHAR",
+          "logical_type": "currency_code",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 2,
+          "raw_max_length": 3,
+          "raw_min_length": 3,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "top_values": [
+            {
+              "raw_value": "JPY",
+              "row_count": 67
+            },
+            {
+              "raw_value": "USD",
+              "row_count": 67
+            }
+          ],
+          "typed_parse_failure_count": 0
+        },
+        {
+          "column": "rate_to_twd",
+          "domain_violation_count": 0,
+          "duckdb_type": "DECIMAL(24,8)",
+          "logical_type": "decimal",
+          "nullable": false,
+          "pattern_violation_count": 0,
+          "raw_blank_string_count": 0,
+          "raw_distinct_non_null_count": 126,
+          "raw_max_length": 7,
+          "raw_min_length": 4,
+          "raw_null_count": 0,
+          "sensitive": false,
+          "typed_max": "31.58000000",
+          "typed_min": "0.20331000",
+          "typed_parse_failure_count": 0,
+          "typed_quantiles": {
+            "p01": "0.20344930",
+            "p50": "15.57497000",
+            "p99": "31.51811000"
+          }
+        }
+      ],
+      "data_row_count_excluding_header": 134,
+      "dataset": "fx_rates",
+      "duplicate_value_group_count": 0,
+      "source_file": "fx_rates.csv",
+      "source_sha256": "b043ae8402d06a9ab75f6540d5a94e9dbac504c1e31cb1d4429863a44bd75e24"
+    }
+  ],
+  "numeric_authority": "DuckDB DECIMAL; canonical evidence stores fixed-scale strings",
+  "row_count_definition": "CSV data rows excluding the header row",
+  "schema_version": 1
+}

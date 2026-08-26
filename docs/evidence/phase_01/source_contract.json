@@ -1,0 +1,538 @@
+{
+  "contract_status": "proposed_pending_human_acceptance",
+  "raw_value_policy": "Raw CSV text remains immutable; typed values are derived only for profiling.",
+  "row_count_definition": "CSV data rows excluding the header row",
+  "schema_version": 1,
+  "sources": [
+    {
+      "business_key": [
+        "order_id"
+      ],
+      "columns": [
+        {
+          "accepted_raw_formats": [],
+          "canonical_typed_format": null,
+          "decimal_scale": null,
+          "description": "訂單來源識別碼",
+          "domain": [],
+          "duckdb_type": "VARCHAR",
+          "logical_type": "business_key",
+          "name": "order_id",
+          "normalization_assumption": null,
+          "normalization_quality_flag": null,
+          "nullable": false,
+          "pattern": "^ORD[0-9]{8}$",
+          "sensitive": false
+        },
+        {
+          "accepted_raw_formats": [],
+          "canonical_typed_format": null,
+          "decimal_scale": null,
+          "description": "會員來源識別碼",
+          "domain": [],
+          "duckdb_type": "VARCHAR",
+          "logical_type": "foreign_business_key",
+          "name": "member_id",
+          "normalization_assumption": null,
+          "normalization_quality_flag": null,
+          "nullable": false,
+          "pattern": "^M[0-9]{6}$",
+          "sensitive": false
+        },
+        {
+          "accepted_raw_formats": [],
+          "canonical_typed_format": null,
+          "decimal_scale": null,
+          "description": "產品來源識別碼",
+          "domain": [],
+          "duckdb_type": "VARCHAR",
+          "logical_type": "foreign_business_key",
+          "name": "product_id",
+          "normalization_assumption": null,
+          "normalization_quality_flag": null,
+          "nullable": false,
+          "pattern": "^P[0-9]{5}$",
+          "sensitive": false
+        },
+        {
+          "accepted_raw_formats": [],
+          "canonical_typed_format": null,
+          "decimal_scale": null,
+          "description": "訂購通路",
+          "domain": [
+            "app",
+            "web",
+            "門市",
+            "電銷"
+          ],
+          "duckdb_type": "VARCHAR",
+          "logical_type": "categorical",
+          "name": "channel",
+          "normalization_assumption": null,
+          "normalization_quality_flag": null,
+          "nullable": false,
+          "pattern": null,
+          "sensitive": false
+        },
+        {
+          "accepted_raw_formats": [],
+          "canonical_typed_format": null,
+          "decimal_scale": null,
+          "description": "訂單事件狀態",
+          "domain": [
+            "created",
+            "paid",
+            "completed",
+            "cancelled"
+          ],
+          "duckdb_type": "VARCHAR",
+          "logical_type": "categorical",
+          "name": "order_status",
+          "normalization_assumption": null,
+          "normalization_quality_flag": null,
+          "nullable": false,
+          "pattern": null,
+          "sensitive": false
+        },
+        {
+          "accepted_raw_formats": [],
+          "canonical_typed_format": null,
+          "decimal_scale": null,
+          "description": "訂購數量",
+          "domain": [],
+          "duckdb_type": "INTEGER",
+          "logical_type": "integer",
+          "name": "quantity",
+          "normalization_assumption": null,
+          "normalization_quality_flag": null,
+          "nullable": false,
+          "pattern": null,
+          "sensitive": false
+        },
+        {
+          "accepted_raw_formats": [],
+          "canonical_typed_format": null,
+          "decimal_scale": null,
+          "description": "原幣別；NTD 僅在本來源正規化為 canonical TWD",
+          "domain": [
+            "JPY",
+            "NTD",
+            "TWD",
+            "USD"
+          ],
+          "duckdb_type": "VARCHAR",
+          "logical_type": "currency_code",
+          "name": "currency",
+          "normalization_assumption": "NTD is a source-specific alias of TWD; preserve raw currency",
+          "normalization_quality_flag": null,
+          "nullable": false,
+          "pattern": null,
+          "sensitive": false
+        },
+        {
+          "accepted_raw_formats": [],
+          "canonical_typed_format": null,
+          "decimal_scale": 4,
+          "description": "原幣別金額",
+          "domain": [],
+          "duckdb_type": "DECIMAL(24,4)",
+          "logical_type": "decimal",
+          "name": "amount",
+          "normalization_assumption": null,
+          "normalization_quality_flag": null,
+          "nullable": false,
+          "pattern": null,
+          "sensitive": false
+        },
+        {
+          "accepted_raw_formats": [],
+          "canonical_typed_format": null,
+          "decimal_scale": 4,
+          "description": "題目定義為 TWD 的折扣",
+          "domain": [],
+          "duckdb_type": "DECIMAL(24,4)",
+          "logical_type": "decimal",
+          "name": "coupon_discount",
+          "normalization_assumption": null,
+          "normalization_quality_flag": null,
+          "nullable": false,
+          "pattern": null,
+          "sensitive": false
+        },
+        {
+          "accepted_raw_formats": [
+            "ISO_8601_WITH_OFFSET",
+            "YYYY/MM/DD HH:MM:SS"
+          ],
+          "canonical_typed_format": "TIMESTAMPTZ",
+          "decimal_scale": null,
+          "description": "訂單建立時間；來源預期帶 offset",
+          "domain": [],
+          "duckdb_type": "TIMESTAMPTZ",
+          "logical_type": "timestamp_with_timezone",
+          "name": "order_created_at",
+          "normalization_assumption": "Only for this documented source, timezone-less YYYY/MM/DD HH:MM:SS is interpreted as Asia/Taipei based on Taiwan business context and updated_at +08:00 evidence",
+          "normalization_quality_flag": "timezone_assumed=true",
+          "nullable": false,
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(Z|[+-][0-9]{2}:[0-9]{2})$",
+          "sensitive": false
+        },
+        {
+          "accepted_raw_formats": [],
+          "canonical_typed_format": null,
+          "decimal_scale": null,
+          "description": "出發日",
+          "domain": [],
+          "duckdb_type": "DATE",
+          "logical_type": "date",
+          "name": "departure_date",
+          "normalization_assumption": null,
+          "normalization_quality_flag": null,
+          "nullable": false,
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+          "sensitive": false
+        },
+        {
+          "accepted_raw_formats": [
+            "ISO_8601_WITH_OFFSET"
+          ],
+          "canonical_typed_format": "TIMESTAMPTZ",
+          "decimal_scale": null,
+          "description": "訂單事件更新時間；來源預期帶 offset",
+          "domain": [],
+          "duckdb_type": "TIMESTAMPTZ",
+          "logical_type": "timestamp_with_timezone",
+          "name": "updated_at",
+          "normalization_assumption": null,
+          "normalization_quality_flag": null,
+          "nullable": false,
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(Z|[+-][0-9]{2}:[0-9]{2})$",
+          "sensitive": false
+        }
+      ],
+      "dataset": "orders",
+      "files": [
+        "orders_base.csv",
+        "orders_incremental_day1.csv",
+        "orders_incremental_day2.csv",
+        "orders_incremental_day3.csv"
+      ]
+    },
+    {
+      "business_key": [
+        "member_id",
+        "extract_date"
+      ],
+      "columns": [
+        {
+          "accepted_raw_formats": [],
+          "canonical_typed_format": null,
+          "decimal_scale": null,
+          "description": "會員來源識別碼",
+          "domain": [],
+          "duckdb_type": "VARCHAR",
+          "logical_type": "business_key",
+          "name": "member_id",
+          "normalization_assumption": null,
+          "normalization_quality_flag": null,
+          "nullable": false,
+          "pattern": "^M[0-9]{6}$",
+          "sensitive": false
+        },
+        {
+          "accepted_raw_formats": [],
+          "canonical_typed_format": null,
+          "decimal_scale": null,
+          "description": "會員姓名",
+          "domain": [],
+          "duckdb_type": "VARCHAR",
+          "logical_type": "text",
+          "name": "member_name",
+          "normalization_assumption": null,
+          "normalization_quality_flag": null,
+          "nullable": false,
+          "pattern": null,
+          "sensitive": true
+        },
+        {
+          "accepted_raw_formats": [],
+          "canonical_typed_format": null,
+          "decimal_scale": null,
+          "description": "會員等級",
+          "domain": [
+            "一般",
+            "銀卡",
+            "金卡",
+            "白金"
+          ],
+          "duckdb_type": "VARCHAR",
+          "logical_type": "categorical",
+          "name": "member_level",
+          "normalization_assumption": null,
+          "normalization_quality_flag": null,
+          "nullable": false,
+          "pattern": null,
+          "sensitive": false
+        },
+        {
+          "accepted_raw_formats": [],
+          "canonical_typed_format": null,
+          "decimal_scale": null,
+          "description": "居住城市",
+          "domain": [],
+          "duckdb_type": "VARCHAR",
+          "logical_type": "text",
+          "name": "city",
+          "normalization_assumption": null,
+          "normalization_quality_flag": null,
+          "nullable": false,
+          "pattern": null,
+          "sensitive": false
+        },
+        {
+          "accepted_raw_formats": [],
+          "canonical_typed_format": null,
+          "decimal_scale": null,
+          "description": "出生日期",
+          "domain": [],
+          "duckdb_type": "DATE",
+          "logical_type": "date",
+          "name": "birth_date",
+          "normalization_assumption": null,
+          "normalization_quality_flag": null,
+          "nullable": true,
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+          "sensitive": true
+        },
+        {
+          "accepted_raw_formats": [],
+          "canonical_typed_format": null,
+          "decimal_scale": null,
+          "description": "註冊日期",
+          "domain": [],
+          "duckdb_type": "DATE",
+          "logical_type": "date",
+          "name": "register_date",
+          "normalization_assumption": null,
+          "normalization_quality_flag": null,
+          "nullable": false,
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+          "sensitive": false
+        },
+        {
+          "accepted_raw_formats": [],
+          "canonical_typed_format": null,
+          "decimal_scale": null,
+          "description": "快照萃取日期",
+          "domain": [],
+          "duckdb_type": "DATE",
+          "logical_type": "date",
+          "name": "extract_date",
+          "normalization_assumption": null,
+          "normalization_quality_flag": null,
+          "nullable": false,
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+          "sensitive": false
+        }
+      ],
+      "dataset": "members",
+      "files": [
+        "members.csv"
+      ]
+    },
+    {
+      "business_key": [
+        "product_id"
+      ],
+      "columns": [
+        {
+          "accepted_raw_formats": [],
+          "canonical_typed_format": null,
+          "decimal_scale": null,
+          "description": "產品來源識別碼",
+          "domain": [],
+          "duckdb_type": "VARCHAR",
+          "logical_type": "business_key",
+          "name": "product_id",
+          "normalization_assumption": null,
+          "normalization_quality_flag": null,
+          "nullable": false,
+          "pattern": "^P[0-9]{5}$",
+          "sensitive": false
+        },
+        {
+          "accepted_raw_formats": [],
+          "canonical_typed_format": null,
+          "decimal_scale": null,
+          "description": "產品名稱",
+          "domain": [],
+          "duckdb_type": "VARCHAR",
+          "logical_type": "text",
+          "name": "product_name",
+          "normalization_assumption": null,
+          "normalization_quality_flag": null,
+          "nullable": false,
+          "pattern": null,
+          "sensitive": false
+        },
+        {
+          "accepted_raw_formats": [],
+          "canonical_typed_format": null,
+          "decimal_scale": null,
+          "description": "產品類型",
+          "domain": [],
+          "duckdb_type": "VARCHAR",
+          "logical_type": "categorical",
+          "name": "product_type",
+          "normalization_assumption": null,
+          "normalization_quality_flag": null,
+          "nullable": false,
+          "pattern": null,
+          "sensitive": false
+        },
+        {
+          "accepted_raw_formats": [],
+          "canonical_typed_format": null,
+          "decimal_scale": null,
+          "description": "目的地國家",
+          "domain": [],
+          "duckdb_type": "VARCHAR",
+          "logical_type": "text",
+          "name": "destination_country",
+          "normalization_assumption": null,
+          "normalization_quality_flag": null,
+          "nullable": false,
+          "pattern": null,
+          "sensitive": false
+        },
+        {
+          "accepted_raw_formats": [],
+          "canonical_typed_format": null,
+          "decimal_scale": null,
+          "description": "目的地城市",
+          "domain": [],
+          "duckdb_type": "VARCHAR",
+          "logical_type": "text",
+          "name": "destination_city",
+          "normalization_assumption": null,
+          "normalization_quality_flag": null,
+          "nullable": false,
+          "pattern": null,
+          "sensitive": false
+        },
+        {
+          "accepted_raw_formats": [],
+          "canonical_typed_format": null,
+          "decimal_scale": null,
+          "description": "行程天數",
+          "domain": [],
+          "duckdb_type": "INTEGER",
+          "logical_type": "integer",
+          "name": "trip_days",
+          "normalization_assumption": null,
+          "normalization_quality_flag": null,
+          "nullable": false,
+          "pattern": null,
+          "sensitive": false
+        },
+        {
+          "accepted_raw_formats": [],
+          "canonical_typed_format": null,
+          "decimal_scale": 4,
+          "description": "TWD 牌價",
+          "domain": [],
+          "duckdb_type": "DECIMAL(24,4)",
+          "logical_type": "decimal",
+          "name": "base_price_twd",
+          "normalization_assumption": null,
+          "normalization_quality_flag": null,
+          "nullable": false,
+          "pattern": null,
+          "sensitive": false
+        },
+        {
+          "accepted_raw_formats": [],
+          "canonical_typed_format": null,
+          "decimal_scale": null,
+          "description": "產品啟用旗標",
+          "domain": [
+            "N",
+            "Y"
+          ],
+          "duckdb_type": "VARCHAR",
+          "logical_type": "categorical",
+          "name": "is_active",
+          "normalization_assumption": null,
+          "normalization_quality_flag": null,
+          "nullable": false,
+          "pattern": null,
+          "sensitive": false
+        }
+      ],
+      "dataset": "products",
+      "files": [
+        "products.csv"
+      ]
+    },
+    {
+      "business_key": [
+        "rate_date",
+        "currency"
+      ],
+      "columns": [
+        {
+          "accepted_raw_formats": [],
+          "canonical_typed_format": null,
+          "decimal_scale": null,
+          "description": "匯率適用日期",
+          "domain": [],
+          "duckdb_type": "DATE",
+          "logical_type": "date",
+          "name": "rate_date",
+          "normalization_assumption": null,
+          "normalization_quality_flag": null,
+          "nullable": false,
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+          "sensitive": false
+        },
+        {
+          "accepted_raw_formats": [],
+          "canonical_typed_format": null,
+          "decimal_scale": null,
+          "description": "原幣別代碼",
+          "domain": [
+            "JPY",
+            "USD"
+          ],
+          "duckdb_type": "VARCHAR",
+          "logical_type": "currency_code",
+          "name": "currency",
+          "normalization_assumption": null,
+          "normalization_quality_flag": null,
+          "nullable": false,
+          "pattern": null,
+          "sensitive": false
+        },
+        {
+          "accepted_raw_formats": [],
+          "canonical_typed_format": null,
+          "decimal_scale": 8,
+          "description": "一單位原幣乘此 rate 換算為 TWD",
+          "domain": [],
+          "duckdb_type": "DECIMAL(24,8)",
+          "logical_type": "decimal",
+          "name": "rate_to_twd",
+          "normalization_assumption": null,
+          "normalization_quality_flag": null,
+          "nullable": false,
+          "pattern": null,
+          "sensitive": false
+        }
+      ],
+      "dataset": "fx_rates",
+      "files": [
+        "fx_rates.csv"
+      ]
+    }
+  ]
+}

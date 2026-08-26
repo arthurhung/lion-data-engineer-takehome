@@ -1,0 +1,1976 @@
+{
+  "authoritative_detector_implementation": "sql/quality_checks.sql",
+  "finding_summary": {
+    "candidate_data_quality_issue_count": 11,
+    "detector_total": 46,
+    "expected_condition_count": 3,
+    "nonzero_detector_result_count": 14,
+    "zero_result_control_check_count": 32
+  },
+  "issues": [
+    {
+      "affected_business_key_count": 0,
+      "affected_row_count": 0,
+      "business_impact": "FX join 可能倍增金額。",
+      "dataset": "fx_rates",
+      "description": "rate_date、currency key 重複",
+      "detection_severity": "ERROR",
+      "detector": "sql/quality_checks.sql#FX-001",
+      "deterministic_sample": [],
+      "disposition_status": "proposed_pending_human_acceptance",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "FX-001",
+      "pending_human_decision": "確認是否有 intraday rate 或來源優先序。",
+      "post_treatment_validation_proposal": "每個核准 FX key 恰有一筆 rate。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "匯率 key 應唯一。"
+    },
+    {
+      "affected_business_key_count": 0,
+      "affected_row_count": 0,
+      "business_impact": "同筆 order 可能換算出不同 TWD 金額。",
+      "dataset": "fx_rates",
+      "description": "同一 FX key 有不同 rate",
+      "detection_severity": "CRITICAL",
+      "detector": "sql/quality_checks.sql#FX-002",
+      "deterministic_sample": [],
+      "disposition_status": "proposed_pending_human_acceptance",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "FX-002",
+      "pending_human_decision": "確認權威 rate selection。",
+      "post_treatment_validation_proposal": "每個核准 FX key 恰有一個 rate。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "沒有 rate timestamp 或來源優先序。"
+    },
+    {
+      "affected_business_key_count": 0,
+      "affected_row_count": 0,
+      "business_impact": "FX coverage 與金額換算不可信。",
+      "dataset": "fx_rates",
+      "description": "FX 日期、幣別或 rate 不符合 contract",
+      "detection_severity": "ERROR",
+      "detector": "sql/quality_checks.sql#FX-003",
+      "deterministic_sample": [],
+      "disposition_status": "proposed_pending_human_acceptance",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "FX-003",
+      "pending_human_decision": "確認支援幣別與 rate domain。",
+      "post_treatment_validation_proposal": "接受 FX row 均符合核准 contract。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "rate 必須為正 Decimal 且 currency 已核准。"
+    },
+    {
+      "affected_business_key_count": 0,
+      "affected_row_count": 0,
+      "business_impact": "若 FX 規則要求每日 rate，部分訂單可能無法換算。",
+      "dataset": "fx_rates",
+      "description": "各幣別在自身日期範圍內有日曆缺口",
+      "detection_severity": "WARNING",
+      "detector": "sql/quality_checks.sql#FX-004",
+      "deterministic_sample": [],
+      "disposition_status": "proposed_pending_human_acceptance",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "FX-004",
+      "pending_human_decision": "確認 FX calendar 與 carry-forward 規則。",
+      "post_treatment_validation_proposal": "依核准 calendar 規則後不存在未解釋缺口。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "週末/假日是否允許 carry-forward 尚未確認。"
+    },
+    {
+      "affected_business_key_count": 0,
+      "affected_row_count": 0,
+      "business_impact": "可能重複產生會員版本或放大 join。",
+      "dataset": "members",
+      "description": "完全相同的會員快照列重複",
+      "detection_severity": "ERROR",
+      "detector": "sql/quality_checks.sql#MEM-001",
+      "deterministic_sample": [],
+      "disposition_status": "proposed_pending_human_acceptance",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "MEM-001",
+      "pending_human_decision": "確認重複快照 winner policy。",
+      "post_treatment_validation_proposal": "候選 snapshot key 唯一且 loser lineage 保留。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "Phase 1 保留原始列，不任意 drop_duplicates。"
+    },
+    {
+      "affected_business_key_count": 30,
+      "affected_row_count": 60,
+      "business_impact": "同日可能產生多個版本候選。",
+      "dataset": "members",
+      "description": "同一 member_id、extract_date 有多筆快照",
+      "detection_severity": "ERROR",
+      "detector": "sql/quality_checks.sql#MEM-002",
+      "deterministic_sample": [
+        {
+          "extract_date": "2026-04-30",
+          "member_id": "M000096",
+          "snapshot_count": 2,
+          "source_file": "members.csv",
+          "source_row_number": 4558
+        },
+        {
+          "extract_date": "2026-04-30",
+          "member_id": "M000096",
+          "snapshot_count": 2,
+          "source_file": "members.csv",
+          "source_row_number": 5925
+        },
+        {
+          "extract_date": "2026-04-30",
+          "member_id": "M000296",
+          "snapshot_count": 2,
+          "source_file": "members.csv",
+          "source_row_number": 177
+        }
+      ],
+      "disposition_status": "proposed_pending_human_acceptance",
+      "finding_type": "DATA_QUALITY_ISSUE",
+      "issue_id": "MEM-002",
+      "pending_human_decision": "確認同日 snapshot tie-breaker。",
+      "post_treatment_validation_proposal": "每個 snapshot key 唯一或整組隔離。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "來源沒有同日 sequence。"
+    },
+    {
+      "affected_business_key_count": 30,
+      "affected_row_count": 60,
+      "business_impact": "無法判斷同日權威會員狀態。",
+      "dataset": "members",
+      "description": "同一 member_id、extract_date 有不同 payload",
+      "detection_severity": "CRITICAL",
+      "detector": "sql/quality_checks.sql#MEM-003",
+      "deterministic_sample": [
+        {
+          "birth_date_present": true,
+          "city": "台北市",
+          "extract_date": "2026-04-30",
+          "member_id": "M000096",
+          "member_level": "金卡",
+          "source_file": "members.csv",
+          "source_row_number": 4558
+        },
+        {
+          "birth_date_present": true,
+          "city": "台北市",
+          "extract_date": "2026-04-30",
+          "member_id": "M000096",
+          "member_level": "銀卡",
+          "source_file": "members.csv",
+          "source_row_number": 5925
+        },
+        {
+          "birth_date_present": true,
+          "city": "新北市",
+          "extract_date": "2026-04-30",
+          "member_id": "M000296",
+          "member_level": "白金",
+          "source_file": "members.csv",
+          "source_row_number": 177
+        }
+      ],
+      "disposition_status": "proposed_pending_human_acceptance",
+      "finding_type": "DATA_QUALITY_ISSUE",
+      "issue_id": "MEM-003",
+      "pending_human_decision": "取得上游 sequence 或決定整組隔離。",
+      "post_treatment_validation_proposal": "每個 snapshot key 恰有一個核准 payload。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "相同快照日期衝突不能任意選取。"
+    },
+    {
+      "affected_business_key_count": 0,
+      "affected_row_count": 0,
+      "business_impact": "key join 與 lineage 可能失敗。",
+      "dataset": "members",
+      "description": "member_id 格式不符合候選 contract",
+      "detection_severity": "ERROR",
+      "detector": "sql/quality_checks.sql#MEM-004",
+      "deterministic_sample": [],
+      "disposition_status": "proposed_pending_human_acceptance",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "MEM-004",
+      "pending_human_decision": "確認是否有合法 legacy key。",
+      "post_treatment_validation_proposal": "所有接受 member_id 符合核准格式。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "不自行改寫 business key。"
+    },
+    {
+      "affected_business_key_count": 0,
+      "affected_row_count": 0,
+      "business_impact": "會員分級分析可能漏列或拆分類。",
+      "dataset": "members",
+      "description": "member_level 不在候選 contract domain",
+      "detection_severity": "WARNING",
+      "detector": "sql/quality_checks.sql#MEM-005",
+      "deterministic_sample": [],
+      "disposition_status": "proposed_pending_human_acceptance",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "MEM-005",
+      "pending_human_decision": "確認會員等級合法清單與 alias。",
+      "post_treatment_validation_proposal": "正規化後 level 僅含核准 domain。",
+      "proposed_disposition": "NORMALIZE",
+      "rationale": "可能是 alias，需保留 raw 並確認 mapping。"
+    },
+    {
+      "affected_business_key_count": 0,
+      "affected_row_count": 0,
+      "business_impact": "年齡、年資與 snapshot 排序不可用。",
+      "dataset": "members",
+      "description": "會員日期 parse failure",
+      "detection_severity": "ERROR",
+      "detector": "sql/quality_checks.sql#MEM-006",
+      "deterministic_sample": [],
+      "disposition_status": "proposed_pending_human_acceptance",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "MEM-006",
+      "pending_human_decision": "確認空 birth_date 是否允許及日期格式。",
+      "post_treatment_validation_proposal": "所有接受日期可解析，nullable 規則符合 contract。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "日期無權威修補來源。"
+    },
+    {
+      "affected_business_key_count": 0,
+      "affected_row_count": 0,
+      "business_impact": "年齡與會員年資分析失真。",
+      "dataset": "members",
+      "description": "birth/register/extract 日期先後不合理",
+      "detection_severity": "ERROR",
+      "detector": "sql/quality_checks.sql#MEM-007",
+      "deterministic_sample": [],
+      "disposition_status": "proposed_pending_human_acceptance",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "MEM-007",
+      "pending_human_decision": "確認最小註冊年齡與歷史資料邊界。",
+      "post_treatment_validation_proposal": "所有接受 snapshot 符合核准 chronology。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "不可自行改寫日期。"
+    },
+    {
+      "affected_business_key_count": 0,
+      "affected_row_count": 0,
+      "business_impact": "SCD change detection 若非 null-safe 會遺漏變更。",
+      "dataset": "members",
+      "description": "相鄰快照出現 null 與 non-null transition",
+      "detection_severity": "INFO",
+      "detector": "sql/quality_checks.sql#MEM-008",
+      "deterministic_sample": [],
+      "disposition_status": "proposed_pending_human_acceptance",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "MEM-008",
+      "pending_human_decision": "確認各 attribute 的 null 語意與 tracked 狀態。",
+      "post_treatment_validation_proposal": "Phase 2 以 null-safe 比較測試涵蓋已觀察 transition。",
+      "proposed_disposition": "ACCEPT",
+      "rationale": "先量化變化，不在 Phase 1 實作 SCD2。"
+    },
+    {
+      "affected_business_key_count": 19,
+      "affected_row_count": 38,
+      "business_impact": "本次非零欄位只有 birth_date，可能是 correction 或 identity collision。",
+      "dataset": "members",
+      "description": "同一 member_id 的 identity candidate 欄位跨快照改變",
+      "detection_severity": "WARNING",
+      "detector": "sql/quality_checks.sql#MEM-009",
+      "deterministic_sample": [
+        {
+          "birth_date_present": true,
+          "extract_date": "2026-04-30",
+          "member_id": "M000552",
+          "source_file": "members.csv",
+          "source_row_number": 2155
+        },
+        {
+          "birth_date_present": true,
+          "extract_date": "2026-06-30",
+          "member_id": "M000552",
+          "source_file": "members.csv",
+          "source_row_number": 5243
+        },
+        {
+          "birth_date_present": true,
+          "extract_date": "2026-04-30",
+          "member_id": "M000708",
+          "source_file": "members.csv",
+          "source_row_number": 551
+        }
+      ],
+      "disposition_status": "proposed_pending_human_acceptance",
+      "finding_type": "DATA_QUALITY_ISSUE",
+      "issue_id": "MEM-009",
+      "pending_human_decision": "member_name 與 register_date 本次 change count 均為 0；不輸出姓名值。",
+      "post_treatment_validation_proposal": "birth_date change 全數隔離，欄位別 counts 與遮罩 sample 可重現。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "birth_date change 採整個 member identity/correction ambiguity quarantine。",
+      "supporting_analysis": [
+        {
+          "affected_member_count": 0,
+          "affected_snapshot_row_count": 0,
+          "deterministic_sample": [],
+          "field_name": "member_name",
+          "source_file_distribution": []
+        },
+        {
+          "affected_member_count": 19,
+          "affected_snapshot_row_count": 38,
+          "deterministic_sample": [
+            {
+              "extract_date": "2026-04-30",
+              "member_id": "M000552",
+              "source_file": "members.csv",
+              "source_row_number": 2155,
+              "value_present": true
+            },
+            {
+              "extract_date": "2026-06-30",
+              "member_id": "M000552",
+              "source_file": "members.csv",
+              "source_row_number": 5243,
+              "value_present": true
+            },
+            {
+              "extract_date": "2026-04-30",
+              "member_id": "M000708",
+              "source_file": "members.csv",
+              "source_row_number": 551,
+              "value_present": true
+            }
+          ],
+          "field_name": "birth_date",
+          "source_file_distribution": [
+            {
+              "affected_event_row_count": 38,
+              "source_file": "members.csv"
+            }
+          ]
+        },
+        {
+          "affected_member_count": 0,
+          "affected_snapshot_row_count": 0,
+          "deterministic_sample": [],
+          "field_name": "register_date",
+          "source_file_distribution": []
+        }
+      ]
+    },
+    {
+      "affected_business_key_count": 803,
+      "affected_row_count": 804,
+      "business_impact": "後續歷史維度若覆寫會遺失可分析的會員狀態變化。",
+      "dataset": "members",
+      "description": "相鄰快照的 member_level 或 city 發生變化",
+      "detection_severity": "INFO",
+      "detector": "sql/quality_checks.sql#MEM-010",
+      "deterministic_sample": [
+        {
+          "city": "台南市",
+          "extract_date": "2026-06-30",
+          "member_id": "M000003",
+          "member_level": "銀卡",
+          "prior_city": "台南市",
+          "prior_level": "一般",
+          "source_file": "members.csv",
+          "source_row_number": 2250
+        },
+        {
+          "city": "桃園市",
+          "extract_date": "2026-06-30",
+          "member_id": "M000024",
+          "member_level": "金卡",
+          "prior_city": "彰化縣",
+          "prior_level": "金卡",
+          "source_file": "members.csv",
+          "source_row_number": 5650
+        },
+        {
+          "city": "新竹市",
+          "extract_date": "2026-05-31",
+          "member_id": "M000034",
+          "member_level": "金卡",
+          "prior_city": "高雄市",
+          "prior_level": "金卡",
+          "source_file": "members.csv",
+          "source_row_number": 1
+        }
+      ],
+      "disposition_status": "proposed_pending_human_acceptance",
+      "finding_type": "EXPECTED_CONDITION",
+      "issue_id": "MEM-010",
+      "pending_human_decision": "人工決策採 Phase 2 候選 SCD2 tracked attributes；本階段只 ACCEPT 與量化。",
+      "post_treatment_validation_proposal": "Phase 2 以版本測試覆蓋所有已觀察 attribute change。",
+      "proposed_disposition": "ACCEPT",
+      "rationale": "本檢查只量化變化，不建立 SCD2 或指定 tracked attributes。"
+    },
+    {
+      "affected_business_key_count": 0,
+      "affected_row_count": 0,
+      "business_impact": "重複計算訂單、數量與金額。",
+      "dataset": "orders",
+      "description": "完全相同的訂單事件列重複出現",
+      "detection_severity": "ERROR",
+      "detector": "sql/quality_checks.sql#ORD-001",
+      "deterministic_sample": [],
+      "disposition_status": "proposed_pending_human_acceptance",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "ORD-001",
+      "pending_human_decision": "確認完全重複事件的 deterministic winner policy。",
+      "post_treatment_validation_proposal": "去重候選集合、winner 與 loser count 可重現。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "Phase 1 不直接去重；先保留所有 lineage。"
+    },
+    {
+      "affected_business_key_count": 1889,
+      "affected_row_count": 3799,
+      "business_impact": "若直接當 fact 載入會重複計算；也可能只是合法狀態歷史。",
+      "dataset": "orders",
+      "description": "同一 order_id 有多筆事件",
+      "detection_severity": "INFO",
+      "detector": "sql/quality_checks.sql#ORD-002",
+      "deterministic_sample": [
+        {
+          "event_count": 2,
+          "order_id": "ORD00000028",
+          "order_status": "paid",
+          "source_file": "orders_base.csv",
+          "updated_at": "2026-05-12T21:09:40+08:00"
+        },
+        {
+          "event_count": 2,
+          "order_id": "ORD00000028",
+          "order_status": "cancelled",
+          "source_file": "orders_incremental_day3.csv",
+          "updated_at": "2026-07-03T11:11:03+08:00"
+        },
+        {
+          "event_count": 2,
+          "order_id": "ORD00000052",
+          "order_status": "completed",
+          "source_file": "orders_base.csv",
+          "updated_at": "2026-06-03T11:54:39+08:00"
+        }
+      ],
+      "disposition_status": "proposed_pending_human_acceptance",
+      "finding_type": "EXPECTED_CONDITION",
+      "issue_id": "ORD-002",
+      "pending_human_decision": "確認 latest-state grain 與保留事件歷史的方式。",
+      "post_treatment_validation_proposal": "每個 order 的事件序列與 latest candidate 可重現。",
+      "proposed_disposition": "ACCEPT",
+      "rationale": "題目明示增量可包含狀態更新。"
+    },
+    {
+      "affected_business_key_count": 0,
+      "affected_row_count": 0,
+      "business_impact": "沒有額外 tie-breaker 時 latest state 不唯一。",
+      "dataset": "orders",
+      "description": "同一 order_id、updated_at 有不同 payload",
+      "detection_severity": "CRITICAL",
+      "detector": "sql/quality_checks.sql#ORD-003",
+      "deterministic_sample": [],
+      "disposition_status": "proposed_pending_human_acceptance",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "ORD-003",
+      "pending_human_decision": "決定是否有上游 sequence 或其他權威 tie-breaker。",
+      "post_treatment_validation_proposal": "所有同時點衝突均被隔離或以核准規則唯一決定。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "相同業務時間無法可靠決定勝出事件。"
+    },
+    {
+      "affected_business_key_count": 1796,
+      "affected_row_count": 3613,
+      "business_impact": "可能把不同業務實體或錯誤修訂合併。",
+      "dataset": "orders",
+      "description": "同一 order_id 的 invariant candidate 欄位衝突",
+      "detection_severity": "ERROR",
+      "detector": "sql/quality_checks.sql#ORD-004",
+      "deterministic_sample": [
+        {
+          "currency": "TWD",
+          "member_id": "M002849",
+          "order_created_at": "2026-05-12T06:47:40+08:00",
+          "order_id": "ORD00000028",
+          "product_id": "P00187",
+          "source_file": "orders_base.csv",
+          "source_row_number": 41419
+        },
+        {
+          "currency": "TWD",
+          "member_id": "M000981",
+          "order_created_at": "2026-06-28T13:30:18+08:00",
+          "order_id": "ORD00000028",
+          "product_id": "P00010",
+          "source_file": "orders_incremental_day3.csv",
+          "source_row_number": 2833
+        },
+        {
+          "currency": "TWD",
+          "member_id": "M002184",
+          "order_created_at": "2026-05-31T19:43:39+08:00",
+          "order_id": "ORD00000052",
+          "product_id": "P00277",
+          "source_file": "orders_base.csv",
+          "source_row_number": 29501
+        }
+      ],
+      "disposition_status": "proposed_pending_human_acceptance",
+      "finding_type": "DATA_QUALITY_ISSUE",
+      "issue_id": "ORD-004",
+      "pending_human_decision": "QUARANTINE 整個衝突 order business key；保留所有 raw events。",
+      "post_treatment_validation_proposal": "每個衝突 key 均整組隔離；不得用 row order 或 row hash 宣稱業務正確 winner。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "同 business key 的非狀態欄位衝突無 correction event type 或權威 sequence。",
+      "supporting_analysis": [
+        {
+          "affected_event_row_count": 3597,
+          "affected_order_count": 1788,
+          "deterministic_sample": [
+            {
+              "field_value": "M002849",
+              "order_id": "ORD00000028",
+              "source_file": "orders_base.csv",
+              "source_row_number": 41419
+            },
+            {
+              "field_value": "M000981",
+              "order_id": "ORD00000028",
+              "source_file": "orders_incremental_day3.csv",
+              "source_row_number": 2833
+            },
+            {
+              "field_value": "M002184",
+              "order_id": "ORD00000052",
+              "source_file": "orders_base.csv",
+              "source_row_number": 29501
+            }
+          ],
+          "field_name": "member_id",
+          "source_file_distribution": [
+            {
+              "affected_event_row_count": 1789,
+              "source_file": "orders_base.csv"
+            },
+            {
+              "affected_event_row_count": 603,
+              "source_file": "orders_incremental_day1.csv"
+            },
+            {
+              "affected_event_row_count": 602,
+              "source_file": "orders_incremental_day2.csv"
+            },
+            {
+              "affected_event_row_count": 603,
+              "source_file": "orders_incremental_day3.csv"
+            }
+          ]
+        },
+        {
+          "affected_event_row_count": 3587,
+          "affected_order_count": 1783,
+          "deterministic_sample": [
+            {
+              "field_value": "P00187",
+              "order_id": "ORD00000028",
+              "source_file": "orders_base.csv",
+              "source_row_number": 41419
+            },
+            {
+              "field_value": "P00010",
+              "order_id": "ORD00000028",
+              "source_file": "orders_incremental_day3.csv",
+              "source_row_number": 2833
+            },
+            {
+              "field_value": "P00277",
+              "order_id": "ORD00000052",
+              "source_file": "orders_base.csv",
+              "source_row_number": 29501
+            }
+          ],
+          "field_name": "product_id",
+          "source_file_distribution": [
+            {
+              "affected_event_row_count": 1784,
+              "source_file": "orders_base.csv"
+            },
+            {
+              "affected_event_row_count": 600,
+              "source_file": "orders_incremental_day1.csv"
+            },
+            {
+              "affected_event_row_count": 601,
+              "source_file": "orders_incremental_day2.csv"
+            },
+            {
+              "affected_event_row_count": 602,
+              "source_file": "orders_incremental_day3.csv"
+            }
+          ]
+        },
+        {
+          "affected_event_row_count": 2716,
+          "affected_order_count": 1350,
+          "deterministic_sample": [
+            {
+              "field_value": "web",
+              "order_id": "ORD00000052",
+              "source_file": "orders_base.csv",
+              "source_row_number": 29501
+            },
+            {
+              "field_value": "電銷",
+              "order_id": "ORD00000052",
+              "source_file": "orders_incremental_day3.csv",
+              "source_row_number": 445
+            },
+            {
+              "field_value": "web",
+              "order_id": "ORD00000082",
+              "source_file": "orders_base.csv",
+              "source_row_number": 7274
+            }
+          ],
+          "field_name": "channel",
+          "source_file_distribution": [
+            {
+              "affected_event_row_count": 1351,
+              "source_file": "orders_base.csv"
+            },
+            {
+              "affected_event_row_count": 448,
+              "source_file": "orders_incremental_day1.csv"
+            },
+            {
+              "affected_event_row_count": 442,
+              "source_file": "orders_incremental_day2.csv"
+            },
+            {
+              "affected_event_row_count": 475,
+              "source_file": "orders_incremental_day3.csv"
+            }
+          ]
+        },
+        {
+          "affected_event_row_count": 2718,
+          "affected_order_count": 1350,
+          "deterministic_sample": [
+            {
+              "field_value": "4",
+              "order_id": "ORD00000028",
+              "source_file": "orders_base.csv",
+              "source_row_number": 41419
+            },
+            {
+              "field_value": "1",
+              "order_id": "ORD00000028",
+              "source_file": "orders_incremental_day3.csv",
+              "source_row_number": 2833
+            },
+            {
+              "field_value": "2",
+              "order_id": "ORD00000052",
+              "source_file": "orders_base.csv",
+              "source_row_number": 29501
+            }
+          ],
+          "field_name": "quantity",
+          "source_file_distribution": [
+            {
+              "affected_event_row_count": 1351,
+              "source_file": "orders_base.csv"
+            },
+            {
+              "affected_event_row_count": 455,
+              "source_file": "orders_incremental_day1.csv"
+            },
+            {
+              "affected_event_row_count": 453,
+              "source_file": "orders_incremental_day2.csv"
+            },
+            {
+              "affected_event_row_count": 459,
+              "source_file": "orders_incremental_day3.csv"
+            }
+          ]
+        },
+        {
+          "affected_event_row_count": 1778,
+          "affected_order_count": 883,
+          "deterministic_sample": [
+            {
+              "field_value": "TWD",
+              "order_id": "ORD00000052",
+              "source_file": "orders_base.csv",
+              "source_row_number": 29501
+            },
+            {
+              "field_value": "USD",
+              "order_id": "ORD00000052",
+              "source_file": "orders_incremental_day3.csv",
+              "source_row_number": 445
+            },
+            {
+              "field_value": "TWD",
+              "order_id": "ORD00000082",
+              "source_file": "orders_base.csv",
+              "source_row_number": 7274
+            }
+          ],
+          "field_name": "currency",
+          "source_file_distribution": [
+            {
+              "affected_event_row_count": 884,
+              "source_file": "orders_base.csv"
+            },
+            {
+              "affected_event_row_count": 293,
+              "source_file": "orders_incremental_day1.csv"
+            },
+            {
+              "affected_event_row_count": 293,
+              "source_file": "orders_incremental_day2.csv"
+            },
+            {
+              "affected_event_row_count": 308,
+              "source_file": "orders_incremental_day3.csv"
+            }
+          ]
+        },
+        {
+          "affected_event_row_count": 3597,
+          "affected_order_count": 1788,
+          "deterministic_sample": [
+            {
+              "field_value": "122442.0",
+              "order_id": "ORD00000028",
+              "source_file": "orders_base.csv",
+              "source_row_number": 41419
+            },
+            {
+              "field_value": "111804.0",
+              "order_id": "ORD00000028",
+              "source_file": "orders_incremental_day3.csv",
+              "source_row_number": 2833
+            },
+            {
+              "field_value": "270801.0",
+              "order_id": "ORD00000052",
+              "source_file": "orders_base.csv",
+              "source_row_number": 29501
+            }
+          ],
+          "field_name": "amount",
+          "source_file_distribution": [
+            {
+              "affected_event_row_count": 1789,
+              "source_file": "orders_base.csv"
+            },
+            {
+              "affected_event_row_count": 603,
+              "source_file": "orders_incremental_day1.csv"
+            },
+            {
+              "affected_event_row_count": 602,
+              "source_file": "orders_incremental_day2.csv"
+            },
+            {
+              "affected_event_row_count": 603,
+              "source_file": "orders_incremental_day3.csv"
+            }
+          ]
+        },
+        {
+          "affected_event_row_count": 3403,
+          "affected_order_count": 1691,
+          "deterministic_sample": [
+            {
+              "field_value": "350.0",
+              "order_id": "ORD00000028",
+              "source_file": "orders_base.csv",
+              "source_row_number": 41419
+            },
+            {
+              "field_value": "600.0",
+              "order_id": "ORD00000028",
+              "source_file": "orders_incremental_day3.csv",
+              "source_row_number": 2833
+            },
+            {
+              "field_value": "350.0",
+              "order_id": "ORD00000052",
+              "source_file": "orders_base.csv",
+              "source_row_number": 29501
+            }
+          ],
+          "field_name": "coupon_discount",
+          "source_file_distribution": [
+            {
+              "affected_event_row_count": 1692,
+              "source_file": "orders_base.csv"
+            },
+            {
+              "affected_event_row_count": 576,
+              "source_file": "orders_incremental_day1.csv"
+            },
+            {
+              "affected_event_row_count": 570,
+              "source_file": "orders_incremental_day2.csv"
+            },
+            {
+              "affected_event_row_count": 565,
+              "source_file": "orders_incremental_day3.csv"
+            }
+          ]
+        },
+        {
+          "affected_event_row_count": 3613,
+          "affected_order_count": 1796,
+          "deterministic_sample": [
+            {
+              "field_value": "2026-05-12T06:47:40+08:00",
+              "order_id": "ORD00000028",
+              "source_file": "orders_base.csv",
+              "source_row_number": 41419
+            },
+            {
+              "field_value": "2026-06-28T13:30:18+08:00",
+              "order_id": "ORD00000028",
+              "source_file": "orders_incremental_day3.csv",
+              "source_row_number": 2833
+            },
+            {
+              "field_value": "2026-05-31T19:43:39+08:00",
+              "order_id": "ORD00000052",
+              "source_file": "orders_base.csv",
+              "source_row_number": 29501
+            }
+          ],
+          "field_name": "order_created_at",
+          "source_file_distribution": [
+            {
+              "affected_event_row_count": 1805,
+              "source_file": "orders_base.csv"
+            },
+            {
+              "affected_event_row_count": 603,
+              "source_file": "orders_incremental_day1.csv"
+            },
+            {
+              "affected_event_row_count": 602,
+              "source_file": "orders_incremental_day2.csv"
+            },
+            {
+              "affected_event_row_count": 603,
+              "source_file": "orders_incremental_day3.csv"
+            }
+          ]
+        },
+        {
+          "affected_event_row_count": 3567,
+          "affected_order_count": 1773,
+          "deterministic_sample": [
+            {
+              "field_value": "2026-06-20",
+              "order_id": "ORD00000028",
+              "source_file": "orders_base.csv",
+              "source_row_number": 41419
+            },
+            {
+              "field_value": "2026-09-28",
+              "order_id": "ORD00000028",
+              "source_file": "orders_incremental_day3.csv",
+              "source_row_number": 2833
+            },
+            {
+              "field_value": "2026-07-19",
+              "order_id": "ORD00000052",
+              "source_file": "orders_base.csv",
+              "source_row_number": 29501
+            }
+          ],
+          "field_name": "departure_date",
+          "source_file_distribution": [
+            {
+              "affected_event_row_count": 1774,
+              "source_file": "orders_base.csv"
+            },
+            {
+              "affected_event_row_count": 600,
+              "source_file": "orders_incremental_day1.csv"
+            },
+            {
+              "affected_event_row_count": 596,
+              "source_file": "orders_incremental_day2.csv"
+            },
+            {
+              "affected_event_row_count": 597,
+              "source_file": "orders_incremental_day3.csv"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "affected_business_key_count": 0,
+      "affected_row_count": 0,
+      "business_impact": "latest selection 可能受未定義排序影響。",
+      "dataset": "orders",
+      "description": "同一 order_id 的最大 updated_at 有多筆候選",
+      "detection_severity": "ERROR",
+      "detector": "sql/quality_checks.sql#ORD-005",
+      "deterministic_sample": [],
+      "disposition_status": "proposed_pending_human_acceptance",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "ORD-005",
+      "pending_human_decision": "確認相同 latest timestamp 的 duplicate/conflict policy。",
+      "post_treatment_validation_proposal": "每個 order 恰有一個 deterministic latest winner 或整組隔離。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "最大時間不保證唯一。"
+    },
+    {
+      "affected_business_key_count": 0,
+      "affected_row_count": 0,
+      "business_impact": "狀態分析與 transition 邏輯無法可靠執行。",
+      "dataset": "orders",
+      "description": "order_status 不在來源 contract domain",
+      "detection_severity": "ERROR",
+      "detector": "sql/quality_checks.sql#ORD-006",
+      "deterministic_sample": [],
+      "disposition_status": "proposed_pending_human_acceptance",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "ORD-006",
+      "pending_human_decision": "確認上游是否有合法新狀態或 alias。",
+      "post_treatment_validation_proposal": "未知狀態為 0 或全數有核准 mapping。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "未知狀態不可自行映射。"
+    },
+    {
+      "affected_business_key_count": 0,
+      "affected_row_count": 0,
+      "business_impact": "通路報表可能拆分類或漏列。",
+      "dataset": "orders",
+      "description": "channel 不在來源 contract domain",
+      "detection_severity": "WARNING",
+      "detector": "sql/quality_checks.sql#ORD-007",
+      "deterministic_sample": [],
+      "disposition_status": "proposed_pending_human_acceptance",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "ORD-007",
+      "pending_human_decision": "確認通路 alias 與 canonical value。",
+      "post_treatment_validation_proposal": "正規化後 channel 僅含核准 domain。",
+      "proposed_disposition": "NORMALIZE",
+      "rationale": "可能是大小寫或 alias，但需人工確認。"
+    },
+    {
+      "affected_business_key_count": 0,
+      "affected_row_count": 0,
+      "business_impact": "訂單量與金額延伸計算不可信。",
+      "dataset": "orders",
+      "description": "quantity 無法解析為整數或不為正數",
+      "detection_severity": "ERROR",
+      "detector": "sql/quality_checks.sql#ORD-008",
+      "deterministic_sample": [],
+      "disposition_status": "proposed_pending_human_acceptance",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "ORD-008",
+      "pending_human_decision": "確認 quantity 是否允許零或退貨負數。",
+      "post_treatment_validation_proposal": "curated 候選 quantity 均為核准範圍內整數。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "無法由其他欄位權威推導。"
+    },
+    {
+      "affected_business_key_count": 200,
+      "affected_row_count": 200,
+      "business_impact": "若不正規化會造成 FX join 缺口；若任意套 rate 1 則可能誤換未知幣別。",
+      "dataset": "orders",
+      "description": "raw currency NTD 需要來源限定的 TWD alias 正規化",
+      "detection_severity": "WARNING",
+      "detector": "sql/quality_checks.sql#ORD-009",
+      "deterministic_sample": [
+        {
+          "currency": "NTD",
+          "order_id": "ORD00000163",
+          "source_file": "orders_base.csv",
+          "source_row_number": 64122
+        },
+        {
+          "currency": "NTD",
+          "order_id": "ORD00000677",
+          "source_file": "orders_base.csv",
+          "source_row_number": 82419
+        },
+        {
+          "currency": "NTD",
+          "order_id": "ORD00001771",
+          "source_file": "orders_base.csv",
+          "source_row_number": 44577
+        }
+      ],
+      "disposition_status": "proposed_pending_human_acceptance",
+      "finding_type": "DATA_QUALITY_ISSUE",
+      "issue_id": "ORD-009",
+      "pending_human_decision": "此 mapping 已核准為 Phase 2 候選，但 Phase 1 不實作 ETL。",
+      "post_treatment_validation_proposal": "canonical currency 為 TWD、raw currency 保留，其他 missing FX 不得 COALESCE 為 1。",
+      "proposed_disposition": "NORMALIZE",
+      "rationale": "人工決策核准 NTD → TWD，保留 raw currency；只有 TWD/NTD 可使用 rate 1。"
+    },
+    {
+      "affected_business_key_count": 50,
+      "affected_row_count": 50,
+      "business_impact": "收入及金額 reconciliation 不可信。",
+      "dataset": "orders",
+      "description": "amount 無法解析為 Decimal 或不為正數",
+      "detection_severity": "ERROR",
+      "detector": "sql/quality_checks.sql#ORD-010",
+      "deterministic_sample": [
+        {
+          "amount": "-172833.0",
+          "currency": "TWD",
+          "order_id": "ORD00000900",
+          "source_file": "orders_base.csv",
+          "source_row_number": 54026
+        },
+        {
+          "amount": "-216020.0",
+          "currency": "TWD",
+          "order_id": "ORD00002319",
+          "source_file": "orders_base.csv",
+          "source_row_number": 7658
+        },
+        {
+          "amount": "-26515.0",
+          "currency": "TWD",
+          "order_id": "ORD00002817",
+          "source_file": "orders_base.csv",
+          "source_row_number": 77949
+        }
+      ],
+      "disposition_status": "proposed_pending_human_acceptance",
+      "finding_type": "DATA_QUALITY_ISSUE",
+      "issue_id": "ORD-010",
+      "pending_human_decision": "確認零額訂單及負數退款是否可能。",
+      "post_treatment_validation_proposal": "接受資料的 amount 均可精確解析且符合核准 domain。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "金額不可用 binary float 或猜測修補。"
+    },
+    {
+      "affected_business_key_count": 300,
+      "affected_row_count": 300,
+      "business_impact": "net amount 可能被高估或低估。",
+      "dataset": "orders",
+      "description": "coupon_discount 無法解析為 Decimal 或為負數",
+      "detection_severity": "ERROR",
+      "detector": "sql/quality_checks.sql#ORD-011",
+      "deterministic_sample": [
+        {
+          "coupon_discount": "-1.0",
+          "order_id": "ORD00000203",
+          "source_file": "orders_base.csv",
+          "source_row_number": 30059
+        },
+        {
+          "coupon_discount": "-1.0",
+          "order_id": "ORD00000392",
+          "source_file": "orders_base.csv",
+          "source_row_number": 60767
+        },
+        {
+          "coupon_discount": "-1.0",
+          "order_id": "ORD00000576",
+          "source_file": "orders_base.csv",
+          "source_row_number": 57310
+        }
+      ],
+      "disposition_status": "proposed_pending_human_acceptance",
+      "finding_type": "DATA_QUALITY_ISSUE",
+      "issue_id": "ORD-011",
+      "pending_human_decision": "確認負折扣、補款與 coupon 單位語意。",
+      "post_treatment_validation_proposal": "折扣均可精確解析並符合核准 domain。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "折扣語意需保守處理。"
+    },
+    {
+      "affected_business_key_count": 3001,
+      "affected_row_count": 3001,
+      "business_impact": "未正規化會使事件排序、FX business date 與 as-of 分析使用不一致 timezone。",
+      "dataset": "orders",
+      "description": "order timestamp 不符合 canonical 帶 offset ISO 8601 raw format",
+      "detection_severity": "WARNING",
+      "detector": "sql/quality_checks.sql#ORD-012",
+      "deterministic_sample": [
+        {
+          "departure_date": "2026-06-28",
+          "order_created_at": "2026/06/04 23:15:37",
+          "order_id": "ORD00000008",
+          "source_file": "orders_base.csv",
+          "source_row_number": 81712,
+          "updated_at": "2026-06-06T04:45:37+08:00"
+        },
+        {
+          "departure_date": "2026-06-24",
+          "order_created_at": "2026/06/09 05:47:42",
+          "order_id": "ORD00000027",
+          "source_file": "orders_base.csv",
+          "source_row_number": 80031,
+          "updated_at": "2026-06-10T00:36:42+08:00"
+        },
+        {
+          "departure_date": "2026-08-09",
+          "order_created_at": "2026/05/05 22:57:01",
+          "order_id": "ORD00000039",
+          "source_file": "orders_base.csv",
+          "source_row_number": 32593,
+          "updated_at": "2026-05-07T09:17:01+08:00"
+        }
+      ],
+      "disposition_status": "proposed_pending_human_acceptance",
+      "finding_type": "DATA_QUALITY_ISSUE",
+      "issue_id": "ORD-012",
+      "pending_human_decision": "規則只限本題來源；保留 raw value 並加 timezone_assumed=true。",
+      "post_treatment_validation_proposal": "canonical type 為 TIMESTAMPTZ；欄位別 noncanonical count 與 flag count 一致。",
+      "proposed_disposition": "NORMALIZE",
+      "rationale": "本來源的 YYYY/MM/DD HH:MM:SS 依台灣業務與 updated_at +08:00 證據補 Asia/Taipei。",
+      "supporting_analysis": [
+        {
+          "affected_event_row_count": 3001,
+          "affected_order_count": 3001,
+          "deterministic_sample": [
+            {
+              "observed_raw_format": "YYYY/MM/DD HH:MM:SS",
+              "order_id": "ORD00000008",
+              "raw_value": "2026/06/04 23:15:37",
+              "source_file": "orders_base.csv",
+              "source_row_number": 81712
+            },
+            {
+              "observed_raw_format": "YYYY/MM/DD HH:MM:SS",
+              "order_id": "ORD00000027",
+              "raw_value": "2026/06/09 05:47:42",
+              "source_file": "orders_base.csv",
+              "source_row_number": 80031
+            },
+            {
+              "observed_raw_format": "YYYY/MM/DD HH:MM:SS",
+              "order_id": "ORD00000039",
+              "raw_value": "2026/05/05 22:57:01",
+              "source_file": "orders_base.csv",
+              "source_row_number": 32593
+            }
+          ],
+          "field_name": "order_created_at",
+          "observed_raw_formats": [
+            "YYYY/MM/DD HH:MM:SS"
+          ],
+          "source_file_distribution": [
+            {
+              "affected_event_row_count": 3001,
+              "source_file": "orders_base.csv"
+            }
+          ]
+        },
+        {
+          "affected_event_row_count": 0,
+          "affected_order_count": 0,
+          "deterministic_sample": [],
+          "field_name": "updated_at",
+          "observed_raw_formats": [],
+          "source_file_distribution": []
+        }
+      ]
+    },
+    {
+      "affected_business_key_count": 0,
+      "affected_row_count": 0,
+      "business_impact": "事件時間線不可能或來源時鐘語意不一致。",
+      "dataset": "orders",
+      "description": "updated_at 早於 order_created_at",
+      "detection_severity": "ERROR",
+      "detector": "sql/quality_checks.sql#ORD-013",
+      "deterministic_sample": [],
+      "disposition_status": "proposed_pending_human_acceptance",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "ORD-013",
+      "pending_human_decision": "確認 updated_at 的上游語意與 timezone。",
+      "post_treatment_validation_proposal": "異常時間線全數依核准策略處理。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "不應自行交換時間。"
+    },
+    {
+      "affected_business_key_count": 0,
+      "affected_row_count": 0,
+      "business_impact": "旅遊履約與 lead-time 分析失真。",
+      "dataset": "orders",
+      "description": "departure_date 早於 order 建立日期",
+      "detection_severity": "ERROR",
+      "detector": "sql/quality_checks.sql#ORD-014",
+      "deterministic_sample": [],
+      "disposition_status": "proposed_pending_human_acceptance",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "ORD-014",
+      "pending_human_decision": "確認是否允許事後補登訂單。",
+      "post_treatment_validation_proposal": "負 lead-time 全數有明確處理結果。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "可能是錯誤日期或特殊補登，需確認。"
+    },
+    {
+      "affected_business_key_count": 0,
+      "affected_row_count": 0,
+      "business_impact": "會員維度關聯及會員分析會缺失。",
+      "dataset": "orders",
+      "description": "order 的 member_id 不存在於會員來源",
+      "detection_severity": "ERROR",
+      "detector": "sql/quality_checks.sql#ORD-015",
+      "deterministic_sample": [],
+      "disposition_status": "proposed_pending_human_acceptance",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "ORD-015",
+      "pending_human_decision": "決定 unknown member 或 quarantine 策略。",
+      "post_treatment_validation_proposal": "所有接受 order 可關聯會員，或明確對應核准 unknown。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "Phase 1 不先建立 unknown member。"
+    },
+    {
+      "affected_business_key_count": 120,
+      "affected_row_count": 120,
+      "business_impact": "產品維度關聯及營收分析會缺失。",
+      "dataset": "orders",
+      "description": "order 的 product_id 不存在於產品來源",
+      "detection_severity": "ERROR",
+      "detector": "sql/quality_checks.sql#ORD-016",
+      "deterministic_sample": [
+        {
+          "order_id": "ORD00003151",
+          "product_id": "P95718",
+          "source_file": "orders_base.csv",
+          "source_row_number": 76687
+        },
+        {
+          "order_id": "ORD00004247",
+          "product_id": "P93453",
+          "source_file": "orders_base.csv",
+          "source_row_number": 29394
+        },
+        {
+          "order_id": "ORD00004396",
+          "product_id": "P98236",
+          "source_file": "orders_base.csv",
+          "source_row_number": 16671
+        }
+      ],
+      "disposition_status": "proposed_pending_human_acceptance",
+      "finding_type": "DATA_QUALITY_ISSUE",
+      "issue_id": "ORD-016",
+      "pending_human_decision": "Phase 1 不建立 Unknown Product，也不因 reference missing 刪除 order。",
+      "post_treatment_validation_proposal": "所有 missing reference 保留 flag，Phase 2 可關聯唯一 Unknown Product candidate。",
+      "proposed_disposition": "ACCEPT",
+      "rationale": "保留 raw order；Phase 2 候選使用 Unknown Product surrogate key 加 quality flag。"
+    },
+    {
+      "affected_business_key_count": 0,
+      "affected_row_count": 0,
+      "business_impact": "TWD 金額無法依候選日期規則換算。",
+      "dataset": "orders",
+      "description": "非 TWD order 在 order_created_date 找不到 FX rate",
+      "detection_severity": "ERROR",
+      "detector": "sql/quality_checks.sql#ORD-017",
+      "deterministic_sample": [],
+      "disposition_status": "proposed_pending_human_acceptance",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "ORD-017",
+      "pending_human_decision": "確認 FX date、TWD 處理與 missing-rate policy。",
+      "post_treatment_validation_proposal": "依核准 FX 規則後 coverage 為 100% 或全數隔離。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "檢查採候選 FX date，尚非正式 ETL 規則。"
+    },
+    {
+      "affected_business_key_count": 366,
+      "affected_row_count": 368,
+      "business_impact": "可能是合法 correction、重開、亂序或 ID collision；題目未提供正式 state machine。",
+      "dataset": "orders",
+      "description": "候選 terminal-looking status 後仍出現不同狀態的 transition",
+      "detection_severity": "WARNING",
+      "detector": "sql/quality_checks.sql#ORD-018",
+      "deterministic_sample": [
+        {
+          "order_id": "ORD00000297",
+          "order_status": "cancelled",
+          "prior_status": "completed",
+          "source_file": "orders_incremental_day2.csv",
+          "source_row_number": 4061,
+          "updated_at": "2026-07-02T15:54:50+08:00"
+        },
+        {
+          "order_id": "ORD00000398",
+          "order_status": "completed",
+          "prior_status": "cancelled",
+          "source_file": "orders_incremental_day1.csv",
+          "source_row_number": 1846,
+          "updated_at": "2026-07-01T10:55:38+08:00"
+        },
+        {
+          "order_id": "ORD00000405",
+          "order_status": "cancelled",
+          "prior_status": "completed",
+          "source_file": "orders_incremental_day1.csv",
+          "source_row_number": 986,
+          "updated_at": "2026-07-01T05:52:47+08:00"
+        }
+      ],
+      "disposition_status": "proposed_pending_human_acceptance",
+      "finding_type": "DATA_QUALITY_ISSUE",
+      "issue_id": "ORD-018",
+      "pending_human_decision": "需要上游正式 state machine；不得宣稱 completed/cancelled 絕對 terminal。",
+      "post_treatment_validation_proposal": "取得正式 state machine 後再對 transition pair 分類，現階段不 quarantine。",
+      "proposed_disposition": "ACCEPT",
+      "rationale": "不使用線性 rank；完整 transition pairs 只作 profiling evidence。",
+      "supporting_analysis": [
+        {
+          "affected_order_count": 120,
+          "deterministic_sample": [
+            {
+              "order_id": "ORD00001033",
+              "source_file": "orders_incremental_day1.csv",
+              "source_row_number": 2576,
+              "updated_at": "2026-07-01T00:48:31+08:00"
+            },
+            {
+              "order_id": "ORD00002088",
+              "source_file": "orders_incremental_day1.csv",
+              "source_row_number": 949,
+              "updated_at": "2026-07-01T23:05:50+08:00"
+            },
+            {
+              "order_id": "ORD00005351",
+              "source_file": "orders_incremental_day2.csv",
+              "source_row_number": 4120,
+              "updated_at": "2026-07-02T23:54:07+08:00"
+            }
+          ],
+          "event_count": 121,
+          "from_status": "cancelled",
+          "to_status": "cancelled"
+        },
+        {
+          "affected_order_count": 122,
+          "deterministic_sample": [
+            {
+              "order_id": "ORD00000398",
+              "source_file": "orders_incremental_day1.csv",
+              "source_row_number": 1846,
+              "updated_at": "2026-07-01T10:55:38+08:00"
+            },
+            {
+              "order_id": "ORD00001782",
+              "source_file": "orders_incremental_day2.csv",
+              "source_row_number": 2831,
+              "updated_at": "2026-07-02T10:58:56+08:00"
+            },
+            {
+              "order_id": "ORD00003136",
+              "source_file": "orders_incremental_day2.csv",
+              "source_row_number": 75,
+              "updated_at": "2026-07-02T19:57:53+08:00"
+            }
+          ],
+          "event_count": 122,
+          "from_status": "cancelled",
+          "to_status": "completed"
+        },
+        {
+          "affected_order_count": 4,
+          "deterministic_sample": [
+            {
+              "order_id": "ORD00018759",
+              "source_file": "orders_base.csv",
+              "source_row_number": 64207,
+              "updated_at": "2026-07-01T14:25:09+08:00"
+            },
+            {
+              "order_id": "ORD00019788",
+              "source_file": "orders_base.csv",
+              "source_row_number": 23904,
+              "updated_at": "2026-07-02T05:16:23+08:00"
+            },
+            {
+              "order_id": "ORD00048848",
+              "source_file": "orders_base.csv",
+              "source_row_number": 63985,
+              "updated_at": "2026-07-02T16:47:08+08:00"
+            }
+          ],
+          "event_count": 4,
+          "from_status": "cancelled",
+          "to_status": "paid"
+        },
+        {
+          "affected_order_count": 238,
+          "deterministic_sample": [
+            {
+              "order_id": "ORD00000297",
+              "source_file": "orders_incremental_day2.csv",
+              "source_row_number": 4061,
+              "updated_at": "2026-07-02T15:54:50+08:00"
+            },
+            {
+              "order_id": "ORD00000405",
+              "source_file": "orders_incremental_day1.csv",
+              "source_row_number": 986,
+              "updated_at": "2026-07-01T05:52:47+08:00"
+            },
+            {
+              "order_id": "ORD00001132",
+              "source_file": "orders_incremental_day3.csv",
+              "source_row_number": 2026,
+              "updated_at": "2026-07-03T12:25:48+08:00"
+            }
+          ],
+          "event_count": 238,
+          "from_status": "completed",
+          "to_status": "cancelled"
+        },
+        {
+          "affected_order_count": 262,
+          "deterministic_sample": [
+            {
+              "order_id": "ORD00000052",
+              "source_file": "orders_incremental_day3.csv",
+              "source_row_number": 445,
+              "updated_at": "2026-07-03T02:34:03+08:00"
+            },
+            {
+              "order_id": "ORD00000329",
+              "source_file": "orders_incremental_day2.csv",
+              "source_row_number": 2198,
+              "updated_at": "2026-07-02T14:40:22+08:00"
+            },
+            {
+              "order_id": "ORD00000650",
+              "source_file": "orders_base.csv",
+              "source_row_number": 83867,
+              "updated_at": "2026-07-03T06:37:09+08:00"
+            }
+          ],
+          "event_count": 265,
+          "from_status": "completed",
+          "to_status": "completed"
+        },
+        {
+          "affected_order_count": 1,
+          "deterministic_sample": [
+            {
+              "order_id": "ORD00031511",
+              "source_file": "orders_base.csv",
+              "source_row_number": 91166,
+              "updated_at": "2026-07-02T23:23:11+08:00"
+            }
+          ],
+          "event_count": 1,
+          "from_status": "completed",
+          "to_status": "created"
+        },
+        {
+          "affected_order_count": 3,
+          "deterministic_sample": [
+            {
+              "order_id": "ORD00058963",
+              "source_file": "orders_base.csv",
+              "source_row_number": 52717,
+              "updated_at": "2026-07-02T00:42:54+08:00"
+            },
+            {
+              "order_id": "ORD00068697",
+              "source_file": "orders_base.csv",
+              "source_row_number": 15214,
+              "updated_at": "2026-07-03T03:14:03+08:00"
+            },
+            {
+              "order_id": "ORD00088064",
+              "source_file": "orders_base.csv",
+              "source_row_number": 60341,
+              "updated_at": "2026-07-01T03:52:50+08:00"
+            }
+          ],
+          "event_count": 3,
+          "from_status": "completed",
+          "to_status": "paid"
+        },
+        {
+          "affected_order_count": 146,
+          "deterministic_sample": [
+            {
+              "order_id": "ORD00000390",
+              "source_file": "orders_incremental_day2.csv",
+              "source_row_number": 2762,
+              "updated_at": "2026-07-02T02:42:41+08:00"
+            },
+            {
+              "order_id": "ORD00000423",
+              "source_file": "orders_incremental_day2.csv",
+              "source_row_number": 2530,
+              "updated_at": "2026-07-02T21:34:56+08:00"
+            },
+            {
+              "order_id": "ORD00000842",
+              "source_file": "orders_incremental_day3.csv",
+              "source_row_number": 3674,
+              "updated_at": "2026-07-03T07:12:06+08:00"
+            }
+          ],
+          "event_count": 146,
+          "from_status": "created",
+          "to_status": "cancelled"
+        },
+        {
+          "affected_order_count": 147,
+          "deterministic_sample": [
+            {
+              "order_id": "ORD00000082",
+              "source_file": "orders_incremental_day3.csv",
+              "source_row_number": 2173,
+              "updated_at": "2026-07-03T17:31:09+08:00"
+            },
+            {
+              "order_id": "ORD00000386",
+              "source_file": "orders_incremental_day1.csv",
+              "source_row_number": 3103,
+              "updated_at": "2026-07-01T17:27:05+08:00"
+            },
+            {
+              "order_id": "ORD00003047",
+              "source_file": "orders_incremental_day3.csv",
+              "source_row_number": 1679,
+              "updated_at": "2026-07-03T04:08:56+08:00"
+            }
+          ],
+          "event_count": 147,
+          "from_status": "created",
+          "to_status": "completed"
+        },
+        {
+          "affected_order_count": 22,
+          "deterministic_sample": [
+            {
+              "order_id": "ORD00086847",
+              "source_file": "orders_base.csv",
+              "source_row_number": 29719,
+              "updated_at": "2026-06-04T16:22:29+08:00"
+            },
+            {
+              "order_id": "ORD00093042",
+              "source_file": "orders_base.csv",
+              "source_row_number": 36771,
+              "updated_at": "2026-05-24T23:18:33+08:00"
+            },
+            {
+              "order_id": "ORD00093371",
+              "source_file": "orders_base.csv",
+              "source_row_number": 79750,
+              "updated_at": "2026-06-13T22:22:00+08:00"
+            }
+          ],
+          "event_count": 22,
+          "from_status": "created",
+          "to_status": "created"
+        },
+        {
+          "affected_order_count": 407,
+          "deterministic_sample": [
+            {
+              "order_id": "ORD00000028",
+              "source_file": "orders_incremental_day3.csv",
+              "source_row_number": 2833,
+              "updated_at": "2026-07-03T11:11:03+08:00"
+            },
+            {
+              "order_id": "ORD00000389",
+              "source_file": "orders_incremental_day1.csv",
+              "source_row_number": 107,
+              "updated_at": "2026-07-01T16:38:59+08:00"
+            },
+            {
+              "order_id": "ORD00000414",
+              "source_file": "orders_incremental_day1.csv",
+              "source_row_number": 1235,
+              "updated_at": "2026-07-01T22:37:43+08:00"
+            }
+          ],
+          "event_count": 407,
+          "from_status": "paid",
+          "to_status": "cancelled"
+        },
+        {
+          "affected_order_count": 402,
+          "deterministic_sample": [
+            {
+              "order_id": "ORD00000187",
+              "source_file": "orders_incremental_day3.csv",
+              "source_row_number": 4505,
+              "updated_at": "2026-07-03T19:24:13+08:00"
+            },
+            {
+              "order_id": "ORD00000271",
+              "source_file": "orders_incremental_day1.csv",
+              "source_row_number": 1548,
+              "updated_at": "2026-07-01T05:10:40+08:00"
+            },
+            {
+              "order_id": "ORD00000584",
+              "source_file": "orders_incremental_day1.csv",
+              "source_row_number": 4270,
+              "updated_at": "2026-07-01T17:32:08+08:00"
+            }
+          ],
+          "event_count": 402,
+          "from_status": "paid",
+          "to_status": "completed"
+        },
+        {
+          "affected_order_count": 32,
+          "deterministic_sample": [
+            {
+              "order_id": "ORD00007259",
+              "source_file": "orders_base.csv",
+              "source_row_number": 80222,
+              "updated_at": "2026-05-27T12:49:05+08:00"
+            },
+            {
+              "order_id": "ORD00021154",
+              "source_file": "orders_base.csv",
+              "source_row_number": 40825,
+              "updated_at": "2026-06-02T14:22:38+08:00"
+            },
+            {
+              "order_id": "ORD00050281",
+              "source_file": "orders_base.csv",
+              "source_row_number": 54611,
+              "updated_at": "2026-05-26T08:41:45+08:00"
+            }
+          ],
+          "event_count": 32,
+          "from_status": "paid",
+          "to_status": "paid"
+        }
+      ]
+    },
+    {
+      "affected_business_key_count": 0,
+      "affected_row_count": 0,
+      "business_impact": "business key 或 reference join 可能失敗。",
+      "dataset": "orders",
+      "description": "order/member/product key 格式不符合候選 contract",
+      "detection_severity": "ERROR",
+      "detector": "sql/quality_checks.sql#ORD-019",
+      "deterministic_sample": [],
+      "disposition_status": "proposed_pending_human_acceptance",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "ORD-019",
+      "pending_human_decision": "確認是否存在合法 legacy key 格式。",
+      "post_treatment_validation_proposal": "所有接受 key 符合核准格式或具明確 mapping。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "不自行改寫來源 key。"
+    },
+    {
+      "affected_business_key_count": 0,
+      "affected_row_count": 0,
+      "business_impact": "若折扣單位確為 TWD，net amount 將為負數。",
+      "dataset": "orders",
+      "description": "coupon_discount 大於候選 FX 規則換算的 gross TWD",
+      "detection_severity": "ERROR",
+      "detector": "sql/quality_checks.sql#ORD-020",
+      "deterministic_sample": [],
+      "disposition_status": "proposed_pending_human_acceptance",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "ORD-020",
+      "pending_human_decision": "確認 amount 是否已含 quantity、FX date、rounding 與折扣語意。",
+      "post_treatment_validation_proposal": "依核准公式後所有負 net amount 均有明確處理。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "使用 Decimal 與 order_created_date rate 檢查，但金額公式尚待確認。"
+    },
+    {
+      "affected_business_key_count": 0,
+      "affected_row_count": 0,
+      "business_impact": "base 範圍 reconciliation 可能失真。",
+      "dataset": "orders",
+      "description": "base order_created_date 不在 README 宣告的 2026-05-01 至 2026-06-30",
+      "detection_severity": "ERROR",
+      "detector": "sql/quality_checks.sql#ORD-021",
+      "deterministic_sample": [],
+      "disposition_status": "proposed_pending_human_acceptance",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "ORD-021",
+      "pending_human_decision": "確認 base 範圍是否以建立日定義且邊界是否 inclusive。",
+      "post_treatment_validation_proposal": "base 接受資料均符合核准來源期間。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "base 日期範圍直接來自題目 README。"
+    },
+    {
+      "affected_business_key_count": 1873,
+      "affected_row_count": 1893,
+      "business_impact": "這可代表既有訂單狀態更新；若誤當新訂單會錯估新增量。",
+      "dataset": "orders",
+      "description": "incremental event 的 order_created_date 與 batch label date 不同",
+      "detection_severity": "INFO",
+      "detector": "sql/quality_checks.sql#ORD-022",
+      "deterministic_sample": [
+        {
+          "order_created_at": "2026-05-14T20:52:36+08:00",
+          "order_id": "ORD00000271",
+          "source_file": "orders_incremental_day1.csv",
+          "source_row_number": 1548
+        },
+        {
+          "order_created_at": "2026-05-28T04:06:02+08:00",
+          "order_id": "ORD00000386",
+          "source_file": "orders_incremental_day1.csv",
+          "source_row_number": 3103
+        },
+        {
+          "order_created_at": "2026-05-27T08:14:19+08:00",
+          "order_id": "ORD00000389",
+          "source_file": "orders_incremental_day1.csv",
+          "source_row_number": 107
+        }
+      ],
+      "disposition_status": "proposed_pending_human_acceptance",
+      "finding_type": "EXPECTED_CONDITION",
+      "issue_id": "ORD-022",
+      "pending_human_decision": "確認 batch date、event date 與 order created date 的正式語意。",
+      "post_treatment_validation_proposal": "增量流程分辨新訂單與既有訂單事件，且兩類筆數可 reconciliation。",
+      "proposed_disposition": "ACCEPT",
+      "rationale": "題目明示 incremental 可包含狀態更新，故先接受並量化。"
+    },
+    {
+      "affected_business_key_count": 40,
+      "affected_row_count": 40,
+      "business_impact": "可能是金額放大、單位錯誤或合法特殊價格；直接納入會扭曲營收。",
+      "dataset": "orders",
+      "description": "候選 gross TWD 不在產品牌價乘 quantity 的 0.5 至 2 倍",
+      "detection_severity": "WARNING",
+      "detector": "sql/quality_checks.sql#ORD-023",
+      "deterministic_sample": [
+        {
+          "candidate_base_total_twd": "136000.0000",
+          "candidate_gross_twd": "139475000.000000000000",
+          "currency": "TWD",
+          "order_id": "ORD00000467",
+          "source_file": "orders_base.csv",
+          "source_row_number": 28766
+        },
+        {
+          "candidate_base_total_twd": "471000.0000",
+          "candidate_gross_twd": "563976000.000000000000",
+          "currency": "TWD",
+          "order_id": "ORD00007345",
+          "source_file": "orders_base.csv",
+          "source_row_number": 22945
+        },
+        {
+          "candidate_base_total_twd": "375000.0000",
+          "candidate_gross_twd": "346305000.000000000000",
+          "currency": "TWD",
+          "order_id": "ORD00007843",
+          "source_file": "orders_base.csv",
+          "source_row_number": 85903
+        }
+      ],
+      "disposition_status": "proposed_pending_human_acceptance",
+      "finding_type": "DATA_QUALITY_ISSUE",
+      "issue_id": "ORD-023",
+      "pending_human_decision": "確認 amount 是否為整單金額、quantity 語意及合理價格容忍區間。",
+      "post_treatment_validation_proposal": "依核准價格規則重跑，所有 outlier 都有可追溯處理。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "以 Decimal 乘法做可重現 outlier detector，0.5–2 倍只是待核准候選範圍。",
+      "supporting_analysis": {
+        "amount_twd_formula": "DECIMAL(amount) * DECIMAL(rate_to_twd)",
+        "candidate_amount_semantics": "amount is the original-currency order-line total; FX conversion must not multiply quantity again",
+        "currency_handling": "TWD and source-specific NTD alias use exact rate 1; USD/JPY require dated FX; no COALESCE(missing_rate, 1)",
+        "distributions": [
+          {
+            "comparison_basis": "amount_twd/(base_price_twd*quantity)",
+            "eligible_order_count": 111892,
+            "eligible_row_count": 113800,
+            "extreme_order_count": 40,
+            "extreme_row_count": 40,
+            "maximum_ratio": "1235.46039604",
+            "median_ratio": "1.04953901",
+            "minimum_ratio": "0.83783549",
+            "p01_ratio": "0.85277161",
+            "p50_ratio": "1.04953901",
+            "p99_ratio": "1.24681058"
+          },
+          {
+            "comparison_basis": "amount_twd/base_price_twd",
+            "eligible_order_count": 111892,
+            "eligible_row_count": 113800,
+            "extreme_order_count": 73745,
+            "extreme_row_count": 74592,
+            "maximum_ratio": "4749.07860462",
+            "median_ratio": "2.49846026",
+            "minimum_ratio": "0.83783549",
+            "p01_ratio": "0.86594407",
+            "p50_ratio": "2.49846026",
+            "p99_ratio": "4.93238901"
+          }
+        ],
+        "fx_business_date": "Asia/Taipei date of normalized order_created_at; source-specific naive format is assigned Asia/Taipei with timezone_assumed=true",
+        "outlier_basis": "amount_twd/(base_price_twd*quantity)",
+        "outlier_threshold": {
+          "inclusive_maximum": "2.00000000",
+          "inclusive_minimum": "0.50000000"
+        },
+        "threshold_rationale": "A deliberately wide review band around reference price; base_price_twd is a reference, not a required transaction price. Validate against p01/p50/p99."
+      }
+    },
+    {
+      "affected_business_key_count": 0,
+      "affected_row_count": 0,
+      "business_impact": "出發日與 lead-time 分析可能失真。",
+      "dataset": "orders",
+      "description": "departure_date 無法解析為 canonical ISO date",
+      "detection_severity": "ERROR",
+      "detector": "sql/quality_checks.sql#ORD-024",
+      "deterministic_sample": [],
+      "disposition_status": "proposed_pending_human_acceptance",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "ORD-024",
+      "pending_human_decision": "來源沒有其他日期格式或修補規則；Phase 1 不自行補值。",
+      "post_treatment_validation_proposal": "所有接受 departure_date 均符合 YYYY-MM-DD 且可解析。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "將 date control 與 timestamp normalization finding 分離。"
+    },
+    {
+      "affected_business_key_count": 0,
+      "affected_row_count": 0,
+      "business_impact": "產品 join 可能倍增。",
+      "dataset": "products",
+      "description": "完全相同的產品列重複",
+      "detection_severity": "ERROR",
+      "detector": "sql/quality_checks.sql#PROD-001",
+      "deterministic_sample": [],
+      "disposition_status": "proposed_pending_human_acceptance",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "PROD-001",
+      "pending_human_decision": "確認重複產品 winner policy。",
+      "post_treatment_validation_proposal": "接受產品 business key 唯一。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "不任意去重。"
+    },
+    {
+      "affected_business_key_count": 0,
+      "affected_row_count": 0,
+      "business_impact": "產品關聯可能一對多。",
+      "dataset": "products",
+      "description": "product_id 重複",
+      "detection_severity": "ERROR",
+      "detector": "sql/quality_checks.sql#PROD-002",
+      "deterministic_sample": [],
+      "disposition_status": "proposed_pending_human_acceptance",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "PROD-002",
+      "pending_human_decision": "確認是否存在產品版本語意。",
+      "post_treatment_validation_proposal": "接受產品 business key 唯一。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "主檔 key 應唯一。"
+    },
+    {
+      "affected_business_key_count": 0,
+      "affected_row_count": 0,
+      "business_impact": "產品 join 與 lineage 可能失敗。",
+      "dataset": "products",
+      "description": "product_id 格式不符合候選 contract",
+      "detection_severity": "ERROR",
+      "detector": "sql/quality_checks.sql#PROD-003",
+      "deterministic_sample": [],
+      "disposition_status": "proposed_pending_human_acceptance",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "PROD-003",
+      "pending_human_decision": "確認合法 legacy product key。",
+      "post_treatment_validation_proposal": "所有接受 product_id 符合核准格式。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "不自行改寫 key。"
+    },
+    {
+      "affected_business_key_count": 0,
+      "affected_row_count": 0,
+      "business_impact": "產品分類與目的地分析缺失。",
+      "dataset": "products",
+      "description": "產品必要文字欄位為 blank",
+      "detection_severity": "ERROR",
+      "detector": "sql/quality_checks.sql#PROD-004",
+      "deterministic_sample": [],
+      "disposition_status": "proposed_pending_human_acceptance",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "PROD-004",
+      "pending_human_decision": "確認各文字欄位是否必填。",
+      "post_treatment_validation_proposal": "接受產品必要欄位均非 blank。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "無權威文字可補入。"
+    },
+    {
+      "affected_business_key_count": 0,
+      "affected_row_count": 0,
+      "business_impact": "行程與價格分析不可信。",
+      "dataset": "products",
+      "description": "trip_days、base_price_twd 或 is_active 不符合 domain",
+      "detection_severity": "ERROR",
+      "detector": "sql/quality_checks.sql#PROD-005",
+      "deterministic_sample": [],
+      "disposition_status": "proposed_pending_human_acceptance",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "PROD-005",
+      "pending_human_decision": "確認零天、零價與 active alias 是否可能。",
+      "post_treatment_validation_proposal": "接受產品數值及旗標符合核准 contract。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "數值與旗標不可猜測修補。"
+    },
+    {
+      "affected_business_key_count": 0,
+      "affected_row_count": 0,
+      "business_impact": "可能是合法不同 SKU，也可能造成產品層級重複分析。",
+      "dataset": "products",
+      "description": "不同 product_id 具有完全相同的產品描述與數值",
+      "detection_severity": "INFO",
+      "detector": "sql/quality_checks.sql#PROD-006",
+      "deterministic_sample": [],
+      "disposition_status": "proposed_pending_human_acceptance",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "PROD-006",
+      "pending_human_decision": "確認相同描述是否代表不同可售 SKU。",
+      "post_treatment_validation_proposal": "保留 key 唯一性並以核准產品 identity 規則驗證。",
+      "proposed_disposition": "ACCEPT",
+      "rationale": "business key 不同時不應自行合併。"
+    },
+    {
+      "affected_business_key_count": 0,
+      "affected_row_count": 0,
+      "business_impact": "型別轉換、key 與分析欄位可能失真。",
+      "dataset": "all_sources",
+      "description": "必填欄位為 NULL、空字串或純空白",
+      "detection_severity": "ERROR",
+      "detector": "sql/quality_checks.sql#SRC-001",
+      "deterministic_sample": [],
+      "disposition_status": "proposed_pending_human_acceptance",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "SRC-001",
+      "pending_human_decision": "確認各欄位 nullability 與是否存在可修補來源。",
+      "post_treatment_validation_proposal": "處理後必填欄位 blank count 為 0，隔離數與 evidence 一致。",
+      "proposed_disposition": "QUARANTINE",
+      "rationale": "無權威值可安全補入。"
+    },
+    {
+      "affected_business_key_count": 0,
+      "affected_row_count": 0,
+      "business_impact": "同義值可能被拆成不同 key 或分類。",
+      "dataset": "all_sources",
+      "description": "文字值含前後空白",
+      "detection_severity": "WARNING",
+      "detector": "sql/quality_checks.sql#SRC-002",
+      "deterministic_sample": [],
+      "disposition_status": "proposed_pending_human_acceptance",
+      "finding_type": "CONTROL_CHECK",
+      "issue_id": "SRC-002",
+      "pending_human_decision": "確認所有識別碼與分類欄位均允許 trim。",
+      "post_treatment_validation_proposal": "正規化後無前後空白且 distinct mapping 可追溯。",
+      "proposed_disposition": "NORMALIZE",
+      "rationale": "trim 通常可逆，仍須保留 raw value。"
+    }
+  ],
+  "sample_limit_per_issue": 3,
+  "schema_version": 1
+}

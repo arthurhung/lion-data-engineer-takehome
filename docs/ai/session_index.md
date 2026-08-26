@@ -7,6 +7,7 @@
 | Phase | 日期 | 工具 / session | 任務摘要 | Transcript | Implementation commit | 狀態 |
 |---:|---|---|---|---|---|---|
 | 0 | 2026-08-25 | Codex task `01a0385e-5109-7862-8ac0-a55fbe2e2553`，標題「執行 Phase 0 Repo 初始化」 | 唯讀盤點、需求對照、骨架、setup/lint/smoke test | [`transcripts/phase_00_bootstrap.jsonl`](transcripts/phase_00_bootstrap.jsonl) | `68e77762` | Completed |
+| 1 | 2026-08-26 | Codex current task；task ID 待 session 匯出時補入 | Profiling、typed contract、DuckDB detectors、canonical evidence、quality report 與 tests | 尚未建立；完整 session 結束後由應試者匯出 | 未 commit | implementation_complete_acceptance_pending |
 
 ## 每次更新規則
 

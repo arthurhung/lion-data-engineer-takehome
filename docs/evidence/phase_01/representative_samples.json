@@ -1,0 +1,516 @@
+{
+  "privacy_policy": "member_name is excluded; only necessary synthetic business keys and fields are retained",
+  "samples": [
+    {
+      "deterministic_sample": [],
+      "issue_id": "FX-001"
+    },
+    {
+      "deterministic_sample": [],
+      "issue_id": "FX-002"
+    },
+    {
+      "deterministic_sample": [],
+      "issue_id": "FX-003"
+    },
+    {
+      "deterministic_sample": [],
+      "issue_id": "FX-004"
+    },
+    {
+      "deterministic_sample": [],
+      "issue_id": "MEM-001"
+    },
+    {
+      "deterministic_sample": [
+        {
+          "extract_date": "2026-04-30",
+          "member_id": "M000096",
+          "snapshot_count": 2,
+          "source_file": "members.csv",
+          "source_row_number": 4558
+        },
+        {
+          "extract_date": "2026-04-30",
+          "member_id": "M000096",
+          "snapshot_count": 2,
+          "source_file": "members.csv",
+          "source_row_number": 5925
+        },
+        {
+          "extract_date": "2026-04-30",
+          "member_id": "M000296",
+          "snapshot_count": 2,
+          "source_file": "members.csv",
+          "source_row_number": 177
+        }
+      ],
+      "issue_id": "MEM-002"
+    },
+    {
+      "deterministic_sample": [
+        {
+          "birth_date_present": true,
+          "city": "台北市",
+          "extract_date": "2026-04-30",
+          "member_id": "M000096",
+          "member_level": "金卡",
+          "source_file": "members.csv",
+          "source_row_number": 4558
+        },
+        {
+          "birth_date_present": true,
+          "city": "台北市",
+          "extract_date": "2026-04-30",
+          "member_id": "M000096",
+          "member_level": "銀卡",
+          "source_file": "members.csv",
+          "source_row_number": 5925
+        },
+        {
+          "birth_date_present": true,
+          "city": "新北市",
+          "extract_date": "2026-04-30",
+          "member_id": "M000296",
+          "member_level": "白金",
+          "source_file": "members.csv",
+          "source_row_number": 177
+        }
+      ],
+      "issue_id": "MEM-003"
+    },
+    {
+      "deterministic_sample": [],
+      "issue_id": "MEM-004"
+    },
+    {
+      "deterministic_sample": [],
+      "issue_id": "MEM-005"
+    },
+    {
+      "deterministic_sample": [],
+      "issue_id": "MEM-006"
+    },
+    {
+      "deterministic_sample": [],
+      "issue_id": "MEM-007"
+    },
+    {
+      "deterministic_sample": [],
+      "issue_id": "MEM-008"
+    },
+    {
+      "deterministic_sample": [
+        {
+          "birth_date_present": true,
+          "extract_date": "2026-04-30",
+          "member_id": "M000552",
+          "source_file": "members.csv",
+          "source_row_number": 2155
+        },
+        {
+          "birth_date_present": true,
+          "extract_date": "2026-06-30",
+          "member_id": "M000552",
+          "source_file": "members.csv",
+          "source_row_number": 5243
+        },
+        {
+          "birth_date_present": true,
+          "extract_date": "2026-04-30",
+          "member_id": "M000708",
+          "source_file": "members.csv",
+          "source_row_number": 551
+        }
+      ],
+      "issue_id": "MEM-009"
+    },
+    {
+      "deterministic_sample": [
+        {
+          "city": "台南市",
+          "extract_date": "2026-06-30",
+          "member_id": "M000003",
+          "member_level": "銀卡",
+          "prior_city": "台南市",
+          "prior_level": "一般",
+          "source_file": "members.csv",
+          "source_row_number": 2250
+        },
+        {
+          "city": "桃園市",
+          "extract_date": "2026-06-30",
+          "member_id": "M000024",
+          "member_level": "金卡",
+          "prior_city": "彰化縣",
+          "prior_level": "金卡",
+          "source_file": "members.csv",
+          "source_row_number": 5650
+        },
+        {
+          "city": "新竹市",
+          "extract_date": "2026-05-31",
+          "member_id": "M000034",
+          "member_level": "金卡",
+          "prior_city": "高雄市",
+          "prior_level": "金卡",
+          "source_file": "members.csv",
+          "source_row_number": 1
+        }
+      ],
+      "issue_id": "MEM-010"
+    },
+    {
+      "deterministic_sample": [],
+      "issue_id": "ORD-001"
+    },
+    {
+      "deterministic_sample": [
+        {
+          "event_count": 2,
+          "order_id": "ORD00000028",
+          "order_status": "paid",
+          "source_file": "orders_base.csv",
+          "updated_at": "2026-05-12T21:09:40+08:00"
+        },
+        {
+          "event_count": 2,
+          "order_id": "ORD00000028",
+          "order_status": "cancelled",
+          "source_file": "orders_incremental_day3.csv",
+          "updated_at": "2026-07-03T11:11:03+08:00"
+        },
+        {
+          "event_count": 2,
+          "order_id": "ORD00000052",
+          "order_status": "completed",
+          "source_file": "orders_base.csv",
+          "updated_at": "2026-06-03T11:54:39+08:00"
+        }
+      ],
+      "issue_id": "ORD-002"
+    },
+    {
+      "deterministic_sample": [],
+      "issue_id": "ORD-003"
+    },
+    {
+      "deterministic_sample": [
+        {
+          "currency": "TWD",
+          "member_id": "M002849",
+          "order_created_at": "2026-05-12T06:47:40+08:00",
+          "order_id": "ORD00000028",
+          "product_id": "P00187",
+          "source_file": "orders_base.csv",
+          "source_row_number": 41419
+        },
+        {
+          "currency": "TWD",
+          "member_id": "M000981",
+          "order_created_at": "2026-06-28T13:30:18+08:00",
+          "order_id": "ORD00000028",
+          "product_id": "P00010",
+          "source_file": "orders_incremental_day3.csv",
+          "source_row_number": 2833
+        },
+        {
+          "currency": "TWD",
+          "member_id": "M002184",
+          "order_created_at": "2026-05-31T19:43:39+08:00",
+          "order_id": "ORD00000052",
+          "product_id": "P00277",
+          "source_file": "orders_base.csv",
+          "source_row_number": 29501
+        }
+      ],
+      "issue_id": "ORD-004"
+    },
+    {
+      "deterministic_sample": [],
+      "issue_id": "ORD-005"
+    },
+    {
+      "deterministic_sample": [],
+      "issue_id": "ORD-006"
+    },
+    {
+      "deterministic_sample": [],
+      "issue_id": "ORD-007"
+    },
+    {
+      "deterministic_sample": [],
+      "issue_id": "ORD-008"
+    },
+    {
+      "deterministic_sample": [
+        {
+          "currency": "NTD",
+          "order_id": "ORD00000163",
+          "source_file": "orders_base.csv",
+          "source_row_number": 64122
+        },
+        {
+          "currency": "NTD",
+          "order_id": "ORD00000677",
+          "source_file": "orders_base.csv",
+          "source_row_number": 82419
+        },
+        {
+          "currency": "NTD",
+          "order_id": "ORD00001771",
+          "source_file": "orders_base.csv",
+          "source_row_number": 44577
+        }
+      ],
+      "issue_id": "ORD-009"
+    },
+    {
+      "deterministic_sample": [
+        {
+          "amount": "-172833.0",
+          "currency": "TWD",
+          "order_id": "ORD00000900",
+          "source_file": "orders_base.csv",
+          "source_row_number": 54026
+        },
+        {
+          "amount": "-216020.0",
+          "currency": "TWD",
+          "order_id": "ORD00002319",
+          "source_file": "orders_base.csv",
+          "source_row_number": 7658
+        },
+        {
+          "amount": "-26515.0",
+          "currency": "TWD",
+          "order_id": "ORD00002817",
+          "source_file": "orders_base.csv",
+          "source_row_number": 77949
+        }
+      ],
+      "issue_id": "ORD-010"
+    },
+    {
+      "deterministic_sample": [
+        {
+          "coupon_discount": "-1.0",
+          "order_id": "ORD00000203",
+          "source_file": "orders_base.csv",
+          "source_row_number": 30059
+        },
+        {
+          "coupon_discount": "-1.0",
+          "order_id": "ORD00000392",
+          "source_file": "orders_base.csv",
+          "source_row_number": 60767
+        },
+        {
+          "coupon_discount": "-1.0",
+          "order_id": "ORD00000576",
+          "source_file": "orders_base.csv",
+          "source_row_number": 57310
+        }
+      ],
+      "issue_id": "ORD-011"
+    },
+    {
+      "deterministic_sample": [
+        {
+          "departure_date": "2026-06-28",
+          "order_created_at": "2026/06/04 23:15:37",
+          "order_id": "ORD00000008",
+          "source_file": "orders_base.csv",
+          "source_row_number": 81712,
+          "updated_at": "2026-06-06T04:45:37+08:00"
+        },
+        {
+          "departure_date": "2026-06-24",
+          "order_created_at": "2026/06/09 05:47:42",
+          "order_id": "ORD00000027",
+          "source_file": "orders_base.csv",
+          "source_row_number": 80031,
+          "updated_at": "2026-06-10T00:36:42+08:00"
+        },
+        {
+          "departure_date": "2026-08-09",
+          "order_created_at": "2026/05/05 22:57:01",
+          "order_id": "ORD00000039",
+          "source_file": "orders_base.csv",
+          "source_row_number": 32593,
+          "updated_at": "2026-05-07T09:17:01+08:00"
+        }
+      ],
+      "issue_id": "ORD-012"
+    },
+    {
+      "deterministic_sample": [],
+      "issue_id": "ORD-013"
+    },
+    {
+      "deterministic_sample": [],
+      "issue_id": "ORD-014"
+    },
+    {
+      "deterministic_sample": [],
+      "issue_id": "ORD-015"
+    },
+    {
+      "deterministic_sample": [
+        {
+          "order_id": "ORD00003151",
+          "product_id": "P95718",
+          "source_file": "orders_base.csv",
+          "source_row_number": 76687
+        },
+        {
+          "order_id": "ORD00004247",
+          "product_id": "P93453",
+          "source_file": "orders_base.csv",
+          "source_row_number": 29394
+        },
+        {
+          "order_id": "ORD00004396",
+          "product_id": "P98236",
+          "source_file": "orders_base.csv",
+          "source_row_number": 16671
+        }
+      ],
+      "issue_id": "ORD-016"
+    },
+    {
+      "deterministic_sample": [],
+      "issue_id": "ORD-017"
+    },
+    {
+      "deterministic_sample": [
+        {
+          "order_id": "ORD00000297",
+          "order_status": "cancelled",
+          "prior_status": "completed",
+          "source_file": "orders_incremental_day2.csv",
+          "source_row_number": 4061,
+          "updated_at": "2026-07-02T15:54:50+08:00"
+        },
+        {
+          "order_id": "ORD00000398",
+          "order_status": "completed",
+          "prior_status": "cancelled",
+          "source_file": "orders_incremental_day1.csv",
+          "source_row_number": 1846,
+          "updated_at": "2026-07-01T10:55:38+08:00"
+        },
+        {
+          "order_id": "ORD00000405",
+          "order_status": "cancelled",
+          "prior_status": "completed",
+          "source_file": "orders_incremental_day1.csv",
+          "source_row_number": 986,
+          "updated_at": "2026-07-01T05:52:47+08:00"
+        }
+      ],
+      "issue_id": "ORD-018"
+    },
+    {
+      "deterministic_sample": [],
+      "issue_id": "ORD-019"
+    },
+    {
+      "deterministic_sample": [],
+      "issue_id": "ORD-020"
+    },
+    {
+      "deterministic_sample": [],
+      "issue_id": "ORD-021"
+    },
+    {
+      "deterministic_sample": [
+        {
+          "order_created_at": "2026-05-14T20:52:36+08:00",
+          "order_id": "ORD00000271",
+          "source_file": "orders_incremental_day1.csv",
+          "source_row_number": 1548
+        },
+        {
+          "order_created_at": "2026-05-28T04:06:02+08:00",
+          "order_id": "ORD00000386",
+          "source_file": "orders_incremental_day1.csv",
+          "source_row_number": 3103
+        },
+        {
+          "order_created_at": "2026-05-27T08:14:19+08:00",
+          "order_id": "ORD00000389",
+          "source_file": "orders_incremental_day1.csv",
+          "source_row_number": 107
+        }
+      ],
+      "issue_id": "ORD-022"
+    },
+    {
+      "deterministic_sample": [
+        {
+          "candidate_base_total_twd": "136000.0000",
+          "candidate_gross_twd": "139475000.000000000000",
+          "currency": "TWD",
+          "order_id": "ORD00000467",
+          "source_file": "orders_base.csv",
+          "source_row_number": 28766
+        },
+        {
+          "candidate_base_total_twd": "471000.0000",
+          "candidate_gross_twd": "563976000.000000000000",
+          "currency": "TWD",
+          "order_id": "ORD00007345",
+          "source_file": "orders_base.csv",
+          "source_row_number": 22945
+        },
+        {
+          "candidate_base_total_twd": "375000.0000",
+          "candidate_gross_twd": "346305000.000000000000",
+          "currency": "TWD",
+          "order_id": "ORD00007843",
+          "source_file": "orders_base.csv",
+          "source_row_number": 85903
+        }
+      ],
+      "issue_id": "ORD-023"
+    },
+    {
+      "deterministic_sample": [],
+      "issue_id": "ORD-024"
+    },
+    {
+      "deterministic_sample": [],
+      "issue_id": "PROD-001"
+    },
+    {
+      "deterministic_sample": [],
+      "issue_id": "PROD-002"
+    },
+    {
+      "deterministic_sample": [],
+      "issue_id": "PROD-003"
+    },
+    {
+      "deterministic_sample": [],
+      "issue_id": "PROD-004"
+    },
+    {
+      "deterministic_sample": [],
+      "issue_id": "PROD-005"
+    },
+    {
+      "deterministic_sample": [],
+      "issue_id": "PROD-006"
+    },
+    {
+      "deterministic_sample": [],
+      "issue_id": "SRC-001"
+    },
+    {
+      "deterministic_sample": [],
+      "issue_id": "SRC-002"
+    }
+  ],
+  "schema_version": 1
+}
