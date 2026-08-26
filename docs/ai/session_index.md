@@ -7,7 +7,10 @@
 | Phase | 日期 | 工具 / session | 任務摘要 | Transcript | Implementation commit | Canonical evidence checksum | 狀態 |
 |---:|---|---|---|---|---|---|---|
 | 0 | 2026-08-25 | Codex task `01a0385e-5109-7862-8ac0-a55fbe2e2553`，標題「執行 Phase 0 Repo 初始化」 | 唯讀盤點、需求對照、骨架、setup/lint/smoke test | [`transcripts/phase_00_bootstrap.jsonl`](transcripts/phase_00_bootstrap.jsonl) | `68e77762` | — | Completed |
-| 1 | 2026-08-26 | Codex task `01a03a9f-8a8c-7113-bcc4-496ca58fb87c` | Profiling and quality contract；Phase 2 model-design review 發現 parse-valid sentinel date 被誤判為 identity change，已重新 profiling 並修正 semantic rule | [`transcripts/phase_01_profiling_quality_contract.jsonl`](transcripts/phase_01_profiling_quality_contract.jsonl)（原始 Phase 1 session；correction session 尚待匯出，不以摘要冒充 transcript） | `05ace53e8728af804c7a41e4e6274b723cfb95fc`（pre-correction；本次未 commit） | `5cd9bf274d171f7007c4b160addb6fe281f3be1da13939b35c52ecf14a1d9ee8` | Correction `implementation_complete_acceptance_pending` |
+| 1 | 2026-08-26 | Codex task `01a03a9f-8a8c-7113-bcc4-496ca58fb87c` | Profiling and quality contract | [`transcripts/phase_01_profiling_quality_contract.jsonl`](transcripts/phase_01_profiling_quality_contract.jsonl) | `05ace53e8728af804c7a41e4e6274b723cfb95fc` | `f326a97e6833d55071b2752581cae31fe5049d7b8efde016e8cfc5048843fa39`（superseded） | Completed（pre-correction） |
+| 1 correction | 2026-08-26 | Codex task `01a03c1a-bf2f-7922-a666-f24a26bc44dd` | Phase 1 birth-date sentinel correction；原因：Phase 2 model-design review 發現 parse-valid sentinel 被誤判為 identity change | [`transcripts/phase_01_birth_date_sentinel_correction.jsonl`](transcripts/phase_01_birth_date_sentinel_correction.jsonl) | `5c66c4cb25bee529f9f12002599bba39ac87d94a` | `5cd9bf274d171f7007c4b160addb6fe281f3be1da13939b35c52ecf14a1d9ee8`（current） | Completed |
+
+Phase 1 整體狀態：`Completed after sentinel correction`。
 
 ## 每次更新規則
 
