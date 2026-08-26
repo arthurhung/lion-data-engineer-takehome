@@ -1,0 +1,480 @@
+{
+  "birth_date_summary": {
+    "ambiguous_members": 0,
+    "restatement_members": 19,
+    "sentinel_members": 80,
+    "sentinel_only_members": 61,
+    "sentinel_rows": 81
+  },
+  "dimension_summary": {
+    "date_max": "2026-10-27",
+    "date_min": "1960-01-03",
+    "date_rows": 24405,
+    "known_products": 300,
+    "unknown_product_rows": 1
+  },
+  "entity_disposition_bridge": {
+    "by_entity_type": [
+      {
+        "accepted": 96310,
+        "accepted_with_flags": 3302,
+        "distinct_entities": 100000,
+        "entity_type": "order",
+        "grain": "order_id",
+        "quarantined": 388
+      },
+      {
+        "accepted": 8931,
+        "accepted_with_flags": 0,
+        "distinct_entities": 8961,
+        "entity_type": "member_snapshot",
+        "grain": "member_id + extract_date",
+        "quarantined": 30
+      },
+      {
+        "accepted": 7920,
+        "accepted_with_flags": 80,
+        "distinct_entities": 8000,
+        "entity_type": "member",
+        "grain": "member_id",
+        "quarantined": 0
+      },
+      {
+        "accepted": 300,
+        "accepted_with_flags": 0,
+        "distinct_entities": 300,
+        "entity_type": "product",
+        "grain": "product_id",
+        "quarantined": 0
+      },
+      {
+        "accepted": 134,
+        "accepted_with_flags": 0,
+        "distinct_entities": 134,
+        "entity_type": "fx_rate",
+        "grain": "rate_date + currency",
+        "quarantined": 0
+      }
+    ],
+    "total_entities": 117395
+  },
+  "fact_flags": {
+    "currency_normalized_rows": 200,
+    "duplicate_extra_rows": 0,
+    "fact_rows": 99612,
+    "missing_member_asof_rows": 337,
+    "missing_product_rows": 120,
+    "status_warning_rows": 0,
+    "timezone_assumed_rows": 2988
+  },
+  "member_scd2_bridge": {
+    "summary": {
+      "accepted_lineage_rows": 8931,
+      "conflict_members_restarted_later": 2,
+      "conflict_members_without_reliable_version": 28,
+      "current_members": 7972,
+      "known_versions": 8745,
+      "raw_snapshot_rows": 8991,
+      "represented_members": 7972,
+      "same_day_conflict_raw_rows": 60,
+      "same_day_conflict_snapshot_entities": 30,
+      "unchanged_snapshot_lineage_rows": 186,
+      "unknown_member_facts": 337,
+      "unknown_member_source_ids": 30
+    },
+    "unknown_fact_reason_breakdown": [
+      {
+        "fact_rows": 323,
+        "reason": "no_reliable_version",
+        "source_member_ids": 28
+      },
+      {
+        "fact_rows": 14,
+        "reason": "uncertainty_gap_before_restart",
+        "source_member_ids": 2
+      }
+    ]
+  },
+  "member_summary": {
+    "conflict_snapshot_keys": 30,
+    "current_versions": 7972,
+    "member_versions": 8745,
+    "represented_members": 7972,
+    "unknown_member_facts": 337
+  },
+  "money_reconciliation": {
+    "gross_exact_sum": "25792028503.760350200000",
+    "gross_rounded_sum": "25792028505.27",
+    "net_exact_sum": "25744761153.760350200000",
+    "net_rounded_sum": "25744761155.27"
+  },
+  "order_invariant_bridge": {
+    "field_counts": [
+      {
+        "canonical_semantic_conflict_orders": 0,
+        "field_name": "member_id",
+        "raw_textual_conflict_orders": 0
+      },
+      {
+        "canonical_semantic_conflict_orders": 0,
+        "field_name": "product_id",
+        "raw_textual_conflict_orders": 0
+      },
+      {
+        "canonical_semantic_conflict_orders": 0,
+        "field_name": "channel",
+        "raw_textual_conflict_orders": 0
+      },
+      {
+        "canonical_semantic_conflict_orders": 0,
+        "field_name": "quantity",
+        "raw_textual_conflict_orders": 0
+      },
+      {
+        "canonical_semantic_conflict_orders": 0,
+        "field_name": "currency",
+        "raw_textual_conflict_orders": 0
+      },
+      {
+        "canonical_semantic_conflict_orders": 0,
+        "field_name": "amount",
+        "raw_textual_conflict_orders": 0
+      },
+      {
+        "canonical_semantic_conflict_orders": 0,
+        "field_name": "coupon_discount",
+        "raw_textual_conflict_orders": 0
+      },
+      {
+        "canonical_semantic_conflict_orders": 0,
+        "field_name": "order_created_at",
+        "raw_textual_conflict_orders": 8
+      },
+      {
+        "canonical_semantic_conflict_orders": 0,
+        "field_name": "departure_date",
+        "raw_textual_conflict_orders": 0
+      }
+    ],
+    "raw_timestamp_representation_counts": [
+      {
+        "orders": 8,
+        "representation": "EXPLICIT_OFFSET",
+        "source_rows": 8
+      },
+      {
+        "orders": 3,
+        "representation": "NAIVE_ASIA_TAIPEI",
+        "source_rows": 3
+      },
+      {
+        "orders": 5,
+        "representation": "UTC_Z",
+        "source_rows": 5
+      }
+    ],
+    "summary": {
+      "canonical_semantic_conflicts": 0,
+      "multi_event_orders": 40,
+      "raw_textual_conflict_candidates": 8
+    }
+  },
+  "order_reconciliation": {
+    "canonical_event_rows": 100040,
+    "duplicate_extra_rows": 0,
+    "fact_rows": 99612,
+    "quarantined_orders": 388,
+    "quarantined_source_rows": 388,
+    "raw_orders": 100000,
+    "raw_rows": 100040
+  },
+  "quality_rule_counts": [
+    {
+      "affected_entities": 30,
+      "disposition": "QUARANTINE",
+      "issue_hit_rows": 60,
+      "rule_id": "MEM-003"
+    },
+    {
+      "affected_entities": 80,
+      "disposition": "NORMALIZE",
+      "issue_hit_rows": 81,
+      "rule_id": "MEM-011"
+    },
+    {
+      "affected_entities": 200,
+      "disposition": "NORMALIZE",
+      "issue_hit_rows": 200,
+      "rule_id": "ORD-009"
+    },
+    {
+      "affected_entities": 50,
+      "disposition": "QUARANTINE",
+      "issue_hit_rows": 50,
+      "rule_id": "ORD-010"
+    },
+    {
+      "affected_entities": 300,
+      "disposition": "QUARANTINE",
+      "issue_hit_rows": 300,
+      "rule_id": "ORD-011"
+    },
+    {
+      "affected_entities": 3001,
+      "disposition": "NORMALIZE",
+      "issue_hit_rows": 3001,
+      "rule_id": "ORD-012"
+    },
+    {
+      "affected_entities": 120,
+      "disposition": "ACCEPT",
+      "issue_hit_rows": 120,
+      "rule_id": "ORD-016"
+    },
+    {
+      "affected_entities": 40,
+      "disposition": "QUARANTINE",
+      "issue_hit_rows": 40,
+      "rule_id": "ORD-023"
+    }
+  ],
+  "quarantine_reconciliation": {
+    "by_entity_type": [
+      {
+        "distinct_business_entities": 388,
+        "distinct_rules": 3,
+        "entity_rule_links": 390,
+        "entity_type": "order",
+        "physical_source_rows": 388,
+        "rule_overlap_entities": 2
+      },
+      {
+        "distinct_business_entities": 30,
+        "distinct_rules": 1,
+        "entity_rule_links": 30,
+        "entity_type": "member_snapshot",
+        "physical_source_rows": 60,
+        "rule_overlap_entities": 0
+      },
+      {
+        "distinct_business_entities": 0,
+        "distinct_rules": 0,
+        "entity_rule_links": 0,
+        "entity_type": "member",
+        "physical_source_rows": 0,
+        "rule_overlap_entities": 0
+      },
+      {
+        "distinct_business_entities": 0,
+        "distinct_rules": 0,
+        "entity_rule_links": 0,
+        "entity_type": "product",
+        "physical_source_rows": 0,
+        "rule_overlap_entities": 0
+      },
+      {
+        "distinct_business_entities": 0,
+        "distinct_rules": 0,
+        "entity_rule_links": 0,
+        "entity_type": "fx_rate",
+        "physical_source_rows": 0,
+        "rule_overlap_entities": 0
+      }
+    ],
+    "issue_hit_to_entity_rule_by_rule": [
+      {
+        "collapsed_source_rule_links": 30,
+        "entity_rule_links": 30,
+        "issue_hit_source_rule_links": 60,
+        "rule_id": "MEM-003"
+      },
+      {
+        "collapsed_source_rule_links": 1,
+        "entity_rule_links": 80,
+        "issue_hit_source_rule_links": 81,
+        "rule_id": "MEM-011"
+      },
+      {
+        "collapsed_source_rule_links": 0,
+        "entity_rule_links": 200,
+        "issue_hit_source_rule_links": 200,
+        "rule_id": "ORD-009"
+      },
+      {
+        "collapsed_source_rule_links": 0,
+        "entity_rule_links": 50,
+        "issue_hit_source_rule_links": 50,
+        "rule_id": "ORD-010"
+      },
+      {
+        "collapsed_source_rule_links": 0,
+        "entity_rule_links": 300,
+        "issue_hit_source_rule_links": 300,
+        "rule_id": "ORD-011"
+      },
+      {
+        "collapsed_source_rule_links": 0,
+        "entity_rule_links": 3001,
+        "issue_hit_source_rule_links": 3001,
+        "rule_id": "ORD-012"
+      },
+      {
+        "collapsed_source_rule_links": 0,
+        "entity_rule_links": 120,
+        "issue_hit_source_rule_links": 120,
+        "rule_id": "ORD-016"
+      },
+      {
+        "collapsed_source_rule_links": 0,
+        "entity_rule_links": 40,
+        "issue_hit_source_rule_links": 40,
+        "rule_id": "ORD-023"
+      }
+    ],
+    "quarantined_multi_event_orders": 0,
+    "summary": {
+      "collapsed_source_rule_links": 31,
+      "entity_rule_links": 3821,
+      "issue_hit_source_rule_links": 3852,
+      "quarantine_physical_rows": 448,
+      "quarantined_orders": 388
+    }
+  },
+  "schema_version": 2,
+  "scope": "phase_2_clean_base_build_stability_not_incremental_idempotency",
+  "source_files": [
+    {
+      "row_count": 134,
+      "source_file": "fx_rates.csv"
+    },
+    {
+      "row_count": 8991,
+      "source_file": "members.csv"
+    },
+    {
+      "row_count": 100040,
+      "source_file": "orders_base.csv"
+    },
+    {
+      "row_count": 300,
+      "source_file": "products.csv"
+    }
+  ],
+  "state_checksums": {
+    "fact_money_sha256": "68932c6afc06f25b9b185d9421de2faa8020cc4807a11858891bcc4d8fadbe81",
+    "fact_order_key_sha256": "642008029063076b37b0d61b092afffcc90f5c4d3a8223c357b3b509260b6125",
+    "member_version_sha256": "d6d050056c26ccf74cf2ba64b3113f332995cc10190df657ed23f7729bbf5356",
+    "product_key_sha256": "8c673c7ec031db999454e9b137c58e4ce34a28deb720adfd1c21a9cb77f74a87"
+  },
+  "table_counts": [
+    {
+      "row_count": 24405,
+      "table_name": "curated.dim_date"
+    },
+    {
+      "row_count": 8746,
+      "table_name": "curated.dim_member"
+    },
+    {
+      "row_count": 8931,
+      "table_name": "curated.dim_member_lineage"
+    },
+    {
+      "row_count": 301,
+      "table_name": "curated.dim_product"
+    },
+    {
+      "row_count": 99612,
+      "table_name": "curated.fact_order"
+    },
+    {
+      "row_count": 117395,
+      "table_name": "quality.entity_disposition"
+    },
+    {
+      "row_count": 3821,
+      "table_name": "quality.entity_rule"
+    },
+    {
+      "row_count": 3852,
+      "table_name": "quality.issue_hit"
+    },
+    {
+      "row_count": 448,
+      "table_name": "quality.quarantine_row"
+    },
+    {
+      "row_count": 134,
+      "table_name": "raw.fx_rate"
+    },
+    {
+      "row_count": 8991,
+      "table_name": "raw.member_snapshot"
+    },
+    {
+      "row_count": 100040,
+      "table_name": "raw.order_event"
+    },
+    {
+      "row_count": 300,
+      "table_name": "raw.product"
+    },
+    {
+      "row_count": 134,
+      "table_name": "staging.fx_rate"
+    },
+    {
+      "row_count": 8991,
+      "table_name": "staging.member_snapshot"
+    },
+    {
+      "row_count": 100040,
+      "table_name": "staging.order_event"
+    },
+    {
+      "row_count": 300,
+      "table_name": "staging.product"
+    }
+  ],
+  "timezone_assumption_bridge": {
+    "quarantine_rule_breakdown": [
+      {
+        "flagged_orders": 1,
+        "flagged_source_rows": 1,
+        "rule_id": "ORD-010"
+      },
+      {
+        "flagged_orders": 11,
+        "flagged_source_rows": 11,
+        "rule_id": "ORD-011"
+      }
+    ],
+    "quarantine_rule_overlap": [
+      {
+        "flagged_orders": 1,
+        "flagged_source_rows": 1,
+        "rule_count": 1,
+        "rule_set": "ORD-010"
+      },
+      {
+        "flagged_orders": 11,
+        "flagged_source_rows": 11,
+        "rule_count": 1,
+        "rule_set": "ORD-011"
+      }
+    ],
+    "summary": {
+      "accepted_but_not_latest_orders": 1,
+      "accepted_but_not_latest_rows": 1,
+      "accepted_flagged_source_rows": 2989,
+      "accepted_orders_with_flagged_source": 2989,
+      "fact_timezone_assumed_rows": 2988,
+      "quarantined_flagged_orders": 12,
+      "quarantined_flagged_source_rows": 12,
+      "raw_assumption_orders": 3001,
+      "raw_assumption_rows": 3001,
+      "selected_flagged_fact_orders": 2988,
+      "selected_flagged_fact_rows": 2988
+    }
+  }
+}

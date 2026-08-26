@@ -1,0 +1,165 @@
+{
+  "checks": [
+    {
+      "check_id": "DATE_CONTINUITY",
+      "detail": "dim_date must be a nonempty continuous range",
+      "violation_count": 0
+    },
+    {
+      "check_id": "DATE_KEY_FORMAT",
+      "detail": "date_sk must equal YYYYMMDD",
+      "violation_count": 0
+    },
+    {
+      "check_id": "DATE_SENTINEL_EXCLUSION",
+      "detail": "birth-date and SCD technical sentinels must not enter dim_date",
+      "violation_count": 0
+    },
+    {
+      "check_id": "ENTITY_DISPOSITION_SOURCE_GRAIN_RECONCILIATION",
+      "detail": "entity dispositions must reconcile to each source entity grain exactly once",
+      "violation_count": 0
+    },
+    {
+      "check_id": "FACT_DATE_ORPHAN",
+      "detail": "all fact role-playing date keys must resolve",
+      "violation_count": 0
+    },
+    {
+      "check_id": "FACT_MEMBER_ORPHAN",
+      "detail": "every fact member_sk must resolve, including Unknown Member",
+      "violation_count": 0
+    },
+    {
+      "check_id": "FACT_ORDER_UNIQUENESS",
+      "detail": "fact grain is one row per accepted order_id",
+      "violation_count": 0
+    },
+    {
+      "check_id": "FACT_PRODUCT_ORPHAN",
+      "detail": "every fact product_sk must resolve, including Unknown Product",
+      "violation_count": 0
+    },
+    {
+      "check_id": "KNOWN_SK_NONZERO",
+      "detail": "known dimension members must not use reserved key zero",
+      "violation_count": 0
+    },
+    {
+      "check_id": "MEMBER_ACCEPTED_LINEAGE_RECONCILIATION",
+      "detail": "accepted reliable snapshot source rows must all appear in member lineage",
+      "violation_count": 0
+    },
+    {
+      "check_id": "MEMBER_PERIOD_OVERLAP",
+      "detail": "accepted member versions must not overlap",
+      "violation_count": 0
+    },
+    {
+      "check_id": "MEMBER_SINGLE_CURRENT",
+      "detail": "each known member has at most one current version",
+      "violation_count": 0
+    },
+    {
+      "check_id": "MEMBER_SK_COLLISION",
+      "detail": "a known member_sk may map to only one member/version identity",
+      "violation_count": 0
+    },
+    {
+      "check_id": "MEMBER_VALIDITY_FLAGS",
+      "detail": "validity must be nonempty, exclusive and current flag must match sentinel",
+      "violation_count": 0
+    },
+    {
+      "check_id": "MISSING_FX_LEAKAGE",
+      "detail": "curated non-TWD facts require a dated FX rate",
+      "violation_count": 0
+    },
+    {
+      "check_id": "MONEY_EXACT_RECOMPUTE",
+      "detail": "exact gross/net values must recompute with Decimal arithmetic",
+      "violation_count": 0
+    },
+    {
+      "check_id": "MONEY_ROUND_RECOMPUTE",
+      "detail": "reported gross/net must round exact intermediates to two decimals",
+      "violation_count": 0
+    },
+    {
+      "check_id": "ORDER_CANONICAL_CONFLICT_RULE_RECONCILIATION",
+      "detail": "canonical invariant conflict entities must equal ORD-004 entity rules",
+      "violation_count": 0
+    },
+    {
+      "check_id": "PRODUCT_SK_COLLISION",
+      "detail": "a known product_sk may map to only one product_id",
+      "violation_count": 0
+    },
+    {
+      "check_id": "QUARANTINE_ROW_DUPLICATE",
+      "detail": "a quarantined source row appears once regardless of matched rule count",
+      "violation_count": 0
+    },
+    {
+      "check_id": "RAW_STAGING_FX_COUNT",
+      "detail": "raw.fx_rate and staging.fx_rate counts must reconcile",
+      "violation_count": 0
+    },
+    {
+      "check_id": "RAW_STAGING_MEMBER_COUNT",
+      "detail": "raw.member_snapshot and staging.member_snapshot counts must reconcile",
+      "violation_count": 0
+    },
+    {
+      "check_id": "RAW_STAGING_ORDER_COUNT",
+      "detail": "raw.order_event and staging.order_event counts must reconcile",
+      "violation_count": 0
+    },
+    {
+      "check_id": "RAW_STAGING_PRODUCT_COUNT",
+      "detail": "raw.product and staging.product counts must reconcile",
+      "violation_count": 0
+    },
+    {
+      "check_id": "SOURCE_FILE_ALLOWLIST",
+      "detail": "warehouse may contain orders_base.csv, members.csv, products.csv and fx_rates.csv only",
+      "violation_count": 0
+    },
+    {
+      "check_id": "TIMEZONE_ASSUMPTION_DISPOSITION_PARTITION",
+      "detail": "every timezone-assumed source row must resolve to one order disposition",
+      "violation_count": 0
+    },
+    {
+      "check_id": "TIMEZONE_FACT_SELECTED_SOURCE_FLAG",
+      "detail": "fact timezone flag must equal the selected source event flag",
+      "violation_count": 0
+    },
+    {
+      "check_id": "UNKNOWN_MEMBER_CARDINALITY",
+      "detail": "exactly one Unknown Member row is required",
+      "violation_count": 0
+    },
+    {
+      "check_id": "UNKNOWN_MEMBER_FLAG",
+      "detail": "Unknown Member key and missing-as-of flag must agree",
+      "violation_count": 0
+    },
+    {
+      "check_id": "UNKNOWN_PRODUCT_CARDINALITY",
+      "detail": "exactly one Unknown Product row is required",
+      "violation_count": 0
+    },
+    {
+      "check_id": "UNKNOWN_PRODUCT_FLAG",
+      "detail": "Unknown Product key and flags must agree",
+      "violation_count": 0
+    },
+    {
+      "check_id": "UNSUPPORTED_CURRENCY_LEAKAGE",
+      "detail": "curated facts support TWD, USD and JPY only",
+      "violation_count": 0
+    }
+  ],
+  "schema_version": 2
+}

@@ -12,6 +12,9 @@
 
 Phase 1 整體狀態：`Completed after sentinel correction`。
 
+Phase 2 狀態：`implementation_complete_acceptance_pending`。本輪 transcript 尚待應試者從 Codex
+完整匯出並完成去識別化；在檔案實際存在前不新增 transcript link、task ID 或 Completed 紀錄。
+
 ## 每次更新規則
 
 1. 一個 Phase 至少建立一筆可追溯 session。

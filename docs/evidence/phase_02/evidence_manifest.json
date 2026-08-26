@@ -1,0 +1,17 @@
+{
+  "algorithm": "SHA-256",
+  "canonical_bundle_sha256": "2d9cf41622428233c7b83d3de7aa0df860912ba457c72be22f3b26758cdd2c1e",
+  "canonicalization": "UTF-8, LF, JSON sorted keys, indent=2, trailing LF",
+  "evidence_content": "deterministic analytical state only; audit/runtime metadata excluded",
+  "files": [
+    {
+      "file": "model_summary.json",
+      "sha256": "fb018bd9a453535edbe488da0a07b6739426b960524a4baab4fb834c7f0135bb"
+    },
+    {
+      "file": "validation_summary.json",
+      "sha256": "930c5517518a730c91b49a49743e0348002f9fbbc29ee4d1a52410f7464b7e24"
+    }
+  ],
+  "schema_version": 2
+}
