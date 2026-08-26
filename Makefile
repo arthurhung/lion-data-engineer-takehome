@@ -2,12 +2,15 @@ PYTHON ?= python3
 VENV ?= .venv
 VENV_PYTHON := $(VENV)/bin/python
 
-.PHONY: setup source-integrity profile build-base validate-base lint test clean
+.PHONY: setup source-integrity profile build-base validate-base build rerun-proof phase3-acceptance lint test clean
 
 OUTPUT_DIR ?= output/quality
 EVIDENCE_DIR ?= docs/evidence/phase_01
 OUTPUT_DB ?= output/warehouse/phase_02.duckdb
 PHASE2_EVIDENCE_DIR ?= output/warehouse/phase_02_evidence
+PHASE3_OUTPUT_DB ?= output/warehouse/phase_03.duckdb
+PHASE3_EVIDENCE_DIR ?= output/warehouse/phase_03_evidence
+PHASE3_CANONICAL_EVIDENCE_DIR ?= docs/evidence/phase_03
 
 setup:
 	$(PYTHON) -m venv $(VENV)
@@ -24,6 +27,15 @@ build-base:
 
 validate-base:
 	$(VENV_PYTHON) -m lion_de_exam.reconciliation --output-db "$(OUTPUT_DB)" --evidence-dir "$(PHASE2_EVIDENCE_DIR)"
+
+build:
+	$(VENV_PYTHON) -m lion_de_exam.incremental build --output-db "$(PHASE3_OUTPUT_DB)" --evidence-dir "$(PHASE3_EVIDENCE_DIR)"
+
+rerun-proof:
+	$(VENV_PYTHON) -m lion_de_exam.incremental rerun-proof --output-db "$(PHASE3_OUTPUT_DB)" --evidence-dir "$(PHASE3_EVIDENCE_DIR)"
+
+phase3-acceptance:
+	$(VENV_PYTHON) -m lion_de_exam.incremental acceptance --canonical-evidence-dir "$(PHASE3_CANONICAL_EVIDENCE_DIR)"
 
 lint:
 	$(VENV_PYTHON) -m ruff check src tests

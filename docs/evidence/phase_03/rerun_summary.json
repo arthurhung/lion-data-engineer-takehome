@@ -1,0 +1,39 @@
+{
+  "after_full_sequence_sha256": "b8f0653ea882b031da570795a542dc2faa4c82a7e40770e625c6af283e64fbf3",
+  "after_individual_sha256": "b8f0653ea882b031da570795a542dc2faa4c82a7e40770e625c6af283e64fbf3",
+  "analytical_state_unchanged": true,
+  "before_sha256": "b8f0653ea882b031da570795a542dc2faa4c82a7e40770e625c6af283e64fbf3",
+  "full_sequence_replay": [
+    {
+      "batch": "base",
+      "status": "SKIPPED_ALREADY_APPLIED"
+    },
+    {
+      "batch": "day1",
+      "status": "SKIPPED_ALREADY_APPLIED"
+    },
+    {
+      "batch": "day2",
+      "status": "SKIPPED_ALREADY_APPLIED"
+    },
+    {
+      "batch": "day3",
+      "status": "SKIPPED_ALREADY_APPLIED"
+    }
+  ],
+  "individual_increment_replays": [
+    {
+      "batch": "day1",
+      "status": "SKIPPED_ALREADY_APPLIED"
+    },
+    {
+      "batch": "day2",
+      "status": "SKIPPED_ALREADY_APPLIED"
+    },
+    {
+      "batch": "day3",
+      "status": "SKIPPED_ALREADY_APPLIED"
+    }
+  ],
+  "schema_version": 3
+}

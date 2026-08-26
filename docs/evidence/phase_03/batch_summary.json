@@ -1,0 +1,881 @@
+{
+  "batches": [
+    {
+      "batch_name": "base",
+      "batch_order": 0,
+      "event_reconciliation": {
+        "duplicate_physical_rows": 0,
+        "logical_events": 100040,
+        "raw_orders": 100000,
+        "raw_rows": 100040,
+        "representative_rows": 100040
+      },
+      "fact_reconciliation": {
+        "distinct_orders": 99612,
+        "fact_rows": 99612,
+        "gross_exact_sum": "25792028503.760350200000",
+        "gross_rounded_sum": "25792028505.27",
+        "net_exact_sum": "25744761153.760350200000",
+        "net_rounded_sum": "25744761155.27"
+      },
+      "member_reconciliation": {
+        "current_members": 7972,
+        "member_rows": 8746,
+        "member_versions": 8745
+      },
+      "order_dispositions": [
+        {
+          "final_disposition": "ACCEPT",
+          "order_count": 96310
+        },
+        {
+          "final_disposition": "ACCEPT_WITH_FLAGS",
+          "order_count": 3302
+        },
+        {
+          "final_disposition": "QUARANTINE",
+          "order_count": 388
+        }
+      ],
+      "quarantine_reconciliation": {
+        "rules": [
+          {
+            "affected_entities": 30,
+            "disposition": "QUARANTINE",
+            "rule_id": "MEM-003",
+            "source_rule_links": 60
+          },
+          {
+            "affected_entities": 80,
+            "disposition": "NORMALIZE",
+            "rule_id": "MEM-011",
+            "source_rule_links": 81
+          },
+          {
+            "affected_entities": 200,
+            "disposition": "NORMALIZE",
+            "rule_id": "ORD-009",
+            "source_rule_links": 200
+          },
+          {
+            "affected_entities": 50,
+            "disposition": "QUARANTINE",
+            "rule_id": "ORD-010",
+            "source_rule_links": 50
+          },
+          {
+            "affected_entities": 300,
+            "disposition": "QUARANTINE",
+            "rule_id": "ORD-011",
+            "source_rule_links": 300
+          },
+          {
+            "affected_entities": 3001,
+            "disposition": "NORMALIZE",
+            "rule_id": "ORD-012",
+            "source_rule_links": 3001
+          },
+          {
+            "affected_entities": 120,
+            "disposition": "ACCEPT",
+            "rule_id": "ORD-016",
+            "source_rule_links": 120
+          },
+          {
+            "affected_entities": 40,
+            "disposition": "QUARANTINE",
+            "rule_id": "ORD-023",
+            "source_rule_links": 40
+          }
+        ],
+        "summary": {
+          "entity_rule_links": 3821,
+          "issue_hit_source_rule_links": 3852,
+          "quarantine_physical_rows": 448,
+          "quarantined_order_entities": 388
+        }
+      },
+      "schema_version": 3,
+      "source_registry": [
+        {
+          "batch_order": 0,
+          "byte_size": 3170,
+          "dataset_role": "fx_rate",
+          "file_sha256": "b043ae8402d06a9ab75f6540d5a94e9dbac504c1e31cb1d4429863a44bd75e24",
+          "schema_sha256": "95e44642480ca52d2f88005023fe2e01494b8e12bea2e889ad70b26498ed00fb",
+          "source_file": "fx_rates.csv",
+          "source_row_count": 134
+        },
+        {
+          "batch_order": 0,
+          "byte_size": 620035,
+          "dataset_role": "member_snapshot",
+          "file_sha256": "144eb0ed7282fbf1446cd8a557b5bc69ac3cc58f04b19246eb0e441faeb61c8a",
+          "schema_sha256": "046cd2d0e6042527ac497ee3978d8460f843ef01c81b11810f370bc26eabc306",
+          "source_file": "members.csv",
+          "source_row_count": 8991
+        },
+        {
+          "batch_order": 0,
+          "byte_size": 12431524,
+          "dataset_role": "order_event",
+          "file_sha256": "11eae7dc9e763c627dd0d164767cc2dc75f17b44515be6b15f5feaef2fb324da",
+          "schema_sha256": "55fd0cefc53605cedd9090c92dc0d6cb928f2c5cee42950e70355c590d83cac2",
+          "source_file": "orders_base.csv",
+          "source_row_count": 100040
+        },
+        {
+          "batch_order": 0,
+          "byte_size": 18898,
+          "dataset_role": "product_master",
+          "file_sha256": "62a6ec5f3b29301ac2c3ea3a3101e911e8a78953ecc7ac3339a727d65a7de168",
+          "schema_sha256": "a924dcfcbf0ba21e3dbf326fe1465242f5c68d9b82dca621b8e742f667f6a86b",
+          "source_file": "products.csv",
+          "source_row_count": 300
+        }
+      ],
+      "state_checksums": {
+        "event_lineage_sha256": "1862d1cb8b132c7c0aec876e65e3cab94d8e015a1c813598227de9d956ce98e1",
+        "fact_money_sha256": "68932c6afc06f25b9b185d9421de2faa8020cc4807a11858891bcc4d8fadbe81",
+        "fact_order_key_sha256": "642008029063076b37b0d61b092afffcc90f5c4d3a8223c357b3b509260b6125",
+        "member_version_sha256": "d6d050056c26ccf74cf2ba64b3113f332995cc10190df657ed23f7729bbf5356",
+        "quarantine_sha256": "af795e698a85de3b0bf41b44c740b7395b294edbefa6ba8d537ade0c2d5af52f"
+      },
+      "table_counts": [
+        {
+          "row_count": 24405,
+          "table_name": "curated.dim_date"
+        },
+        {
+          "row_count": 8746,
+          "table_name": "curated.dim_member"
+        },
+        {
+          "row_count": 8931,
+          "table_name": "curated.dim_member_lineage"
+        },
+        {
+          "row_count": 301,
+          "table_name": "curated.dim_product"
+        },
+        {
+          "row_count": 99612,
+          "table_name": "curated.fact_order"
+        },
+        {
+          "row_count": 117395,
+          "table_name": "quality.entity_disposition"
+        },
+        {
+          "row_count": 3821,
+          "table_name": "quality.entity_rule"
+        },
+        {
+          "row_count": 3852,
+          "table_name": "quality.issue_hit"
+        },
+        {
+          "row_count": 448,
+          "table_name": "quality.quarantine_row"
+        },
+        {
+          "row_count": 100040,
+          "table_name": "raw.order_event"
+        },
+        {
+          "row_count": 100040,
+          "table_name": "staging.order_event"
+        },
+        {
+          "row_count": 100040,
+          "table_name": "staging.order_event_lineage"
+        }
+      ]
+    },
+    {
+      "batch_name": "day1",
+      "batch_order": 1,
+      "event_reconciliation": {
+        "duplicate_physical_rows": 0,
+        "logical_events": 104655,
+        "raw_orders": 104000,
+        "raw_rows": 104655,
+        "representative_rows": 104655
+      },
+      "fact_reconciliation": {
+        "distinct_orders": 103016,
+        "fact_rows": 103016,
+        "gross_exact_sum": "26698985080.244930200000",
+        "gross_rounded_sum": "26698985081.70",
+        "net_exact_sum": "26650122530.244930200000",
+        "net_rounded_sum": "26650122531.70"
+      },
+      "member_reconciliation": {
+        "current_members": 7972,
+        "member_rows": 8746,
+        "member_versions": 8745
+      },
+      "order_dispositions": [
+        {
+          "final_disposition": "ACCEPT",
+          "order_count": 99734
+        },
+        {
+          "final_disposition": "ACCEPT_WITH_FLAGS",
+          "order_count": 3282
+        },
+        {
+          "final_disposition": "QUARANTINE",
+          "order_count": 984
+        }
+      ],
+      "quarantine_reconciliation": {
+        "rules": [
+          {
+            "affected_entities": 10,
+            "disposition": "WARN",
+            "rule_id": "INC-001",
+            "source_rule_links": 10
+          },
+          {
+            "affected_entities": 30,
+            "disposition": "QUARANTINE",
+            "rule_id": "MEM-003",
+            "source_rule_links": 60
+          },
+          {
+            "affected_entities": 80,
+            "disposition": "NORMALIZE",
+            "rule_id": "MEM-011",
+            "source_rule_links": 81
+          },
+          {
+            "affected_entities": 597,
+            "disposition": "QUARANTINE",
+            "rule_id": "ORD-004",
+            "source_rule_links": 1200
+          },
+          {
+            "affected_entities": 200,
+            "disposition": "NORMALIZE",
+            "rule_id": "ORD-009",
+            "source_rule_links": 200
+          },
+          {
+            "affected_entities": 50,
+            "disposition": "QUARANTINE",
+            "rule_id": "ORD-010",
+            "source_rule_links": 50
+          },
+          {
+            "affected_entities": 300,
+            "disposition": "QUARANTINE",
+            "rule_id": "ORD-011",
+            "source_rule_links": 300
+          },
+          {
+            "affected_entities": 3001,
+            "disposition": "NORMALIZE",
+            "rule_id": "ORD-012",
+            "source_rule_links": 3001
+          },
+          {
+            "affected_entities": 120,
+            "disposition": "ACCEPT",
+            "rule_id": "ORD-016",
+            "source_rule_links": 120
+          },
+          {
+            "affected_entities": 116,
+            "disposition": "ACCEPT",
+            "rule_id": "ORD-018",
+            "source_rule_links": 116
+          },
+          {
+            "affected_entities": 40,
+            "disposition": "QUARANTINE",
+            "rule_id": "ORD-023",
+            "source_rule_links": 40
+          }
+        ],
+        "summary": {
+          "entity_rule_links": 4544,
+          "issue_hit_source_rule_links": 5178,
+          "quarantine_physical_rows": 1647,
+          "quarantined_order_entities": 984
+        }
+      },
+      "schema_version": 3,
+      "source_registry": [
+        {
+          "batch_order": 0,
+          "byte_size": 3170,
+          "dataset_role": "fx_rate",
+          "file_sha256": "b043ae8402d06a9ab75f6540d5a94e9dbac504c1e31cb1d4429863a44bd75e24",
+          "schema_sha256": "95e44642480ca52d2f88005023fe2e01494b8e12bea2e889ad70b26498ed00fb",
+          "source_file": "fx_rates.csv",
+          "source_row_count": 134
+        },
+        {
+          "batch_order": 0,
+          "byte_size": 620035,
+          "dataset_role": "member_snapshot",
+          "file_sha256": "144eb0ed7282fbf1446cd8a557b5bc69ac3cc58f04b19246eb0e441faeb61c8a",
+          "schema_sha256": "046cd2d0e6042527ac497ee3978d8460f843ef01c81b11810f370bc26eabc306",
+          "source_file": "members.csv",
+          "source_row_count": 8991
+        },
+        {
+          "batch_order": 0,
+          "byte_size": 12431524,
+          "dataset_role": "order_event",
+          "file_sha256": "11eae7dc9e763c627dd0d164767cc2dc75f17b44515be6b15f5feaef2fb324da",
+          "schema_sha256": "55fd0cefc53605cedd9090c92dc0d6cb928f2c5cee42950e70355c590d83cac2",
+          "source_file": "orders_base.csv",
+          "source_row_count": 100040
+        },
+        {
+          "batch_order": 0,
+          "byte_size": 18898,
+          "dataset_role": "product_master",
+          "file_sha256": "62a6ec5f3b29301ac2c3ea3a3101e911e8a78953ecc7ac3339a727d65a7de168",
+          "schema_sha256": "a924dcfcbf0ba21e3dbf326fe1465242f5c68d9b82dca621b8e742f667f6a86b",
+          "source_file": "products.csv",
+          "source_row_count": 300
+        },
+        {
+          "batch_order": 1,
+          "byte_size": 570402,
+          "dataset_role": "order_event",
+          "file_sha256": "d4eeec84138ecd6f7d5c96032ab6662ec34850655a587f1f8f182544d6878dcd",
+          "schema_sha256": "55fd0cefc53605cedd9090c92dc0d6cb928f2c5cee42950e70355c590d83cac2",
+          "source_file": "orders_incremental_day1.csv",
+          "source_row_count": 4615
+        }
+      ],
+      "state_checksums": {
+        "event_lineage_sha256": "43d808a21a77ac3144c0cb295ca7d8ea06dfb88cd68da3fc7957169a47ccfef1",
+        "fact_money_sha256": "6fcf37709d0d80b271e05dfba44dbabbc21683509c572b61c0bc9d87ec01dacb",
+        "fact_order_key_sha256": "3c15248ba71e97a63566f4c035256baa0f32cfd0ddbab5ea56e742a7a0bffe0e",
+        "member_version_sha256": "d6d050056c26ccf74cf2ba64b3113f332995cc10190df657ed23f7729bbf5356",
+        "quarantine_sha256": "2f4b84fbb847314dcc6219f17ee956745721fb98943a2da1d95cf94ddd99153b"
+      },
+      "table_counts": [
+        {
+          "row_count": 24406,
+          "table_name": "curated.dim_date"
+        },
+        {
+          "row_count": 8746,
+          "table_name": "curated.dim_member"
+        },
+        {
+          "row_count": 8931,
+          "table_name": "curated.dim_member_lineage"
+        },
+        {
+          "row_count": 301,
+          "table_name": "curated.dim_product"
+        },
+        {
+          "row_count": 103016,
+          "table_name": "curated.fact_order"
+        },
+        {
+          "row_count": 121395,
+          "table_name": "quality.entity_disposition"
+        },
+        {
+          "row_count": 4544,
+          "table_name": "quality.entity_rule"
+        },
+        {
+          "row_count": 5178,
+          "table_name": "quality.issue_hit"
+        },
+        {
+          "row_count": 1647,
+          "table_name": "quality.quarantine_row"
+        },
+        {
+          "row_count": 104655,
+          "table_name": "raw.order_event"
+        },
+        {
+          "row_count": 104655,
+          "table_name": "staging.order_event"
+        },
+        {
+          "row_count": 104655,
+          "table_name": "staging.order_event_lineage"
+        }
+      ]
+    },
+    {
+      "batch_name": "day2",
+      "batch_order": 2,
+      "event_reconciliation": {
+        "duplicate_physical_rows": 0,
+        "logical_events": 109355,
+        "raw_orders": 108060,
+        "raw_rows": 109355,
+        "representative_rows": 109355
+      },
+      "fact_reconciliation": {
+        "distinct_orders": 106479,
+        "fact_rows": 106479,
+        "gross_exact_sum": "27580182717.041740200000",
+        "gross_rounded_sum": "27580182718.46",
+        "net_exact_sum": "27529704417.041740200000",
+        "net_rounded_sum": "27529704418.46"
+      },
+      "member_reconciliation": {
+        "current_members": 7972,
+        "member_rows": 8746,
+        "member_versions": 8745
+      },
+      "order_dispositions": [
+        {
+          "final_disposition": "ACCEPT",
+          "order_count": 103190
+        },
+        {
+          "final_disposition": "ACCEPT_WITH_FLAGS",
+          "order_count": 3289
+        },
+        {
+          "final_disposition": "QUARANTINE",
+          "order_count": 1581
+        }
+      ],
+      "quarantine_reconciliation": {
+        "rules": [
+          {
+            "affected_entities": 37,
+            "disposition": "WARN",
+            "rule_id": "INC-001",
+            "source_rule_links": 37
+          },
+          {
+            "affected_entities": 30,
+            "disposition": "QUARANTINE",
+            "rule_id": "MEM-003",
+            "source_rule_links": 60
+          },
+          {
+            "affected_entities": 80,
+            "disposition": "NORMALIZE",
+            "rule_id": "MEM-011",
+            "source_rule_links": 81
+          },
+          {
+            "affected_entities": 1196,
+            "disposition": "QUARANTINE",
+            "rule_id": "ORD-004",
+            "source_rule_links": 2402
+          },
+          {
+            "affected_entities": 200,
+            "disposition": "NORMALIZE",
+            "rule_id": "ORD-009",
+            "source_rule_links": 200
+          },
+          {
+            "affected_entities": 50,
+            "disposition": "QUARANTINE",
+            "rule_id": "ORD-010",
+            "source_rule_links": 50
+          },
+          {
+            "affected_entities": 300,
+            "disposition": "QUARANTINE",
+            "rule_id": "ORD-011",
+            "source_rule_links": 300
+          },
+          {
+            "affected_entities": 3001,
+            "disposition": "NORMALIZE",
+            "rule_id": "ORD-012",
+            "source_rule_links": 3001
+          },
+          {
+            "affected_entities": 120,
+            "disposition": "ACCEPT",
+            "rule_id": "ORD-016",
+            "source_rule_links": 120
+          },
+          {
+            "affected_entities": 233,
+            "disposition": "ACCEPT",
+            "rule_id": "ORD-018",
+            "source_rule_links": 234
+          },
+          {
+            "affected_entities": 40,
+            "disposition": "QUARANTINE",
+            "rule_id": "ORD-023",
+            "source_rule_links": 40
+          }
+        ],
+        "summary": {
+          "entity_rule_links": 5287,
+          "issue_hit_source_rule_links": 6525,
+          "quarantine_physical_rows": 2847,
+          "quarantined_order_entities": 1581
+        }
+      },
+      "schema_version": 3,
+      "source_registry": [
+        {
+          "batch_order": 0,
+          "byte_size": 3170,
+          "dataset_role": "fx_rate",
+          "file_sha256": "b043ae8402d06a9ab75f6540d5a94e9dbac504c1e31cb1d4429863a44bd75e24",
+          "schema_sha256": "95e44642480ca52d2f88005023fe2e01494b8e12bea2e889ad70b26498ed00fb",
+          "source_file": "fx_rates.csv",
+          "source_row_count": 134
+        },
+        {
+          "batch_order": 0,
+          "byte_size": 620035,
+          "dataset_role": "member_snapshot",
+          "file_sha256": "144eb0ed7282fbf1446cd8a557b5bc69ac3cc58f04b19246eb0e441faeb61c8a",
+          "schema_sha256": "046cd2d0e6042527ac497ee3978d8460f843ef01c81b11810f370bc26eabc306",
+          "source_file": "members.csv",
+          "source_row_count": 8991
+        },
+        {
+          "batch_order": 0,
+          "byte_size": 12431524,
+          "dataset_role": "order_event",
+          "file_sha256": "11eae7dc9e763c627dd0d164767cc2dc75f17b44515be6b15f5feaef2fb324da",
+          "schema_sha256": "55fd0cefc53605cedd9090c92dc0d6cb928f2c5cee42950e70355c590d83cac2",
+          "source_file": "orders_base.csv",
+          "source_row_count": 100040
+        },
+        {
+          "batch_order": 0,
+          "byte_size": 18898,
+          "dataset_role": "product_master",
+          "file_sha256": "62a6ec5f3b29301ac2c3ea3a3101e911e8a78953ecc7ac3339a727d65a7de168",
+          "schema_sha256": "a924dcfcbf0ba21e3dbf326fe1465242f5c68d9b82dca621b8e742f667f6a86b",
+          "source_file": "products.csv",
+          "source_row_count": 300
+        },
+        {
+          "batch_order": 1,
+          "byte_size": 570402,
+          "dataset_role": "order_event",
+          "file_sha256": "d4eeec84138ecd6f7d5c96032ab6662ec34850655a587f1f8f182544d6878dcd",
+          "schema_sha256": "55fd0cefc53605cedd9090c92dc0d6cb928f2c5cee42950e70355c590d83cac2",
+          "source_file": "orders_incremental_day1.csv",
+          "source_row_count": 4615
+        },
+        {
+          "batch_order": 2,
+          "byte_size": 580790,
+          "dataset_role": "order_event",
+          "file_sha256": "423175c944aac7758c487735e829790b30e23e952a71bcdd2c0762a08a4667e5",
+          "schema_sha256": "55fd0cefc53605cedd9090c92dc0d6cb928f2c5cee42950e70355c590d83cac2",
+          "source_file": "orders_incremental_day2.csv",
+          "source_row_count": 4700
+        }
+      ],
+      "state_checksums": {
+        "event_lineage_sha256": "28e3dc7f708b3ae3bf1138c9bc99c884b7b7940961ebaea44e2bb00c855522b3",
+        "fact_money_sha256": "6b76af77de0ac4b25bcaf9fd8769f508f6d9cfefc228477cc66967f2ad11e1d5",
+        "fact_order_key_sha256": "a09851da1ca895c36daf6186f959cb8e1316ff6223be7eeac9da18bc8ce0a20e",
+        "member_version_sha256": "d6d050056c26ccf74cf2ba64b3113f332995cc10190df657ed23f7729bbf5356",
+        "quarantine_sha256": "29d40638d078ce9c3dac395dce351994fa17bee6a079baa346abf646a802c395"
+      },
+      "table_counts": [
+        {
+          "row_count": 24407,
+          "table_name": "curated.dim_date"
+        },
+        {
+          "row_count": 8746,
+          "table_name": "curated.dim_member"
+        },
+        {
+          "row_count": 8931,
+          "table_name": "curated.dim_member_lineage"
+        },
+        {
+          "row_count": 301,
+          "table_name": "curated.dim_product"
+        },
+        {
+          "row_count": 106479,
+          "table_name": "curated.fact_order"
+        },
+        {
+          "row_count": 125455,
+          "table_name": "quality.entity_disposition"
+        },
+        {
+          "row_count": 5287,
+          "table_name": "quality.entity_rule"
+        },
+        {
+          "row_count": 6525,
+          "table_name": "quality.issue_hit"
+        },
+        {
+          "row_count": 2847,
+          "table_name": "quality.quarantine_row"
+        },
+        {
+          "row_count": 109355,
+          "table_name": "raw.order_event"
+        },
+        {
+          "row_count": 109355,
+          "table_name": "staging.order_event"
+        },
+        {
+          "row_count": 109355,
+          "table_name": "staging.order_event_lineage"
+        }
+      ]
+    },
+    {
+      "batch_name": "day3",
+      "batch_order": 3,
+      "event_reconciliation": {
+        "duplicate_physical_rows": 0,
+        "logical_events": 113970,
+        "raw_orders": 112060,
+        "raw_rows": 113970,
+        "representative_rows": 113970
+      },
+      "fact_reconciliation": {
+        "distinct_orders": 109888,
+        "fact_rows": 109888,
+        "gross_exact_sum": "28440830927.383050200000",
+        "gross_rounded_sum": "28440830928.91",
+        "net_exact_sum": "28388704477.383050200000",
+        "net_rounded_sum": "28388704478.91"
+      },
+      "member_reconciliation": {
+        "current_members": 7972,
+        "member_rows": 8746,
+        "member_versions": 8745
+      },
+      "order_dispositions": [
+        {
+          "final_disposition": "ACCEPT",
+          "order_count": 106624
+        },
+        {
+          "final_disposition": "ACCEPT_WITH_FLAGS",
+          "order_count": 3264
+        },
+        {
+          "final_disposition": "QUARANTINE",
+          "order_count": 2172
+        }
+      ],
+      "quarantine_reconciliation": {
+        "rules": [
+          {
+            "affected_entities": 37,
+            "disposition": "WARN",
+            "rule_id": "INC-001",
+            "source_rule_links": 37
+          },
+          {
+            "affected_entities": 30,
+            "disposition": "QUARANTINE",
+            "rule_id": "MEM-003",
+            "source_rule_links": 60
+          },
+          {
+            "affected_entities": 80,
+            "disposition": "NORMALIZE",
+            "rule_id": "MEM-011",
+            "source_rule_links": 81
+          },
+          {
+            "affected_entities": 1788,
+            "disposition": "QUARANTINE",
+            "rule_id": "ORD-004",
+            "source_rule_links": 3597
+          },
+          {
+            "affected_entities": 200,
+            "disposition": "NORMALIZE",
+            "rule_id": "ORD-009",
+            "source_rule_links": 200
+          },
+          {
+            "affected_entities": 50,
+            "disposition": "QUARANTINE",
+            "rule_id": "ORD-010",
+            "source_rule_links": 50
+          },
+          {
+            "affected_entities": 300,
+            "disposition": "QUARANTINE",
+            "rule_id": "ORD-011",
+            "source_rule_links": 300
+          },
+          {
+            "affected_entities": 3001,
+            "disposition": "NORMALIZE",
+            "rule_id": "ORD-012",
+            "source_rule_links": 3001
+          },
+          {
+            "affected_entities": 120,
+            "disposition": "ACCEPT",
+            "rule_id": "ORD-016",
+            "source_rule_links": 120
+          },
+          {
+            "affected_entities": 366,
+            "disposition": "ACCEPT",
+            "rule_id": "ORD-018",
+            "source_rule_links": 368
+          },
+          {
+            "affected_entities": 40,
+            "disposition": "QUARANTINE",
+            "rule_id": "ORD-023",
+            "source_rule_links": 40
+          }
+        ],
+        "summary": {
+          "entity_rule_links": 6012,
+          "issue_hit_source_rule_links": 7854,
+          "quarantine_physical_rows": 4041,
+          "quarantined_order_entities": 2172
+        }
+      },
+      "schema_version": 3,
+      "source_registry": [
+        {
+          "batch_order": 0,
+          "byte_size": 3170,
+          "dataset_role": "fx_rate",
+          "file_sha256": "b043ae8402d06a9ab75f6540d5a94e9dbac504c1e31cb1d4429863a44bd75e24",
+          "schema_sha256": "95e44642480ca52d2f88005023fe2e01494b8e12bea2e889ad70b26498ed00fb",
+          "source_file": "fx_rates.csv",
+          "source_row_count": 134
+        },
+        {
+          "batch_order": 0,
+          "byte_size": 620035,
+          "dataset_role": "member_snapshot",
+          "file_sha256": "144eb0ed7282fbf1446cd8a557b5bc69ac3cc58f04b19246eb0e441faeb61c8a",
+          "schema_sha256": "046cd2d0e6042527ac497ee3978d8460f843ef01c81b11810f370bc26eabc306",
+          "source_file": "members.csv",
+          "source_row_count": 8991
+        },
+        {
+          "batch_order": 0,
+          "byte_size": 12431524,
+          "dataset_role": "order_event",
+          "file_sha256": "11eae7dc9e763c627dd0d164767cc2dc75f17b44515be6b15f5feaef2fb324da",
+          "schema_sha256": "55fd0cefc53605cedd9090c92dc0d6cb928f2c5cee42950e70355c590d83cac2",
+          "source_file": "orders_base.csv",
+          "source_row_count": 100040
+        },
+        {
+          "batch_order": 0,
+          "byte_size": 18898,
+          "dataset_role": "product_master",
+          "file_sha256": "62a6ec5f3b29301ac2c3ea3a3101e911e8a78953ecc7ac3339a727d65a7de168",
+          "schema_sha256": "a924dcfcbf0ba21e3dbf326fe1465242f5c68d9b82dca621b8e742f667f6a86b",
+          "source_file": "products.csv",
+          "source_row_count": 300
+        },
+        {
+          "batch_order": 1,
+          "byte_size": 570402,
+          "dataset_role": "order_event",
+          "file_sha256": "d4eeec84138ecd6f7d5c96032ab6662ec34850655a587f1f8f182544d6878dcd",
+          "schema_sha256": "55fd0cefc53605cedd9090c92dc0d6cb928f2c5cee42950e70355c590d83cac2",
+          "source_file": "orders_incremental_day1.csv",
+          "source_row_count": 4615
+        },
+        {
+          "batch_order": 2,
+          "byte_size": 580790,
+          "dataset_role": "order_event",
+          "file_sha256": "423175c944aac7758c487735e829790b30e23e952a71bcdd2c0762a08a4667e5",
+          "schema_sha256": "55fd0cefc53605cedd9090c92dc0d6cb928f2c5cee42950e70355c590d83cac2",
+          "source_file": "orders_incremental_day2.csv",
+          "source_row_count": 4700
+        },
+        {
+          "batch_order": 3,
+          "byte_size": 570105,
+          "dataset_role": "order_event",
+          "file_sha256": "f68d797b69c3d69b173e78efaf799dc4095f7f7d8aef9ebc7be85616b676057d",
+          "schema_sha256": "55fd0cefc53605cedd9090c92dc0d6cb928f2c5cee42950e70355c590d83cac2",
+          "source_file": "orders_incremental_day3.csv",
+          "source_row_count": 4615
+        }
+      ],
+      "state_checksums": {
+        "event_lineage_sha256": "691081db5668aa871941e592e611ccda7377c69c9c43088a87a94bcf62e17449",
+        "fact_money_sha256": "afd6be3e0d060d9f23fe2a2068cae9791f023f351bf26107c9845f1ec4ffe479",
+        "fact_order_key_sha256": "a4b4be02a4e56d04bd6e33aee66c370f423377df6ddc04171d64c2c394aeac07",
+        "member_version_sha256": "d6d050056c26ccf74cf2ba64b3113f332995cc10190df657ed23f7729bbf5356",
+        "quarantine_sha256": "f6159ff8a91a2047aea2cd6b6f7c837714fc0f376ea5127cedc98c78832903b2"
+      },
+      "table_counts": [
+        {
+          "row_count": 24408,
+          "table_name": "curated.dim_date"
+        },
+        {
+          "row_count": 8746,
+          "table_name": "curated.dim_member"
+        },
+        {
+          "row_count": 8931,
+          "table_name": "curated.dim_member_lineage"
+        },
+        {
+          "row_count": 301,
+          "table_name": "curated.dim_product"
+        },
+        {
+          "row_count": 109888,
+          "table_name": "curated.fact_order"
+        },
+        {
+          "row_count": 129455,
+          "table_name": "quality.entity_disposition"
+        },
+        {
+          "row_count": 6012,
+          "table_name": "quality.entity_rule"
+        },
+        {
+          "row_count": 7854,
+          "table_name": "quality.issue_hit"
+        },
+        {
+          "row_count": 4041,
+          "table_name": "quality.quarantine_row"
+        },
+        {
+          "row_count": 113970,
+          "table_name": "raw.order_event"
+        },
+        {
+          "row_count": 113970,
+          "table_name": "staging.order_event"
+        },
+        {
+          "row_count": 113970,
+          "table_name": "staging.order_event_lineage"
+        }
+      ]
+    }
+  ],
+  "schema_version": 3
+}

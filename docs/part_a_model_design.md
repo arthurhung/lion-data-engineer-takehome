@@ -1,4 +1,4 @@
-# Part A 星型模型與 SCD Type 2（Phase 2）
+# Part A 星型模型與 SCD Type 2（Phase 2；Phase 3 延伸）
 
 ## 狀態與範圍
 
@@ -209,3 +209,19 @@ member accepted lineage、canonical conflict rule與selected-event timezone flag
 
 這只證明 Phase 2 clean base rebuild stability。Incremental ingestion、batch ledger、upsert與完整
 idempotency evidence均留待 Phase 3。
+
+## Phase 3 incremental extension
+
+Phase 3 不改變上述 grain、key、as-of、FX 或 Decimal contract。它以
+`audit.source_file_registry` 固定 logical filename、batch order、SHA-256、schema hash、byte size
+與 row count；`staging.order_event_lineage` 將每個 physical row 映射至 canonical event hash。
+Exact duplicate 的 deterministic 最小 `source_row_uid` 只是 lineage representative，不是 business
+winner。Fact仍以唯一最大 `updated_at` 選 latest state；canonical invariant conflict、latest tie或
+其他歷史 hard rule會對整個 order採 cumulative quarantine，並刪除先前已存在的 fact。
+
+實際來源沒有 member increment，所以 day1～day3 不產生不同會員版本：known versions皆為
+8,745，current members皆為7,972，member version checksum皆為
+`d6d050056c26ccf74cf2ba64b3113f332995cc10190df657ed23f7729bbf5356`。Synthetic test另外驗證
+tracked change、non-tracked/unchanged snapshot、same-day conflict、exclusive validity、重跑、
+single-current與non-overlap；這不是捏造actual member結果。完整Phase 3數字見
+[`part_a_rerun_evidence.md`](part_a_rerun_evidence.md)。

@@ -1,9 +1,9 @@
 # 雄獅資訊資料工程師 Take-home
 
-本 repository 用於建立可在本機重現的資料工程解法。Phase 0 已完成；Phase 1 的 profiling、
-typed source contract、quality detectors 與 sentinel correction 已完成。Phase 2 base warehouse、
-星型模型與 SCD2 狀態為 `implementation_complete_acceptance_pending`，等待應試者人工驗收。
-尚未開始 incremental ETL、Part B、Part C 或 Module F 正式答案。
+本 repository 用於建立可在本機重現的資料工程解法。Phase 0～2 已完成；Phase 3 incremental
+warehouse、batch registry、replay proof 與 deterministic evidence 狀態為
+`implementation_complete_acceptance_pending`，等待應試者人工驗收。尚未開始 Part B、Part C 或
+Module F 正式答案。
 
 > 文件狀態修正：Phase 0 transcript 已存在並完成索引，因此移除舊版「等待 transcript 匯出」文字；
 > 此修正不是 Phase 1 功能。
@@ -62,6 +62,33 @@ incremental order files。實際模型、grain、SCD2、quality gating與money�
 [`docs/part_a_model_design.md`](docs/part_a_model_design.md)。Phase 2 canonical evidence checksum為
 `2d9cf41622428233c7b83d3de7aa0df860912ba457c72be22f3b26758cdd2c1e`。
 
+## Phase 3 Incremental Warehouse
+
+從不存在的新 DB path 依 `base → day1 → day2 → day3` 建置：
+
+```bash
+make build PHASE3_OUTPUT_DB=/tmp/lion-phase3.duckdb \
+  PHASE3_EVIDENCE_DIR=/tmp/lion-phase3-evidence
+make rerun-proof PHASE3_OUTPUT_DB=/tmp/lion-phase3.duckdb \
+  PHASE3_EVIDENCE_DIR=/tmp/lion-phase3-evidence
+```
+
+同 logical filename、相同 SHA-256 的成功檔案回傳 `SKIPPED_ALREADY_APPLIED`；若successful
+registry或既有failed／interrupted attempt曾觀察到不同SHA-256則hard fail。只有未登錄的新檔才接受
+strict next-batch檢查。Raw append、cumulative staging／
+quality、dimension、fact 與成功 reconciliation 在同一 transaction；audit attempt 狀態在該
+transaction 外保存。
+
+完整 clean acceptance 會建立兩個全新 DB、各自重跑 increments，並逐檔比較 canonical evidence：
+
+```bash
+make phase3-acceptance
+```
+
+詳細 batch counts、money totals、checksums、late/conflict 策略與限制見
+[`docs/part_a_rerun_evidence.md`](docs/part_a_rerun_evidence.md)。小型 deterministic evidence 位於
+[`docs/evidence/phase_03/`](docs/evidence/phase_03/)；DuckDB 與 runtime output 不納入 Git。
+
 ## 目錄責任
 
 ```text
@@ -79,7 +106,7 @@ LionDEExam/                唯讀原始考題與資料包
 | 原始考題要求 | `SPEC.md` Phase | 預定交付物 | Phase 0 狀態 |
 |---|---:|---|---|
 | Part A 星型模型與 `dim_member` SCD Type 2 | 2 | schema、transformation、model design、tests | 本機實作完成，待人工驗收 |
-| Part A base 與三個 increment、冪等重跑 | 3 | ETL CLI、batch audit、rerun evidence | 僅完成路由 |
+| Part A base 與三個 increment、冪等重跑 | 3 | ETL CLI、batch audit、rerun evidence | 本機實作完成，待人工驗收 |
 | Part A 資料品質檢核報告 | 1–3 | detectors、treatment matrix、quality report | Phase 1 本機實作完成，待人工驗收 |
 | Part B AI PySpark code review | 4 | `docs/part_b_code_review.md` | 未作答 |
 | Part C Microsoft Fabric 架構與取捨 | 5 | `docs/part_c_fabric_architecture.md` | 未作答 |
@@ -90,15 +117,14 @@ LionDEExam/                唯讀原始考題與資料包
 原始考題與 `SPEC.md` 沒有發現縮減需求的實質衝突。實際資料包比規格建議路徑多一層
 `LionDEExam/`；後續程式若引用來源，應使用設定值處理，不應搬移或修改原始檔案。
 
-## 後續命令（尚未實作）
-
-`make build`、`make rerun-proof` 與 `make cleanroom` 將在對應 Phase
-完成後才加入。現階段不應將其視為可用介面或已驗證結果。
-
 ## 已知限制與人工決策
 
-- Phase 2 已套用本輪核准的 SCD2、fact、duplicate、sentinel 與幣別／金額規則；仍待應試者驗收實作與數字。
-- Phase 3 incremental tie-breaker、batch ledger 與完整 idempotency proof 尚未實作。
+- Phase 2 已套用核准的 SCD2、fact、duplicate、sentinel 與幣別／金額規則。
+- Phase 3 採 correctness-first cumulative recomputation，適合本題資料量；未宣稱為大型 production
+  partition-pruned 最佳化方案。Audit recovery只支援single writer，啟動時將殘留 `RUNNING`標成
+  `INTERRUPTED`。
+- 實際沒有 member incremental file；actual day1～day3 member checksum不變，incremental SCD2
+  行為以synthetic fixture驗證，不代表實際會員增量結果。
 - Module F 的最終選擇理由必須由應試者以自己的語氣確認。
 - AI 協作紀錄的匯出完整性與去識別化需在提交前由應試者確認。
 - Phase 1 完整 transcript 已匯出並更新索引；提交前仍須由應試者確認匯出完整性與去識別化。
@@ -112,5 +138,7 @@ LionDEExam/                唯讀原始考題與資料包
 - [`docs/evidence/phase_01/`](docs/evidence/phase_01/)：Phase 1 canonical machine-readable evidence。
 - [`docs/part_a_model_design.md`](docs/part_a_model_design.md)：Phase 2 grain、SCD2、fact、money 與實際 reconciliation。
 - [`docs/evidence/phase_02/`](docs/evidence/phase_02/)：Phase 2 deterministic base-build evidence。
+- [`docs/part_a_rerun_evidence.md`](docs/part_a_rerun_evidence.md)：Phase 3 batch、lineage、replay 與 reconciliation。
+- [`docs/evidence/phase_03/`](docs/evidence/phase_03/)：Phase 3 deterministic incremental evidence。
 - [`docs/ai/session_index.md`](docs/ai/session_index.md)：AI session 索引。
 - [`docs/ai/collaboration_report.md`](docs/ai/collaboration_report.md)：一頁 AI 協作報告模板。

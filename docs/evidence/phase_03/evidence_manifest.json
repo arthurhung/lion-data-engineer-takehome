@@ -1,0 +1,25 @@
+{
+  "algorithm": "SHA-256",
+  "canonical_bundle_sha256": "530804916123aacc3fe4aa4c4c9646cc9fdc35b306af6799b06fb23de052720d",
+  "canonicalization": "UTF-8, LF, JSON sorted keys, indent=2, trailing LF",
+  "evidence_content": "deterministic analytical state and replay outcomes only",
+  "files": [
+    {
+      "file": "batch_summary.json",
+      "sha256": "087db89d3a6db84a4a21db3999b93a55d3e36eb97b6a1c71476b38b98979b22a"
+    },
+    {
+      "file": "final_summary.json",
+      "sha256": "b8f0653ea882b031da570795a542dc2faa4c82a7e40770e625c6af283e64fbf3"
+    },
+    {
+      "file": "rerun_summary.json",
+      "sha256": "6ac46f44e9de005280c6db0e0c9045b4c8a02a8d932b30a97b5c74b78591acbc"
+    },
+    {
+      "file": "validation_summary.json",
+      "sha256": "c195753fa1528c867be72366df01b51f6f46f9b71403274a4df01697b521f1fe"
+    }
+  ],
+  "schema_version": 3
+}

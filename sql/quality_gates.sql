@@ -20,6 +20,15 @@ WITH canonical_orders AS (
         PARTITION BY order_id ORDER BY updated_at,canonical_event_hash
     ) AS prior_status
     FROM canonical_orders
+), late_arrival AS (
+    SELECT o.source_row_uid
+    FROM canonical_orders o
+    WHERE o.batch_order > 0
+      AND o.updated_at < (
+          SELECT max(p.updated_at)
+          FROM canonical_orders p
+          WHERE p.order_id=o.order_id AND p.batch_order<o.batch_order
+      )
 ), order_hits AS (
     SELECT 'orders' dataset, 'order' entity_type, order_id business_key, source_row_uid,
            'ORD-001' rule_id, 'NORMALIZE' disposition
@@ -96,9 +105,16 @@ WITH canonical_orders AS (
       AND net_amount_twd_exact < 0
     UNION ALL
     SELECT 'orders','order',order_id,source_row_uid,'ORD-021','QUARANTINE'
-    FROM staging.order_event
-    WHERE order_business_date IS NULL
-       OR order_business_date NOT BETWEEN DATE '2026-05-01' AND DATE '2026-06-30'
+    FROM staging.order_event o
+    JOIN (VALUES
+        (0,'orders_base.csv',DATE '2026-05-01',DATE '2026-06-30'),
+        (1,'orders_incremental_day1.csv',DATE '2026-05-01',DATE '2026-07-01'),
+        (2,'orders_incremental_day2.csv',DATE '2026-05-01',DATE '2026-07-02'),
+        (3,'orders_incremental_day3.csv',DATE '2026-05-01',DATE '2026-07-03')
+    ) AS c(batch_order,source_file,min_business_date,max_business_date)
+      ON c.batch_order=o.batch_order AND c.source_file=o.source_file
+    WHERE o.order_business_date IS NULL
+       OR o.order_business_date NOT BETWEEN c.min_business_date AND c.max_business_date
     UNION ALL
     SELECT 'orders','order',o.order_id,o.source_row_uid,'ORD-023','QUARANTINE'
     FROM staging.order_event o JOIN staging.product p USING (product_id)
@@ -109,6 +125,9 @@ WITH canonical_orders AS (
     UNION ALL
     SELECT 'orders','order',order_id,source_row_uid,'ORD-024','QUARANTINE'
     FROM staging.order_event WHERE departure_date IS NULL
+    UNION ALL
+    SELECT 'orders','order',o.order_id,o.source_row_uid,'INC-001','WARN'
+    FROM staging.order_event o JOIN late_arrival l USING(source_row_uid)
 ), member_hits AS (
     SELECT 'members' dataset, 'member_snapshot' entity_type,
            member_id || '|' || coalesce(extract_date::VARCHAR, '<NULL>') business_key,
@@ -242,5 +261,9 @@ SELECT d.*,
        coalesce((SELECT string_agg(DISTINCT h.rule_id,',' ORDER BY h.rule_id)
                  FROM quality.issue_hit h
                  WHERE h.source_row_uid=d.source_row_uid AND h.disposition='QUARANTINE'),
+                (SELECT string_agg(DISTINCT r.rule_id,',' ORDER BY r.rule_id)
+                 FROM quality.entity_rule r
+                 WHERE d.dataset='orders' AND r.entity_type='order'
+                   AND r.business_key=d.business_key AND r.disposition='QUARANTINE'),
                 '<UNSPECIFIED>') rule_ids
 FROM deduped d;

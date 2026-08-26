@@ -257,3 +257,21 @@ amount_twd = DECIMAL(amount) × DECIMAL(rate_to_twd)
   `order_created_at` date。
 
 所有 disposition 仍是 proposed Phase 2 candidates；Phase 1 沒有將 treatment 套用到資料。
+
+## Phase 3 applied incremental quality semantics
+
+Phase 3 依已核准政策對全部累積 order events重新計算quality。Detector發生在event/source-row
+層；`quality.entity_disposition` 將hard rule提升為整個 `order_id` 的cumulative disposition；
+`quality.quarantine_row` 再保留該business key全部physical rows及其rule lineage。沒有權威
+correction contract，因此後續正常event不能解除 `ORD-004`、`ORD-010`、`ORD-011`、
+`ORD-023`等歷史hard quarantine。
+
+`ORD-021` 不以filename字串推測日期，而使用batch metadata contract：base允許
+2026-05-01～06-30，day1延伸至07-01，day2延伸至07-02，day3延伸至07-03。Phase 2 base-only
+builder仍只讀四個base/reference檔，既有32 checks與canonical evidence不變。
+
+最終累積資料有1,788個canonical invariant-conflict orders，全部quarantine；其3,597筆
+source-rule links與所有physical lineage均保留。37個late-arriving orders標記 `INC-001 WARN`：
+25個invariant一致者仍可curate，且舊event不會使唯一最大 `updated_at` fact倒退；12個同時命中
+invariant conflict者依order-level policy quarantine。各批與最終reconciliation見
+[`part_a_rerun_evidence.md`](part_a_rerun_evidence.md)。
