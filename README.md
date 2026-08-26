@@ -79,7 +79,7 @@ LionDEExam/                唯讀原始考題與資料包
 - Phase 1 已提出但尚未核准資料處理策略；SCD2、fact grain、incremental tie-breaker 與正式幣別／金額規則仍須由應試者確認。
 - Module F 的最終選擇理由必須由應試者以自己的語氣確認。
 - AI 協作紀錄的匯出完整性與去識別化需在提交前由應試者確認。
-- Phase 1 完整 transcript 尚未匯出；session 結束後應由應試者匯出、去識別化並更新索引。
+- Phase 1 完整 transcript 已匯出並更新索引；提交前仍須由應試者確認匯出完整性與去識別化。
 
 ## 文件索引
 

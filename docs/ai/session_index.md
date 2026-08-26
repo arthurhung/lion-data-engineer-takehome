@@ -4,10 +4,10 @@
 不能取代題目要求的完整 transcript。完整 transcript 應由應試者從 Codex 匯出後放入
 `docs/ai/transcripts/`，提交前須移除 secret 與無關個資。
 
-| Phase | 日期 | 工具 / session | 任務摘要 | Transcript | Implementation commit | 狀態 |
-|---:|---|---|---|---|---|---|
-| 0 | 2026-08-25 | Codex task `01a0385e-5109-7862-8ac0-a55fbe2e2553`，標題「執行 Phase 0 Repo 初始化」 | 唯讀盤點、需求對照、骨架、setup/lint/smoke test | [`transcripts/phase_00_bootstrap.jsonl`](transcripts/phase_00_bootstrap.jsonl) | `68e77762` | Completed |
-| 1 | 2026-08-26 | Codex current task；task ID 待 session 匯出時補入 | Profiling、typed contract、DuckDB detectors、canonical evidence、quality report 與 tests | 尚未建立；完整 session 結束後由應試者匯出 | 未 commit | implementation_complete_acceptance_pending |
+| Phase | 日期 | 工具 / session | 任務摘要 | Transcript | Implementation commit | Canonical evidence checksum | 狀態 |
+|---:|---|---|---|---|---|---|---|
+| 0 | 2026-08-25 | Codex task `01a0385e-5109-7862-8ac0-a55fbe2e2553`，標題「執行 Phase 0 Repo 初始化」 | 唯讀盤點、需求對照、骨架、setup/lint/smoke test | [`transcripts/phase_00_bootstrap.jsonl`](transcripts/phase_00_bootstrap.jsonl) | `68e77762` | — | Completed |
+| 1 | 2026-08-26 | Codex task `01a03a9f-8a8c-7113-bcc4-496ca58fb87c` | Profiling and quality contract | [`transcripts/phase_01_profiling_quality_contract.jsonl`](transcripts/phase_01_profiling_quality_contract.jsonl) | `05ace53e8728af804c7a41e4e6274b723cfb95fc` | `f326a97e6833d55071b2752581cae31fe5049d7b8efde016e8cfc5048843fa39` | Completed |
 
 ## 每次更新規則
 
