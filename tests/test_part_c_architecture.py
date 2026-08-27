@@ -1,12 +1,21 @@
 from __future__ import annotations
 
+import hashlib
 import re
+import subprocess
 from pathlib import Path
 from urllib.parse import urlparse
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 REPORT = PROJECT_ROOT / "docs" / "part_c_fabric_architecture.md"
 README = PROJECT_ROOT / "README.md"
+SESSION_INDEX = PROJECT_ROOT / "docs" / "ai" / "session_index.md"
+TRANSCRIPT_RELATIVE_PATH = "docs/ai/transcripts/phase_05_part_c_fabric_architecture.jsonl"
+TRANSCRIPT = PROJECT_ROOT / TRANSCRIPT_RELATIVE_PATH
+PART_C_SHA256 = "0b5def8a604969ab155d0b090d03774a87308c1ef0bdbf84e7e775cfd8618915"
+IMPLEMENTATION_VALIDATOR_SHA256 = (
+    "ceaf85de5bbd64e6be2a00f6a628674ca95d34a1a7f5e1879de580a90e41f068"
+)
 
 REQUIRED_HEADINGS = (
     "## Executive summary",
@@ -200,11 +209,38 @@ def test_official_references_are_allowlisted_and_no_deployment_claim_is_made() -
     assert "並非\nFabric deployment evidence" in report
 
 
-def test_readme_exposes_part_c_targeted_validation_and_pending_transcript() -> None:
+def test_phase5_lifecycle_is_completed_and_closeout_evidence_is_tracked() -> None:
     readme = README.read_text(encoding="utf-8")
     assert "docs/part_c_fabric_architecture.md" in readme
     assert ".venv/bin/python -m pytest tests/test_part_c_architecture.py" in readme
-    assert "implementation_complete_acceptance_pending" in readme
-    assert "Phase 5 transcript 待人工匯出" in readme
-    part_c_row = next(line for line in readme.splitlines() if "Part C Microsoft Fabric" in line)
-    assert "Completed" not in part_c_row
+    phase5_start = readme.index("## Phase 5 Part C Fabric Architecture")
+    phase5_end = readme.index("\n## ", phase5_start + 3)
+    phase5_readme = readme[phase5_start:phase5_end]
+    assert "目前狀態為 `Completed`" in phase5_readme
+    assert "Phase 5 transcript 已完成人工匯出、驗證與索引" in phase5_readme
+    assert "Phase 5 transcript 待人工匯出" not in phase5_readme
+
+    session_index = SESSION_INDEX.read_text(encoding="utf-8")
+    phase5_row = next(
+        line for line in session_index.splitlines() if line.startswith("| 5 / Part C |")
+    )
+    assert phase5_row.endswith("| Completed |")
+    assert "transcripts/phase_05_part_c_fabric_architecture.jsonl" in phase5_row
+    assert f"Part C SHA-256 `{PART_C_SHA256}`" in phase5_row
+    assert f"validator SHA-256 `{IMPLEMENTATION_VALIDATOR_SHA256}`" in phase5_row
+    assert "Phase 5 狀態：`Completed`。" in session_index
+
+    assert TRANSCRIPT.is_file()
+    assert TRANSCRIPT.stat().st_size > 0
+    tracked = subprocess.run(
+        ["git", "ls-files", "--error-unmatch", TRANSCRIPT_RELATIVE_PATH],
+        cwd=PROJECT_ROOT,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert tracked.returncode == 0
+    assert tracked.stdout.strip() == TRANSCRIPT_RELATIVE_PATH
+
+    assert REPORT.is_file()
+    assert hashlib.sha256(REPORT.read_bytes()).hexdigest() == PART_C_SHA256
