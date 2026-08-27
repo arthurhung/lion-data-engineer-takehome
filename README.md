@@ -4,8 +4,8 @@
 warehouse、batch registry、replay proof、deterministic evidence 與 AI evidence closeout 皆已完成。
 Part B正式審查報告與 Phase 4 AI evidence closeout 均已完成，狀態為 `Completed`。
 Part C Fabric 架構設計與 Phase 5 AI evidence closeout 均已完成，狀態為 `Completed`。Phase 6
-Module F 的 Static review／修正設計已完成實作，狀態為
-`implementation_complete_acceptance_pending`；正式 deployment 結論為 `NO_DEPLOY`。
+Module F 的 Static review／修正設計與 AI evidence closeout 均已完成，狀態為 `Completed`；
+正式 deployment 結論為 `NO_DEPLOY`。
 
 > 文件狀態修正：Phase 0 transcript 已存在並完成索引，因此移除舊版「等待 transcript 匯出」文字；
 > 此修正不是 Phase 1 功能。
@@ -118,8 +118,8 @@ finding contract、文件狀態與選擇理由；它不取代 ML leakage experim
 .venv/bin/python -m pytest tests/test_module_f_diagnosis.py
 ```
 
-目前狀態為 `implementation_complete_acceptance_pending`。Module F transcript待應試者人工匯出；
-Module D／E未作答，Phase 6 尚未標示為 `Completed`。
+目前狀態為 `Completed`；Module F transcript 已完成人工匯出、驗證與索引。
+Module D／E未作答。
 
 ## 目錄責任
 
@@ -142,7 +142,7 @@ LionDEExam/                唯讀原始考題與資料包
 | Part A 資料品質檢核報告 | 1–3 | detectors、treatment matrix、quality report | Phase 1 本機實作完成，待人工驗收 |
 | Part B AI PySpark code review | 4 | `docs/part_b_code_review.md` | Completed |
 | Part C Microsoft Fabric 架構與取捨 | 5 | `docs/part_c_fabric_architecture.md` | Completed |
-| 進階模組三選一與 3–5 句選擇理由 | 6 | `docs/module_f_diagnosis.md` | Module F implementation完成，待人工acceptance／transcript |
+| 進階模組三選一與 3–5 句選擇理由 | 6 | `docs/module_f_diagnosis.md` | Module F implementation與AI evidence closeout均已完成 |
 | 完整 AI transcript 與一頁報告 | 全階段、7 | `docs/ai/` | 建立索引與模板 |
 | Reviewer 30 分鐘內可重現 | 7–8 | 最終 README、clean-room evidence | Phase 0 只提供 setup/lint/test |
 
