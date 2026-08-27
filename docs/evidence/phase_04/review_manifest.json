@@ -1,0 +1,109 @@
+{
+  "blocking_fixes": [
+    "PB-006",
+    "PB-001",
+    "PB-005",
+    "PB-002",
+    "PB-003",
+    "PB-004",
+    "PB-008",
+    "PB-007"
+  ],
+  "coverage": {
+    "correctness": ["PB-001", "PB-002", "PB-003", "PB-005", "PB-006"],
+    "currency": ["PB-005"],
+    "data_loss": ["PB-001", "PB-003", "PB-005", "PB-006"],
+    "deployment_safety": ["PB-004", "PB-008"],
+    "idempotency": ["PB-004", "PB-008"],
+    "join": ["PB-003", "PB-005"],
+    "observability": ["PB-006", "PB-008"],
+    "performance": ["PB-007"],
+    "scalability": ["PB-007"],
+    "scd2": ["PB-002", "PB-003"],
+    "schema_type": ["PB-005", "PB-006"]
+  },
+  "deployment_conclusion": "NO_DEPLOY",
+  "findings": [
+    {
+      "blocking": true,
+      "categories": ["correctness", "data_loss"],
+      "finding_id": "PB-001",
+      "line_end": 50,
+      "line_start": 27,
+      "severity": "CRITICAL",
+      "title": "訂單事件在判斷新舊前已被任意捨棄"
+    },
+    {
+      "blocking": true,
+      "categories": ["correctness", "scd2"],
+      "finding_id": "PB-002",
+      "line_end": 118,
+      "line_start": 86,
+      "severity": "CRITICAL",
+      "title": "`dim_member`不是SCD Type 2，且overwrite會破壞歷史"
+    },
+    {
+      "blocking": true,
+      "categories": ["correctness", "data_loss", "join", "scd2"],
+      "finding_id": "PB-003",
+      "line_end": 173,
+      "line_start": 124,
+      "severity": "CRITICAL",
+      "title": "Fact關聯raw快照造成fan-out，inner product join又會丟單"
+    },
+    {
+      "blocking": true,
+      "categories": ["deployment_safety", "idempotency"],
+      "finding_id": "PB-004",
+      "line_end": 155,
+      "line_start": 151,
+      "severity": "CRITICAL",
+      "title": "Fact使用append，重跑與狀態更新都不冪等"
+    },
+    {
+      "blocking": true,
+      "categories": ["correctness", "currency", "data_loss", "join", "schema_type"],
+      "finding_id": "PB-005",
+      "line_end": 141,
+      "line_start": 53,
+      "severity": "HIGH",
+      "title": "FX inner join與Double計算會遺失訂單或產生不可靠金額"
+    },
+    {
+      "blocking": true,
+      "categories": ["correctness", "data_loss", "observability", "schema_type"],
+      "finding_id": "PB-006",
+      "line_end": 56,
+      "line_start": 27,
+      "severity": "HIGH",
+      "title": "無explicit schema且以filter靜默丟棄品質問題"
+    },
+    {
+      "blocking": true,
+      "categories": ["performance", "scalability"],
+      "finding_id": "PB-007",
+      "line_end": 162,
+      "line_start": 67,
+      "severity": "HIGH",
+      "title": "Python UDF與全表`collect()`無法安全擴展"
+    },
+    {
+      "blocking": true,
+      "categories": ["deployment_safety", "idempotency", "observability"],
+      "finding_id": "PB-008",
+      "line_end": 175,
+      "line_start": 19,
+      "severity": "HIGH",
+      "title": "寫入缺乏原子性、audit與有效驗證，仍無條件宣告成功"
+    }
+  ],
+  "primary_deliverable": "docs/part_b_code_review.md",
+  "review_method": "static_review_only_no_pyspark_or_fabric_execution",
+  "schema_version": 1,
+  "source": {
+    "line_count": 179,
+    "path": "LionDEExam/candidate_package/buggy_pipeline.py",
+    "sha256": "618f9c2a537bc1244fc44f2103eacd5e45c6a36e33ee94f99c499ae6a8e913ff"
+  },
+  "status": "implementation_complete_acceptance_pending"
+}
