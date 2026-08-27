@@ -3,7 +3,8 @@
 本 repository 用於建立可在本機重現的資料工程解法。Phase 0～3 已完成；Phase 3 incremental
 warehouse、batch registry、replay proof、deterministic evidence 與 AI evidence closeout 皆已完成。
 Part B正式審查報告與 Phase 4 AI evidence closeout 均已完成，狀態為 `Completed`。
-尚未開始 Part C 或 Module F 正式答案。
+Part C Fabric 架構設計已完成實作，狀態為
+`implementation_complete_acceptance_pending`；Phase 5 transcript 待人工匯出。Module F 尚未開始。
 
 > 文件狀態修正：Phase 0 transcript 已存在並完成索引，因此移除舊版「等待 transcript 匯出」文字；
 > 此修正不是 Phase 1 功能。
@@ -89,6 +90,19 @@ make phase3-acceptance
 [`docs/part_a_rerun_evidence.md`](docs/part_a_rerun_evidence.md)。小型 deterministic evidence 位於
 [`docs/evidence/phase_03/`](docs/evidence/phase_03/)；DuckDB 與 runtime output 不納入 Git。
 
+## Phase 5 Part C Fabric Architecture
+
+正式答案與兩張內嵌 Mermaid 圖見
+[`docs/part_c_fabric_architecture.md`](docs/part_c_fabric_architecture.md)。此文件是 proposed
+architecture，不是 Fabric deployment evidence；輕量 validator 只檢查文件結構與必要 coverage：
+
+```bash
+.venv/bin/python -m pytest tests/test_part_c_architecture.py
+```
+
+目前狀態為 `implementation_complete_acceptance_pending`；Phase 5 transcript 待人工匯出，正式
+acceptance 與 closeout 尚未完成。
+
 ## 目錄責任
 
 ```text
@@ -109,7 +123,7 @@ LionDEExam/                唯讀原始考題與資料包
 | Part A base 與三個 increment、冪等重跑 | 3 | ETL CLI、batch audit、rerun evidence | Completed（implementation + AI evidence closeout） |
 | Part A 資料品質檢核報告 | 1–3 | detectors、treatment matrix、quality report | Phase 1 本機實作完成，待人工驗收 |
 | Part B AI PySpark code review | 4 | `docs/part_b_code_review.md` | Completed |
-| Part C Microsoft Fabric 架構與取捨 | 5 | `docs/part_c_fabric_architecture.md` | 未作答 |
+| Part C Microsoft Fabric 架構與取捨 | 5 | `docs/part_c_fabric_architecture.md` | `implementation_complete_acceptance_pending`；transcript待人工匯出 |
 | 進階模組三選一與 3–5 句選擇理由 | 6 | `docs/module_f_diagnosis.md` | 依規格選 Module F，未作答 |
 | 完整 AI transcript 與一頁報告 | 全階段、7 | `docs/ai/` | 建立索引與模板 |
 | Reviewer 30 分鐘內可重現 | 7–8 | 最終 README、clean-room evidence | Phase 0 只提供 setup/lint/test |
@@ -141,5 +155,6 @@ LionDEExam/                唯讀原始考題與資料包
 - [`docs/part_a_rerun_evidence.md`](docs/part_a_rerun_evidence.md)：Phase 3 batch、lineage、replay 與 reconciliation。
 - [`docs/evidence/phase_03/`](docs/evidence/phase_03/)：Phase 3 deterministic incremental evidence。
 - [`docs/part_b_code_review.md`](docs/part_b_code_review.md)：Phase 4 Part B AI PySpark正式審查報告。
+- [`docs/part_c_fabric_architecture.md`](docs/part_c_fabric_architecture.md)：Phase 5 Part C Fabric架構、workload、trade-off與可信AI問數設計。
 - [`docs/ai/session_index.md`](docs/ai/session_index.md)：AI session 索引。
 - [`docs/ai/collaboration_report.md`](docs/ai/collaboration_report.md)：一頁 AI 協作報告模板。
