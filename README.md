@@ -3,8 +3,7 @@
 本 repository 用於建立可在本機重現的資料工程解法。Phase 0～3 已完成；Phase 3 incremental
 warehouse、batch registry、replay proof、deterministic evidence 與 AI evidence closeout 皆已完成。
 Part B正式審查報告與 Phase 4 AI evidence closeout 均已完成，狀態為 `Completed`。
-Part C Fabric 架構設計已完成實作，狀態為
-`implementation_complete_acceptance_pending`；Phase 5 transcript 待人工匯出。Module F 尚未開始。
+Part C Fabric 架構設計與 Phase 5 AI evidence closeout 均已完成，狀態為 `Completed`。Module F 尚未開始。
 
 > 文件狀態修正：Phase 0 transcript 已存在並完成索引，因此移除舊版「等待 transcript 匯出」文字；
 > 此修正不是 Phase 1 功能。
@@ -100,8 +99,7 @@ architecture，不是 Fabric deployment evidence；輕量 validator 只檢查文
 .venv/bin/python -m pytest tests/test_part_c_architecture.py
 ```
 
-目前狀態為 `implementation_complete_acceptance_pending`；Phase 5 transcript 待人工匯出，正式
-acceptance 與 closeout 尚未完成。
+目前狀態為 `Completed`；Phase 5 transcript 已完成人工匯出、驗證與索引。
 
 ## 目錄責任
 
@@ -123,7 +121,7 @@ LionDEExam/                唯讀原始考題與資料包
 | Part A base 與三個 increment、冪等重跑 | 3 | ETL CLI、batch audit、rerun evidence | Completed（implementation + AI evidence closeout） |
 | Part A 資料品質檢核報告 | 1–3 | detectors、treatment matrix、quality report | Phase 1 本機實作完成，待人工驗收 |
 | Part B AI PySpark code review | 4 | `docs/part_b_code_review.md` | Completed |
-| Part C Microsoft Fabric 架構與取捨 | 5 | `docs/part_c_fabric_architecture.md` | `implementation_complete_acceptance_pending`；transcript待人工匯出 |
+| Part C Microsoft Fabric 架構與取捨 | 5 | `docs/part_c_fabric_architecture.md` | Completed |
 | 進階模組三選一與 3–5 句選擇理由 | 6 | `docs/module_f_diagnosis.md` | 依規格選 Module F，未作答 |
 | 完整 AI transcript 與一頁報告 | 全階段、7 | `docs/ai/` | 建立索引與模板 |
 | Reviewer 30 分鐘內可重現 | 7–8 | 最終 README、clean-room evidence | Phase 0 只提供 setup/lint/test |
