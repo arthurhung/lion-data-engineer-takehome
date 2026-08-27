@@ -3,13 +3,17 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+import subprocess
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 REPORT = PROJECT_ROOT / "docs" / "part_b_code_review.md"
 MANIFEST = PROJECT_ROOT / "docs" / "evidence" / "phase_04" / "review_manifest.json"
 README = PROJECT_ROOT / "README.md"
+SESSION_INDEX = PROJECT_ROOT / "docs" / "ai" / "session_index.md"
+TRANSCRIPT = PROJECT_ROOT / "docs" / "ai" / "transcripts" / "phase_04_part_b_code_review.jsonl"
 SOURCE_MANIFEST = PROJECT_ROOT / "docs" / "source_manifest.sha256"
+MANIFEST_SHA256 = "2446b8c14245e431147e27ea2b3c4cc61411744187cf44dab5f3a3ae3dda79b9"
 REQUIRED_COVERAGE = {
     "correctness",
     "currency",
@@ -52,12 +56,18 @@ def test_source_checksum_line_count_and_original_manifest_are_pinned() -> None:
     assert len(source_path.read_text(encoding="utf-8").splitlines()) == source["line_count"]
     assert f"{source['sha256']}  {source['path']}" in SOURCE_MANIFEST.read_text(encoding="utf-8")
     assert manifest["review_method"] == "static_review_only_no_pyspark_or_fabric_execution"
+    assert _sha256(MANIFEST) == MANIFEST_SHA256
+    # Historical implementation-evidence snapshot; Phase 4 lifecycle later closed as Completed.
+    assert manifest["status"] == "implementation_complete_acceptance_pending"
 
 
 def test_finding_ids_severity_lines_and_coverage_are_consistent() -> None:
     manifest = _manifest()
     findings = manifest["findings"]
     ids = [finding["finding_id"] for finding in findings]
+    assert len(findings) == 8
+    assert [finding["severity"] for finding in findings].count("CRITICAL") == 4
+    assert [finding["severity"] for finding in findings].count("HIGH") == 4
     assert ids == [f"PB-{number:03d}" for number in range(1, len(findings) + 1)]
     assert len(ids) == len(set(ids))
     assert {finding["severity"] for finding in findings} <= {"CRITICAL", "HIGH", "MEDIUM"}
@@ -147,12 +157,30 @@ def test_blocking_order_and_deployment_conclusion_match_report() -> None:
     assert positions == sorted(positions)
 
 
-def test_readme_exposes_report_and_pending_status_without_claiming_completion() -> None:
+def test_phase_4_closeout_lifecycle_and_transcript_linkage_are_complete() -> None:
     readme = README.read_text(encoding="utf-8")
+    session_index = SESSION_INDEX.read_text(encoding="utf-8")
     assert "docs/part_b_code_review.md" in readme
-    assert "implementation_complete_acceptance_pending" in readme
-    assert "Phase 4 transcript待人工匯出" in readme
     part_b_row = next(
         line for line in readme.splitlines() if "Part B AI PySpark code review" in line
     )
-    assert "Completed" not in part_b_row
+    assert "Completed" in part_b_row
+
+    phase_4_row = next(
+        line for line in session_index.splitlines() if line.startswith("| 4 / Part B |")
+    )
+    assert "transcripts/phase_04_part_b_code_review.jsonl" in phase_4_row
+    assert phase_4_row.rstrip().endswith("| Completed |")
+
+    assert REPORT.is_file()
+    assert MANIFEST.is_file()
+    assert TRANSCRIPT.is_file()
+    assert TRANSCRIPT.stat().st_size > 0
+    tracked = subprocess.run(
+        ["git", "ls-files", "--error-unmatch", str(TRANSCRIPT.relative_to(PROJECT_ROOT))],
+        cwd=PROJECT_ROOT,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert tracked.returncode == 0
