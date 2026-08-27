@@ -12,6 +12,22 @@ AI_REPORT = ROOT / "docs/ai/collaboration_report.md"
 SESSION_INDEX = ROOT / "docs/ai/session_index.md"
 PART_C = ROOT / "docs/part_c_fabric_architecture.md"
 MAKEFILE = ROOT / "Makefile"
+PHASE_7_TRANSCRIPT = (
+    ROOT / "docs/ai/transcripts/phase_07_reviewer_ai_collaboration.jsonl"
+)
+
+PHASE_7_METADATA = (
+    "01a044f1-b53c-7171-9573-f874f78cdcc3",
+    "docs/ai/transcripts/phase_07_reviewer_ai_collaboration.jsonl",
+    612,
+    5_492_105,
+    "00970a65298bd7c52d6ebfbc56d38bd3223713cd47f5b362a4472471e502c26b",
+    "1886317fdb8c5e30257610e9d0ad5c4faf87b85e",
+)
+
+PHASE_7_CLOSEOUT_MARKER = (
+    "this evidence closeout commit; exact SHA to be pinned in Phase 8"
+)
 
 REQUIRED_PATHS = (
     "docs/part_a_model_design.md",
@@ -146,7 +162,8 @@ def test_current_lifecycle_and_historical_snapshot_are_unambiguous() -> None:
     for phase in ("Part A", "Part B", "Part C", "Module F", "Phase 0～6 AI evidence"):
         row = next(line for line in readme.splitlines() if f"| {phase}" in line)
         assert "`Completed`" in row
-    assert "Phase 7 reviewer／AI文件 | `implementation_complete_acceptance_pending`" in readme
+    assert "Phase 7 reviewer／AI文件 | `Completed`" in readme
+    assert "Phase 7 transcript已匯出、驗證並索引" in readme
     assert "Phase 8 clean-room | 尚未開始" in readme
     assert "implementation-time snapshot" in readme
     assert "不是目前repo狀態" in readme
@@ -155,10 +172,10 @@ def test_current_lifecycle_and_historical_snapshot_are_unambiguous() -> None:
     for phase in TRANSCRIPTS:
         row = _phase_row(phase, index)
         assert row.rstrip().endswith("| Completed |") or phase == "1"
-    assert "pending manual export" in _phase_row("7", index)
-    assert _phase_row("7", index).rstrip().endswith(
-        "| implementation_complete_acceptance_pending |"
-    )
+    phase_7_row = _phase_row("7", index)
+    assert phase_7_row.rstrip().endswith("| Completed |")
+    assert "pending manual export" not in phase_7_row
+    assert PHASE_7_CLOSEOUT_MARKER in phase_7_row
 
 
 def test_session_index_matches_transcript_files_and_git_history() -> None:
@@ -186,6 +203,53 @@ def test_session_index_matches_transcript_files_and_git_history() -> None:
                 text=True,
             )
             assert result.returncode == 0, commit
+
+    phase_7_row = _phase_row("7", index)
+    task_id, relative, records, byte_size, digest, implementation = PHASE_7_METADATA
+
+    assert PHASE_7_TRANSCRIPT.exists()
+    assert PHASE_7_TRANSCRIPT.stat().st_size > 0
+    assert len(PHASE_7_TRANSCRIPT.read_bytes().splitlines()) == records
+    assert PHASE_7_TRANSCRIPT.stat().st_size == byte_size
+    assert _sha256(PHASE_7_TRANSCRIPT) == digest
+
+    first_record = json.loads(
+        next(
+            line
+            for line in PHASE_7_TRANSCRIPT.open(encoding="utf-8")
+            if line.strip()
+        )
+    )
+    assert first_record["type"] == "session_meta"
+    assert first_record["payload"]["id"] == task_id
+    assert first_record["payload"]["session_id"] == task_id
+
+    assert task_id in phase_7_row
+    assert relative.removeprefix("docs/ai/") in phase_7_row
+    assert f"{records:,}" in phase_7_row
+    assert f"{byte_size:,}" in phase_7_row
+    assert digest in phase_7_row
+    assert implementation in phase_7_row
+    assert PHASE_7_CLOSEOUT_MARKER in phase_7_row
+    assert "pending manual export" not in phase_7_row
+
+    tracked = subprocess.run(
+        ["git", "ls-files", "--error-unmatch", relative],
+        cwd=ROOT,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert tracked.returncode == 0, relative
+
+    commit = subprocess.run(
+        ["git", "cat-file", "-e", f"{implementation}^{{commit}}"],
+        cwd=ROOT,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert commit.returncode == 0, implementation
 
 
 def test_canonical_and_document_checksums_are_pinned() -> None:

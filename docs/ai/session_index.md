@@ -15,17 +15,17 @@ pending文字是implementation-time snapshot，不是current repo lifecycle。
 | 4 / Part B | 2026-08-27 | Codex task `01a040b8-6202-7211-9588-56d053a5eb2d` | AI PySpark static review；`NO_DEPLOY` | [`transcripts/phase_04_part_b_code_review.jsonl`](transcripts/phase_04_part_b_code_review.jsonl) | 491 | 3,169,132 | `dcd364541cda862273e28342dda3c4cc53156d328c9766466f83b49fb11e337d` | `e9dfe44e3e9987acb896960bb296b52c6a66d520` | `d58affe74ee04049f0da29ba321cb2c9313598f5` | Review manifest SHA-256 `2446b8c14245e431147e27ea2b3c4cc61411744187cf44dab5f3a3ae3dda79b9` | Completed |
 | 5 / Part C | 2026-08-27 | Codex task `01a04266-4304-7132-98b2-2d24e5231d0d` | Microsoft Fabric architecture與Phase 4 validator closeout fix `00741db586d7ec299139dc2f63af1a1baea62185` | [`transcripts/phase_05_part_c_fabric_architecture.jsonl`](transcripts/phase_05_part_c_fabric_architecture.jsonl) | 703 | 6,200,032 | `63980ef6610efe0c54d736d4cebc1649b2f3886007c96664caa74f021c06dca1` | `3596e02c0dd801a8b20aa8c1a27dd9a73199dfcc` | `be17266ed19f04c8b86ed666c35784e1ec101cd0` | Part C SHA-256 `0b5def8a604969ab155d0b090d03774a87308c1ef0bdbf84e7e775cfd8618915`；implementation validator SHA-256 `ceaf85de5bbd64e6be2a00f6a628674ca95d34a1a7f5e1879de580a90e41f068`；current validator SHA-256 `c06d07b071df8bf5ade8d555db6b516208c075773f5d3bbf6b8b2217f7d7bd3b` | Completed |
 | 6 / Module F | 2026-08-27 | Codex task `01a042b2-1034-7cb0-8027-6fcc5415a4fa` | Leakage diagnosis；`NO_DEPLOY`；Phase 5 validator closeout fix `2f17f7d0ec7c9218cb664c257dba7734300b59f7` | [`transcripts/phase_06_module_f.jsonl`](transcripts/phase_06_module_f.jsonl) | 747 | 2,157,237 | `d6ac71ced5640a196ececcb74fadab7248ba1552834bd204f754edf8d93f4760` | `9ad55f2822048fd9dbd343eb38a535e06ad78628` | `0fbb4267f3a87f13be9df327635bf17271dde029` | Module F SHA-256 `6ddb7a7389d4a477383a5266cbdb07cae7d96c01693d1bbbfa5bcc820818218a`；validator SHA-256 `8bb9a2f86d25bacd32317e11c92ca4b052cbd005ea4db3922d6027dda06029bd`；original pipeline SHA-256 `5bdea2ba2cad82936189afdddbbf385f8fc7a612839e466622bacfe24f599c23` | Completed |
-| 7 | 2026-08-28 | pending manual export（Task／Session ID待匯出確認） | Reviewer README、AI協作報告、session index及final documentation validator | `pending manual export` | pending | pending | pending | pending | pending | Phase 7 transcript待人工匯出 | implementation_complete_acceptance_pending |
+| 7 | 2026-08-28 | Codex task／session `01a044f1-b53c-7171-9573-f874f78cdcc3` | Reviewer README、AI協作報告、session index及final documentation validator | [`transcripts/phase_07_reviewer_ai_collaboration.jsonl`](transcripts/phase_07_reviewer_ai_collaboration.jsonl) | 612 | 5,492,105 | `00970a65298bd7c52d6ebfbc56d38bd3223713cd47f5b362a4472471e502c26b` | `1886317fdb8c5e30257610e9d0ad5c4faf87b85e` | this evidence closeout commit; exact SHA to be pinned in Phase 8 | Phase 7 transcript metadata verified | Completed |
 
-Phase 0～6目前均為`Completed`；Phase 1整體為`Completed after sentinel correction`。`NO_DEPLOY`是
-Part B／Module F技術結論，不是lifecycle失敗。Phase 7不得在transcript人工匯出、metadata核對與closeout
-前標為`Completed`。
+Phase 0～7目前均為`Completed`；Phase 1整體為`Completed after sentinel correction`。`NO_DEPLOY`是
+Part B／Module F技術結論，不是lifecycle失敗。Phase 7 transcript已完成人工匯出、metadata核對與
+closeout；其closeout commit精確SHA將由Phase 8依實際Git history pin入本索引。
 
 Phase 5 狀態：`Completed`。
 
 ## Transcript與privacy界線
 
-Phase 0～6 raw transcript是完整開發session export，保留user prompt、AI回覆、tool command與實際
+Phase 0～7 raw transcript是完整開發session export，保留user prompt、AI回覆、tool command與實際
 輸出。各closeout的credential pattern scan已通過，但檔案仍可能包含本機filesystem path及工具metadata，
 因此不宣稱完全去識別化，也不宣稱適合直接公開。若submission可見性由private改為public，應另做獨立
 privacy review；本Phase不改寫、不重新序列化或建立sanitized副本。

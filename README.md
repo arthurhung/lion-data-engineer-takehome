@@ -14,15 +14,15 @@
 | Module F 特徵管線診斷 | `Completed` | 11 findings；部署結論為 `NO_DEPLOY` |
 | Module D／E | 不適用 | 原題要求D／E／F三選一，本作業選擇Module F，並非交付缺漏 |
 | Phase 0～6 AI evidence | `Completed` | 8份實際transcript已匯出、核對並索引 |
-| Phase 7 reviewer／AI文件 | `implementation_complete_acceptance_pending` | 本輪implementation完成後，transcript仍待應試者人工匯出與closeout |
+| Phase 7 reviewer／AI文件 | `Completed` | Reviewer與AI文件已完成，Phase 7 transcript已匯出、驗證並索引 |
 | Phase 8 clean-room | 尚未開始 | 保留給乾淨環境／全新output的最終重現 |
 
 Current lifecycle authority是本README與
 [`docs/ai/session_index.md`](docs/ai/session_index.md)。Part A／B／C／Module F正式文件、
 machine-readable evidence及transcript內的`implementation_complete_acceptance_pending`，記錄的是各
 Phase「implementation完成、transcript closeout尚未發生」的implementation-time snapshot，不是目前repo狀態。
-例如Module F正式文件曾記錄「Module F transcript待應試者人工匯出」；目前Phase 6 transcript已完成
-closeout。`NO_DEPLOY`是Part B與Module F的技術結論，與其作業階段`Completed`不衝突。
+例如Module F正式文件曾記錄「Module F transcript待應試者人工匯出」；目前Phase 6及Phase 7 transcript均已
+完成closeout。`NO_DEPLOY`是Part B與Module F的技術結論，與其作業階段`Completed`不衝突。
 `Completed`只代表該Phase交付與AI evidence已閉合，不代表PySpark、Fabric或ML production deployment
 已完成。
 
