@@ -3,7 +3,9 @@
 本 repository 用於建立可在本機重現的資料工程解法。Phase 0～3 已完成；Phase 3 incremental
 warehouse、batch registry、replay proof、deterministic evidence 與 AI evidence closeout 皆已完成。
 Part B正式審查報告與 Phase 4 AI evidence closeout 均已完成，狀態為 `Completed`。
-Part C Fabric 架構設計與 Phase 5 AI evidence closeout 均已完成，狀態為 `Completed`。Module F 尚未開始。
+Part C Fabric 架構設計與 Phase 5 AI evidence closeout 均已完成，狀態為 `Completed`。Phase 6
+Module F 的 Static review／修正設計已完成實作，狀態為
+`implementation_complete_acceptance_pending`；正式 deployment 結論為 `NO_DEPLOY`。
 
 > 文件狀態修正：Phase 0 transcript 已存在並完成索引，因此移除舊版「等待 transcript 匯出」文字；
 > 此修正不是 Phase 1 功能。
@@ -101,6 +103,24 @@ architecture，不是 Fabric deployment evidence；輕量 validator 只檢查文
 
 目前狀態為 `Completed`；Phase 5 transcript 已完成人工匯出、驗證與索引。
 
+## Phase 6 Module F 訂單取消預測特徵管線診斷
+
+正式答案見 [`docs/module_f_diagnosis.md`](docs/module_f_diagnosis.md)。內容是對題目原始程式的
+Static review、唯讀資料 profiling、point-in-time corrected design、temporal evaluation 與防再犯
+控制；未執行原始模型，也未宣稱修正版 pipeline 已實測。原始流程存在 full-data target encoding、
+future-information leakage、錯誤 sample/label contract、random split 與 split 前 preprocessing 等
+deployment blockers，因此結論為 `NO_DEPLOY`。
+
+小型 validator 會從 allowlisted 原始 CSV 重算報告引用的 profiling 數字，並檢查 source checksum、
+finding contract、文件狀態與選擇理由；它不取代 ML leakage experiment：
+
+```bash
+.venv/bin/python -m pytest tests/test_module_f_diagnosis.py
+```
+
+目前狀態為 `implementation_complete_acceptance_pending`。Module F transcript待應試者人工匯出；
+Module D／E未作答，Phase 6 尚未標示為 `Completed`。
+
 ## 目錄責任
 
 ```text
@@ -122,7 +142,7 @@ LionDEExam/                唯讀原始考題與資料包
 | Part A 資料品質檢核報告 | 1–3 | detectors、treatment matrix、quality report | Phase 1 本機實作完成，待人工驗收 |
 | Part B AI PySpark code review | 4 | `docs/part_b_code_review.md` | Completed |
 | Part C Microsoft Fabric 架構與取捨 | 5 | `docs/part_c_fabric_architecture.md` | Completed |
-| 進階模組三選一與 3–5 句選擇理由 | 6 | `docs/module_f_diagnosis.md` | 依規格選 Module F，未作答 |
+| 進階模組三選一與 3–5 句選擇理由 | 6 | `docs/module_f_diagnosis.md` | Module F implementation完成，待人工acceptance／transcript |
 | 完整 AI transcript 與一頁報告 | 全階段、7 | `docs/ai/` | 建立索引與模板 |
 | Reviewer 30 分鐘內可重現 | 7–8 | 最終 README、clean-room evidence | Phase 0 只提供 setup/lint/test |
 
@@ -137,7 +157,7 @@ LionDEExam/                唯讀原始考題與資料包
   `INTERRUPTED`。
 - 實際沒有 member incremental file；actual day1～day3 member checksum不變，incremental SCD2
   行為以synthetic fixture驗證，不代表實際會員增量結果。
-- Module F 的最終選擇理由必須由應試者以自己的語氣確認。
+- Module F 的四句選擇理由已由應試者在 Phase 6 planning gate 核准。
 - AI 協作紀錄的匯出完整性與去識別化需在提交前由應試者確認。
 - Phase 1 完整 transcript 已匯出並更新索引；提交前仍須由應試者確認匯出完整性與去識別化。
 
@@ -154,5 +174,6 @@ LionDEExam/                唯讀原始考題與資料包
 - [`docs/evidence/phase_03/`](docs/evidence/phase_03/)：Phase 3 deterministic incremental evidence。
 - [`docs/part_b_code_review.md`](docs/part_b_code_review.md)：Phase 4 Part B AI PySpark正式審查報告。
 - [`docs/part_c_fabric_architecture.md`](docs/part_c_fabric_architecture.md)：Phase 5 Part C Fabric架構、workload、trade-off與可信AI問數設計。
+- [`docs/module_f_diagnosis.md`](docs/module_f_diagnosis.md)：Phase 6 Module F訂單取消預測管線診斷、point-in-time修正設計與防再犯機制。
 - [`docs/ai/session_index.md`](docs/ai/session_index.md)：AI session 索引。
 - [`docs/ai/collaboration_report.md`](docs/ai/collaboration_report.md)：一頁 AI 協作報告模板。
