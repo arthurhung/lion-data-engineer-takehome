@@ -15,12 +15,21 @@ MAKEFILE = ROOT / "Makefile"
 PHASE_7_TRANSCRIPT = (
     ROOT / "docs/ai/transcripts/phase_07_reviewer_ai_collaboration.jsonl"
 )
+PHASE_8_TRANSCRIPT = (
+    ROOT / "docs/ai/transcripts/phase_08_clean_room_final_acceptance.jsonl"
+)
 PHASE_8_EVIDENCE = ROOT / "docs/evidence/phase_08/final_acceptance.json"
 PHASE_8_REPORT = ROOT / "docs/final_acceptance.md"
 PHASE_8_TESTED_COMMIT = "7b75354fd4f4c51a24485c771412200d8dc57e4a"
+PHASE_8_EVIDENCE_COMMIT = "b6b5ccbeabf8e580b33d907820a933c2dc588ca4"
+PHASE_8_CLARIFICATION_COMMIT = "da87484f01f1c51a443b97245c4efc71e1e1a53e"
 PHASE_8_EVIDENCE_SHA256 = (
     "13da90163628e9f7627a33799e259ddc9a82736a025cc0d4bfaac46ac7b34ab7"
 )
+PHASE_8_CLOSEOUT = (
+    "this evidence closeout commit; exact SHA pinned by the following metadata commit"
+)
+PHASE_8_METADATA_PIN = "this final metadata pin commit; Git history is authoritative"
 
 PHASE_7_METADATA = (
     "01a044f1-b53c-7171-9573-f874f78cdcc3",
@@ -33,6 +42,14 @@ PHASE_7_METADATA = (
 
 PHASE_7_CLOSEOUT = "515af728f64e9430dba7784fb9fa5627b98e316b"
 PHASE_7_CLOSEOUT_SUBJECT = "docs: record Phase 7 AI collaboration evidence"
+
+PHASE_8_METADATA = (
+    "01a0458a-b830-7a03-a8be-f5acbe34a07c",
+    "docs/ai/transcripts/phase_08_clean_room_final_acceptance.jsonl",
+    1_178,
+    4_299_586,
+    "ffd93e2195baa3257bc06f9228da5a05ffa657fce14588663844c98bcfd9a18d",
+)
 
 REQUIRED_PATHS = (
     "docs/part_a_model_design.md",
@@ -171,8 +188,9 @@ def test_current_lifecycle_and_historical_snapshot_are_unambiguous() -> None:
         assert "`Completed`" in row
     assert "Phase 7 reviewer／AI文件 | `Completed`" in readme
     assert "Phase 7 transcript已匯出、驗證並索引" in readme
-    assert "Phase 8 clean-room | `implementation_complete_acceptance_pending`" in readme
+    assert "Phase 8 clean-room | `Completed`" in readme
     assert "formal clean-room已`PASSED`" in readme
+    assert "Phase 8 transcript已匯出、驗證並索引" in readme
     assert PHASE_8_TESTED_COMMIT in readme
     assert PHASE_8_EVIDENCE_SHA256 in readme
     assert "implementation-time snapshot" in readme
@@ -187,14 +205,14 @@ def test_current_lifecycle_and_historical_snapshot_are_unambiguous() -> None:
     assert "pending manual export" not in phase_7_row
     assert PHASE_7_CLOSEOUT in phase_7_row
     phase_8_row = _phase_row("8", index)
-    assert phase_8_row.rstrip().endswith(
-        "| implementation_complete_acceptance_pending |"
-    )
-    assert "pending manual export" in phase_8_row
-    assert "Acceptance evidence commit：pending" in phase_8_row
-    assert "metadata pin commit：pending" in phase_8_row
+    assert phase_8_row.rstrip().endswith("| Completed |")
+    assert "pending" not in phase_8_row.lower()
     assert PHASE_8_TESTED_COMMIT in phase_8_row
+    assert PHASE_8_EVIDENCE_COMMIT in phase_8_row
+    assert PHASE_8_CLARIFICATION_COMMIT in phase_8_row
     assert PHASE_8_EVIDENCE_SHA256 in phase_8_row
+    assert PHASE_8_CLOSEOUT in phase_8_row
+    assert PHASE_8_METADATA_PIN in phase_8_row
     assert PHASE_8_REPORT.exists()
     assert PHASE_8_EVIDENCE.exists()
 
@@ -296,6 +314,43 @@ def test_session_index_matches_transcript_files_and_git_history() -> None:
         text=True,
     ).stdout.strip()
     assert subject == PHASE_7_CLOSEOUT_SUBJECT
+
+    phase_8_row = _phase_row("8", index)
+    task_id, relative, records, byte_size, digest = PHASE_8_METADATA
+    assert PHASE_8_TRANSCRIPT.exists()
+    assert PHASE_8_TRANSCRIPT.stat().st_size > 0
+    assert len(PHASE_8_TRANSCRIPT.read_bytes().splitlines()) == records
+    assert PHASE_8_TRANSCRIPT.stat().st_size == byte_size
+    assert _sha256(PHASE_8_TRANSCRIPT) == digest
+
+    first_record = json.loads(
+        next(line for line in PHASE_8_TRANSCRIPT.open(encoding="utf-8") if line.strip())
+    )
+    assert first_record["type"] == "session_meta"
+    assert first_record["payload"]["id"] == task_id
+    assert first_record["payload"]["session_id"] == task_id
+    for value in (
+        task_id,
+        relative.removeprefix("docs/ai/"),
+        f"{records:,}",
+        f"{byte_size:,}",
+        digest,
+        PHASE_8_TESTED_COMMIT,
+        PHASE_8_EVIDENCE_COMMIT,
+        PHASE_8_CLARIFICATION_COMMIT,
+        PHASE_8_CLOSEOUT,
+        PHASE_8_METADATA_PIN,
+    ):
+        assert value in phase_8_row
+
+    visible = subprocess.run(
+        ["git", "ls-files", "--cached", "--others", "--exclude-standard", relative],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    assert visible.stdout.strip() == relative
 
 
 def test_canonical_and_document_checksums_are_pinned() -> None:

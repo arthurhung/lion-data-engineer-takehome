@@ -15,7 +15,7 @@
 | Module D／E | 不適用 | 原題要求D／E／F三選一，本作業選擇Module F，並非交付缺漏 |
 | Phase 0～6 AI evidence | `Completed` | 8份實際transcript已匯出、核對並索引 |
 | Phase 7 reviewer／AI文件 | `Completed` | Reviewer與AI文件已完成，Phase 7 transcript已匯出、驗證並索引 |
-| Phase 8 clean-room | `implementation_complete_acceptance_pending` | 固定infrastructure commit的formal clean-room已`PASSED`；Phase 8 transcript與metadata closeout待完成 |
+| Phase 8 clean-room | `Completed` | formal clean-room已`PASSED`；Phase 8 transcript已匯出、驗證並索引 |
 
 Current lifecycle authority是本README與
 [`docs/ai/session_index.md`](docs/ai/session_index.md)。Part A／B／C／Module F正式文件、
@@ -176,8 +176,8 @@ D／E／F三選一；四句選擇理由見Module F正式文件。
 - Part C沒有部署Fabric tenant，capacity、security propagation、latency與cost仍需POC。
 - Module F沒有執行原始或修正版模型，沒有本次AUC或production-like leakage experiment。
 - Module D／E依三選一規則未作答；不是遺漏必交項目。
-- Phase 8 formal tracked-only acceptance已`PASSED`，但Phase 8 transcript與metadata closeout仍待人工
-  完成，因此本README不宣稱Phase 8為`Completed`。
+- Phase 8 formal tracked-only acceptance已`PASSED`，transcript亦已匯出、驗證並由
+  [`docs/ai/session_index.md`](docs/ai/session_index.md)索引，因此Phase 8 lifecycle為`Completed`。
 - Raw AI transcripts是完整開發session export，可能包含本機filesystem path及工具metadata。各closeout的
   credential pattern scan已通過，但不宣稱transcript已完全去識別化。
 - 原題接受Git repo連結，repository visibility不是題目或Phase 8的pass／fail gate。無論public或

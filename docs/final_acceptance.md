@@ -16,9 +16,10 @@ Machine-readable原始結果見
 `13da90163628e9f7627a33799e259ddc9a82736a025cc0d4bfaac46ac7b34ab7`。
 
 這個結果證明指定commit在本次fresh環境及實際resolved dependencies下通過驗收；不代表所有未來平台、
-package index狀態或外部runtime都會得到相同結果。Phase 8整體lifecycle仍為
-`implementation_complete_acceptance_pending`，因本task的transcript尚待人工匯出、核對與metadata
-closeout；clean-room通過不等於AI evidence已閉合。
+package index狀態或外部runtime都會得到相同結果。Phase 8 transcript已匯出至
+[`ai/transcripts/phase_08_clean_room_final_acceptance.jsonl`](ai/transcripts/phase_08_clean_room_final_acceptance.jsonl)，
+完成JSONL、metadata、內容完整性與credential pattern核對並由session index索引；Phase 8 lifecycle為
+`Completed`。
 
 ## 執行環境與驗證結果
 
@@ -62,6 +63,6 @@ evidence commit加入final JSON及Markdown後共有103個tracked files；103描�
 resolution；credential pattern scan不等於完整privacy audit；Fabric、PySpark與ML runtime不在本機
 clean-room acceptance範圍。
 
-提交前仍需由應試者完成人工review、Phase 8 transcript匯出與closeout、最終metadata pin，以及依實際
-繳交管道處理repository access、表單或email。此文件只記錄已實際執行並驗證的結果，不宣告Phase 8
-`Completed`。
+AI evidence closeout及final metadata pin已完成；Git history是commit SHA的權威來源。提交前仍需由
+應試者完成人工privacy/content review，並依實際繳交管道處理repository access、表單或email。本repo
+未執行外部submission action，亦未建立tag或release。此文件只記錄已實際執行並驗證的結果。

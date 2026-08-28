@@ -16,10 +16,20 @@ EVIDENCE = ROOT / "docs/evidence/phase_08/final_acceptance.json"
 REPORT = ROOT / "docs/final_acceptance.md"
 README = ROOT / "README.md"
 SESSION_INDEX = ROOT / "docs/ai/session_index.md"
+TRANSCRIPT = ROOT / "docs/ai/transcripts/phase_08_clean_room_final_acceptance.jsonl"
 TESTED_COMMIT = "7b75354fd4f4c51a24485c771412200d8dc57e4a"
 EVIDENCE_COMMIT = "b6b5ccbeabf8e580b33d907820a933c2dc588ca4"
+CLARIFICATION_COMMIT = "da87484f01f1c51a443b97245c4efc71e1e1a53e"
 EVIDENCE_SHA256 = "13da90163628e9f7627a33799e259ddc9a82736a025cc0d4bfaac46ac7b34ab7"
 EVIDENCE_BYTES = 6_562
+TRANSCRIPT_TASK_ID = "01a0458a-b830-7a03-a8be-f5acbe34a07c"
+TRANSCRIPT_RECORDS = 1_178
+TRANSCRIPT_BYTES = 4_299_586
+TRANSCRIPT_SHA256 = "ffd93e2195baa3257bc06f9228da5a05ffa657fce14588663844c98bcfd9a18d"
+CLOSEOUT_MARKER = (
+    "this evidence closeout commit; exact SHA pinned by the following metadata commit"
+)
+METADATA_PIN_MARKER = "this final metadata pin commit; Git history is authoritative"
 SPEC = importlib.util.spec_from_file_location("final_acceptance", SCRIPT)
 assert SPEC and SPEC.loader
 final_acceptance = importlib.util.module_from_spec(SPEC)
@@ -405,7 +415,10 @@ def test_acceptance_report_and_lifecycle_pins_are_consistent() -> None:
         assert TESTED_COMMIT in text
         assert EVIDENCE_SHA256 in text
     assert "evidence/phase_08/final_acceptance.json" in report
+    assert "ai/transcripts/phase_08_clean_room_final_acceptance.jsonl" in report
     assert "docs/evidence/phase_08/final_acceptance.json" in readme
+    assert "Phase 8 clean-room | `Completed`" in readme
+    assert "Phase 8 transcript已匯出、驗證並索引" in readme
     assert "93 passed" in report
     assert "93 passed" in readme
     assert "`PASSED`" in report
@@ -436,9 +449,33 @@ def test_acceptance_report_and_lifecycle_pins_are_consistent() -> None:
         "  full test suite對Phase 3 incremental behavior提供coverage"
     ) in report
     assert "不宣稱`make phase3-acceptance`另行重跑\n  這些rollback fixtures" in report
-    assert "pending manual export" in phase_8_row
-    assert "Acceptance evidence commit：pending" in phase_8_row
-    assert "metadata pin commit：pending" in phase_8_row
-    assert phase_8_row.rstrip().endswith(
-        "| implementation_complete_acceptance_pending |"
-    )
+    assert phase_8_row.rstrip().endswith("| Completed |")
+    assert "pending" not in phase_8_row.lower()
+    assert EVIDENCE_COMMIT in phase_8_row
+    assert CLARIFICATION_COMMIT in phase_8_row
+    assert CLOSEOUT_MARKER in phase_8_row
+    assert METADATA_PIN_MARKER in phase_8_row
+    assert "未執行外部submission action" in report
+
+
+def test_phase_8_transcript_metadata_is_exact_and_nonempty() -> None:
+    raw = TRANSCRIPT.read_bytes()
+    assert raw
+    assert TRANSCRIPT.stat().st_size == TRANSCRIPT_BYTES
+    assert len(raw.splitlines()) == TRANSCRIPT_RECORDS
+    assert hashlib.sha256(raw).hexdigest() == TRANSCRIPT_SHA256
+
+    first_record = json.loads(next(line for line in raw.splitlines() if line.strip()))
+    assert first_record["type"] == "session_meta"
+    assert first_record["payload"]["id"] == TRANSCRIPT_TASK_ID
+    assert first_record["payload"]["session_id"] == TRANSCRIPT_TASK_ID
+
+    index = SESSION_INDEX.read_text(encoding="utf-8")
+    phase_8_row = next(line for line in index.splitlines() if line.startswith("| 8 |"))
+    for value in (
+        TRANSCRIPT_TASK_ID,
+        f"{TRANSCRIPT_RECORDS:,}",
+        f"{TRANSCRIPT_BYTES:,}",
+        TRANSCRIPT_SHA256,
+    ):
+        assert value in phase_8_row
