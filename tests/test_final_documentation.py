@@ -26,9 +26,8 @@ PHASE_8_CLARIFICATION_COMMIT = "da87484f01f1c51a443b97245c4efc71e1e1a53e"
 PHASE_8_EVIDENCE_SHA256 = (
     "13da90163628e9f7627a33799e259ddc9a82736a025cc0d4bfaac46ac7b34ab7"
 )
-PHASE_8_CLOSEOUT = (
-    "this evidence closeout commit; exact SHA pinned by the following metadata commit"
-)
+PHASE_8_CLOSEOUT = "6c0d0ba0f5a9645930bc8703003e6a4963153e29"
+PHASE_8_CLOSEOUT_SUBJECT = "docs: record Phase 8 AI collaboration evidence"
 PHASE_8_METADATA_PIN = "this final metadata pin commit; Git history is authoritative"
 
 PHASE_7_METADATA = (
@@ -344,13 +343,38 @@ def test_session_index_matches_transcript_files_and_git_history() -> None:
         assert value in phase_8_row
 
     visible = subprocess.run(
-        ["git", "ls-files", "--cached", "--others", "--exclude-standard", relative],
+        ["git", "ls-files", "--error-unmatch", relative],
+        cwd=ROOT,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert visible.returncode == 0
+
+    closeout = subprocess.run(
+        ["git", "cat-file", "-e", f"{PHASE_8_CLOSEOUT}^{{commit}}"],
+        cwd=ROOT,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert closeout.returncode == 0
+    ancestor = subprocess.run(
+        ["git", "merge-base", "--is-ancestor", PHASE_8_CLOSEOUT, "HEAD"],
+        cwd=ROOT,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert ancestor.returncode == 0
+    subject = subprocess.run(
+        ["git", "show", "-s", "--format=%s", PHASE_8_CLOSEOUT],
         cwd=ROOT,
         check=True,
         capture_output=True,
         text=True,
-    )
-    assert visible.stdout.strip() == relative
+    ).stdout.strip()
+    assert subject == PHASE_8_CLOSEOUT_SUBJECT
 
 
 def test_canonical_and_document_checksums_are_pinned() -> None:

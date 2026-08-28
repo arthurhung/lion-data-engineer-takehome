@@ -26,9 +26,8 @@ TRANSCRIPT_TASK_ID = "01a0458a-b830-7a03-a8be-f5acbe34a07c"
 TRANSCRIPT_RECORDS = 1_178
 TRANSCRIPT_BYTES = 4_299_586
 TRANSCRIPT_SHA256 = "ffd93e2195baa3257bc06f9228da5a05ffa657fce14588663844c98bcfd9a18d"
-CLOSEOUT_MARKER = (
-    "this evidence closeout commit; exact SHA pinned by the following metadata commit"
-)
+CLOSEOUT_COMMIT = "6c0d0ba0f5a9645930bc8703003e6a4963153e29"
+CLOSEOUT_SUBJECT = "docs: record Phase 8 AI collaboration evidence"
 METADATA_PIN_MARKER = "this final metadata pin commit; Git history is authoritative"
 SPEC = importlib.util.spec_from_file_location("final_acceptance", SCRIPT)
 assert SPEC and SPEC.loader
@@ -453,7 +452,7 @@ def test_acceptance_report_and_lifecycle_pins_are_consistent() -> None:
     assert "pending" not in phase_8_row.lower()
     assert EVIDENCE_COMMIT in phase_8_row
     assert CLARIFICATION_COMMIT in phase_8_row
-    assert CLOSEOUT_MARKER in phase_8_row
+    assert CLOSEOUT_COMMIT in phase_8_row
     assert METADATA_PIN_MARKER in phase_8_row
     assert "未執行外部submission action" in report
 
@@ -479,3 +478,30 @@ def test_phase_8_transcript_metadata_is_exact_and_nonempty() -> None:
         TRANSCRIPT_SHA256,
     ):
         assert value in phase_8_row
+
+
+def test_phase_8_closeout_commit_is_pinned_and_in_history() -> None:
+    commit = subprocess.run(
+        ["git", "cat-file", "-e", f"{CLOSEOUT_COMMIT}^{{commit}}"],
+        cwd=ROOT,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert commit.returncode == 0
+    ancestor = subprocess.run(
+        ["git", "merge-base", "--is-ancestor", CLOSEOUT_COMMIT, "HEAD"],
+        cwd=ROOT,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert ancestor.returncode == 0
+    subject = subprocess.run(
+        ["git", "show", "-s", "--format=%s", CLOSEOUT_COMMIT],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+    assert subject == CLOSEOUT_SUBJECT
