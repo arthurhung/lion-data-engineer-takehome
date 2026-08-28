@@ -1,0 +1,280 @@
+{
+  "artifact_hygiene": {
+    "credential_pattern_matches": 0,
+    "largest_tracked_files": [
+      {
+        "bytes": 12431524,
+        "path": "LionDEExam/candidate_package/dataset/orders_base.csv"
+      },
+      {
+        "bytes": 8075904,
+        "path": "docs/ai/transcripts/phase_03_incremental_processing.jsonl"
+      },
+      {
+        "bytes": 6872171,
+        "path": "docs/ai/transcripts/phase_02_star_schema_scd2.jsonl"
+      },
+      {
+        "bytes": 6200032,
+        "path": "docs/ai/transcripts/phase_05_part_c_fabric_architecture.jsonl"
+      },
+      {
+        "bytes": 5492105,
+        "path": "docs/ai/transcripts/phase_07_reviewer_ai_collaboration.jsonl"
+      },
+      {
+        "bytes": 5246779,
+        "path": "docs/ai/transcripts/phase_00_bootstrap.jsonl"
+      },
+      {
+        "bytes": 3169132,
+        "path": "docs/ai/transcripts/phase_04_part_b_code_review.jsonl"
+      },
+      {
+        "bytes": 2917584,
+        "path": "docs/ai/transcripts/phase_01_profiling_quality_contract.jsonl"
+      },
+      {
+        "bytes": 2157237,
+        "path": "docs/ai/transcripts/phase_06_module_f.jsonl"
+      },
+      {
+        "bytes": 1991551,
+        "path": "docs/ai/transcripts/phase_01_birth_date_sentinel_correction.jsonl"
+      }
+    ],
+    "rejected_artifacts": 0,
+    "tracked_bytes": 58943598,
+    "tracked_file_count": 101,
+    "transcript_aggregate_bytes": 42122495
+  },
+  "clone_mode": "local_git_clone_no_local_tracked_only",
+  "commands": [
+    {
+      "exit_status": 0,
+      "logical_name": "dependency_install",
+      "network_install": true
+    },
+    {
+      "exit_status": 0,
+      "logical_name": "source_integrity"
+    },
+    {
+      "exit_status": 0,
+      "logical_name": "lint"
+    },
+    {
+      "exit_status": 0,
+      "logical_name": "tests"
+    },
+    {
+      "exit_status": 0,
+      "logical_name": "phase_1_profile"
+    },
+    {
+      "exit_status": 0,
+      "logical_name": "phase_2_build"
+    },
+    {
+      "exit_status": 0,
+      "logical_name": "phase_2_validate"
+    },
+    {
+      "exit_status": 0,
+      "logical_name": "phase_3_acceptance"
+    },
+    {
+      "exit_status": 0,
+      "logical_name": "final_git_clean"
+    }
+  ],
+  "dependency_versions": {
+    "duckdb": "1.5.5",
+    "pandas": "2.3.3",
+    "pip": "24.0",
+    "pytest": "9.1.1",
+    "ruff": "0.16.5"
+  },
+  "documentation": {
+    "final_acceptance_validator": "covered_by_full_suite",
+    "final_documentation_validator": "covered_by_full_suite",
+    "passed": true
+  },
+  "known_limitations": [
+    "Dependencies are resolved from declared version ranges without a lock file.",
+    "This run does not prove identical dependency resolution on every future platform.",
+    "Credential pattern scanning is not a complete privacy audit.",
+    "Fabric PySpark and ML runtimes are outside this local acceptance scope."
+  ],
+  "lint": {
+    "passed": true
+  },
+  "phase_1": {
+    "canonical_bundle_sha256": "5cd9bf274d171f7007c4b160addb6fe281f3be1da13939b35c52ecf14a1d9ee8",
+    "detector_count": 47,
+    "fresh_profile": true
+  },
+  "phase_2": {
+    "canonical_bundle_sha256": "2d9cf41622428233c7b83d3de7aa0df860912ba457c72be22f3b26758cdd2c1e",
+    "check_count": 32,
+    "current_members": 7972,
+    "fact_rows": 99612,
+    "fresh_database": true,
+    "known_member_versions": 8745,
+    "violations": 0
+  },
+  "phase_3": {
+    "base_through_day_3": true,
+    "canonical_bundle_sha256": "530804916123aacc3fe4aa4c4c9646cc9fdc35b306af6799b06fb23de052720d",
+    "canonical_evidence_byte_identical": true,
+    "check_count": 41,
+    "fact_rows": 109888,
+    "file_registry": true,
+    "full_sequence_replay": true,
+    "metrics_source": "committed_bundle_verified_equal_to_clean_runs",
+    "quarantined_orders": 2172,
+    "rollback_coverage": "covered_by_full_suite",
+    "single_file_replay": true,
+    "violations": 0
+  },
+  "python_version": "3.12.3",
+  "schema_version": 1,
+  "source_integrity": {
+    "files_checked": 19,
+    "violations": 0
+  },
+  "status": "PASSED",
+  "submission_matrix": [
+    {
+      "item": "ai_collaboration_report",
+      "present": true,
+      "required": true
+    },
+    {
+      "item": "ai_session_index",
+      "present": true,
+      "required": true
+    },
+    {
+      "item": "module_f_diagnosis",
+      "present": true,
+      "required": true
+    },
+    {
+      "item": "part_a_implementation",
+      "present": true,
+      "required": true
+    },
+    {
+      "item": "part_a_model_design",
+      "present": true,
+      "required": true
+    },
+    {
+      "item": "part_a_quality_report",
+      "present": true,
+      "required": true
+    },
+    {
+      "item": "part_a_rerun_evidence",
+      "present": true,
+      "required": true
+    },
+    {
+      "item": "part_b_review",
+      "present": true,
+      "required": true
+    },
+    {
+      "item": "part_c_architecture",
+      "present": true,
+      "required": true
+    },
+    {
+      "item": "phase_0_transcript",
+      "present": true,
+      "required": true
+    },
+    {
+      "item": "phase_1_correction_transcript",
+      "present": true,
+      "required": true
+    },
+    {
+      "item": "phase_1_evidence",
+      "present": true,
+      "required": true
+    },
+    {
+      "item": "phase_1_transcript",
+      "present": true,
+      "required": true
+    },
+    {
+      "item": "phase_2_evidence",
+      "present": true,
+      "required": true
+    },
+    {
+      "item": "phase_2_transcript",
+      "present": true,
+      "required": true
+    },
+    {
+      "item": "phase_3_evidence",
+      "present": true,
+      "required": true
+    },
+    {
+      "item": "phase_3_transcript",
+      "present": true,
+      "required": true
+    },
+    {
+      "item": "phase_4_evidence",
+      "present": true,
+      "required": true
+    },
+    {
+      "item": "phase_4_transcript",
+      "present": true,
+      "required": true
+    },
+    {
+      "item": "phase_5_transcript",
+      "present": true,
+      "required": true
+    },
+    {
+      "item": "phase_6_transcript",
+      "present": true,
+      "required": true
+    },
+    {
+      "item": "phase_7_transcript",
+      "present": true,
+      "required": true
+    },
+    {
+      "item": "readme",
+      "present": true,
+      "required": true
+    },
+    {
+      "item": "source_manifest",
+      "present": true,
+      "required": true
+    },
+    {
+      "item": "test_suite",
+      "present": true,
+      "required": true
+    }
+  ],
+  "tested_commit": "7b75354fd4f4c51a24485c771412200d8dc57e4a",
+  "tests": {
+    "passed": true,
+    "passed_count": 93,
+    "rollback_coverage": "covered_by_full_suite"
+  }
+}

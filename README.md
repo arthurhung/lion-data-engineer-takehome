@@ -15,7 +15,7 @@
 | Module D／E | 不適用 | 原題要求D／E／F三選一，本作業選擇Module F，並非交付缺漏 |
 | Phase 0～6 AI evidence | `Completed` | 8份實際transcript已匯出、核對並索引 |
 | Phase 7 reviewer／AI文件 | `Completed` | Reviewer與AI文件已完成，Phase 7 transcript已匯出、驗證並索引 |
-| Phase 8 clean-room | `implementation_complete_acceptance_pending` | Phase 8A已建立tracked-only runner介面；正式acceptance須等待infrastructure commit SHA |
+| Phase 8 clean-room | `implementation_complete_acceptance_pending` | 固定infrastructure commit的formal clean-room已`PASSED`；Phase 8 transcript與metadata closeout待完成 |
 
 Current lifecycle authority是本README與
 [`docs/ai/session_index.md`](docs/ai/session_index.md)。Part A／B／C／Module F正式文件、
@@ -37,7 +37,8 @@ Phase「implementation完成、transcript closeout尚未發生」的implementati
 4. Part C的[Fabric架構、workload及trade-offs](docs/part_c_fabric_architecture.md)。
 5. Module F的[leakage診斷與point-in-time修正設計](docs/module_f_diagnosis.md)。
 6. [一頁AI協作報告](docs/ai/collaboration_report.md)與[session index](docs/ai/session_index.md)。
-7. 依下一節執行本機驗證。
+7. 閱讀[Phase 8 clean-room acceptance](docs/final_acceptance.md)及其
+   [machine-readable evidence](docs/evidence/phase_08/final_acceptance.json)，再依下一節執行本機驗證。
 
 ## 環境與驗證入口
 
@@ -61,8 +62,9 @@ make phase3-acceptance
 
 ### Phase 8 tracked-only clean-room介面
 
-Phase 8A只建立acceptance infrastructure，尚未產生正式clean-room結果或evidence。Infrastructure經
-人工review並commit後，才可使用該exact 40-character SHA執行：
+Phase 8B已對infrastructure commit `7b75354fd4f4c51a24485c771412200d8dc57e4a`執行一次正式
+clean-room，結果為`PASSED`；fresh full suite為93 passed。正式evidence SHA-256為
+`13da90163628e9f7627a33799e259ddc9a82736a025cc0d4bfaac46ac7b34ab7`。以下保留可重現介面：
 
 ```bash
 make final-acceptance \
@@ -76,6 +78,10 @@ Runner以local `git clone --no-local`建立tracked-only clone，使用指定Pyth
 environment，並只從clone內的`pyproject.toml`安裝project及`dev` dependencies；不複製本repo現有
 `.venv`。Network install預設關閉，只有`ACCEPT_ALLOW_NETWORK=1`才明確允許package下載。
 `ACCEPT_COMMIT`與`ACCEPT_OUTPUT`均無預設值，output必須位於source repo外且不得已存在。
+
+本次實際resolved版本為Python 3.12.3、pip 24.0、DuckDB 1.5.5、pandas 2.3.3、pytest 9.1.1及
+ruff 0.16.5；九個logical commands均exit 0。詳細數字、checksums與submission matrix見正式
+[acceptance報告](docs/final_acceptance.md)。
 
 本repo沒有dependency lock；正式evidence會記錄該次fresh environment實際resolved Python、pip、
 DuckDB、pandas、pytest及ruff版本。這能驗證指定commit在該次clean environment可重現，不表示未來
@@ -130,8 +136,10 @@ fail。詳細batch counts、money、quarantine、SCD2與rerun checksum見正式r
 | Module F diagnosis | `6ddb7a7389d4a477383a5266cbdb07cae7d96c01693d1bbbfa5bcc820818218a` |
 | Module F validator | `8bb9a2f86d25bacd32317e11c92ca4b052cbd005ea4db3922d6027dda06029bd` |
 | Phase 7 AI evidence closeout commit | `515af728f64e9430dba7784fb9fa5627b98e316b` |
+| Phase 8 final acceptance JSON | `13da90163628e9f7627a33799e259ddc9a82736a025cc0d4bfaac46ac7b34ab7` |
 
-Machine-readable evidence位於`docs/evidence/phase_01/`、`phase_02/`、`phase_03/`及`phase_04/`。
+Machine-readable evidence位於`docs/evidence/phase_01/`、`phase_02/`、`phase_03/`、`phase_04/`及
+`phase_08/`。
 上述pinning用來偵測文件整合造成的非預期變更，不取代SQL reconciliation、tests或人工review。
 
 ## Phase 5 Part C Fabric Architecture
@@ -168,8 +176,8 @@ D／E／F三選一；四句選擇理由見Module F正式文件。
 - Part C沒有部署Fabric tenant，capacity、security propagation、latency與cost仍需POC。
 - Module F沒有執行原始或修正版模型，沒有本次AUC或production-like leakage experiment。
 - Module D／E依三選一規則未作答；不是遺漏必交項目。
-- Phase 8A只完成clean-room infrastructure；正式tracked-only acceptance及最終evidence尚未產生，
-  本README不宣稱已完成Phase 8。
+- Phase 8 formal tracked-only acceptance已`PASSED`，但Phase 8 transcript與metadata closeout仍待人工
+  完成，因此本README不宣稱Phase 8為`Completed`。
 - Raw AI transcripts是完整開發session export，可能包含本機filesystem path及工具metadata。各closeout的
   credential pattern scan已通過，但不宣稱transcript已完全去識別化。
 - 原題接受Git repo連結，repository visibility不是題目或Phase 8的pass／fail gate。無論public或
@@ -189,3 +197,6 @@ D／E／F三選一；四句選擇理由見Module F正式文件。
 - [`docs/module_f_diagnosis.md`](docs/module_f_diagnosis.md)：Module F正式診斷。
 - [`docs/ai/collaboration_report.md`](docs/ai/collaboration_report.md)：一頁AI協作報告。
 - [`docs/ai/session_index.md`](docs/ai/session_index.md)：task、transcript、commit及checksum索引。
+- [`docs/final_acceptance.md`](docs/final_acceptance.md)：Phase 8 clean-room結果、submission readiness與限制。
+- [`docs/evidence/phase_08/final_acceptance.json`](docs/evidence/phase_08/final_acceptance.json)：Phase 8
+  canonical machine-readable evidence。

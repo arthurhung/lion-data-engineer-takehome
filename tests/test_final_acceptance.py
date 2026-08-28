@@ -12,6 +12,12 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts/final_acceptance.py"
+EVIDENCE = ROOT / "docs/evidence/phase_08/final_acceptance.json"
+REPORT = ROOT / "docs/final_acceptance.md"
+README = ROOT / "README.md"
+SESSION_INDEX = ROOT / "docs/ai/session_index.md"
+TESTED_COMMIT = "7b75354fd4f4c51a24485c771412200d8dc57e4a"
+EVIDENCE_SHA256 = "13da90163628e9f7627a33799e259ddc9a82736a025cc0d4bfaac46ac7b34ab7"
 SPEC = importlib.util.spec_from_file_location("final_acceptance", SCRIPT)
 assert SPEC and SPEC.loader
 final_acceptance = importlib.util.module_from_spec(SPEC)
@@ -336,11 +342,73 @@ def test_network_install_defaults_off_and_requires_explicit_flag() -> None:
     assert final_acceptance.parse_args([*base, "--allow-network-install"]).allow_network_install
 
 
-def test_phase8_pending_has_no_committed_passed_evidence() -> None:
-    index = (ROOT / "docs/ai/session_index.md").read_text(encoding="utf-8")
-    assert "| 8 |" in index
+def test_promoted_formal_evidence_is_canonical_valid_and_pinned() -> None:
+    raw = EVIDENCE.read_bytes()
+    payload = json.loads(raw)
+    final_acceptance.validate_evidence(payload)
+    assert raw == final_acceptance.canonical_json(payload)
+    assert hashlib.sha256(raw).hexdigest() == EVIDENCE_SHA256
+    assert payload["status"] == "PASSED"
+    assert payload["tested_commit"] == TESTED_COMMIT
+    assert payload["tests"] == {
+        "passed": True,
+        "passed_count": 93,
+        "rollback_coverage": "covered_by_full_suite",
+    }
+    assert len(payload["commands"]) == 9
+    assert all(command["exit_status"] == 0 for command in payload["commands"])
+
+
+def test_formal_evidence_commit_exists_and_is_ancestor_of_head() -> None:
+    commit = subprocess.run(
+        ["git", "cat-file", "-e", f"{TESTED_COMMIT}^{{commit}}"],
+        cwd=ROOT,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert commit.returncode == 0
+    ancestor = subprocess.run(
+        ["git", "merge-base", "--is-ancestor", TESTED_COMMIT, "HEAD"],
+        cwd=ROOT,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert ancestor.returncode == 0
+
+
+def test_formal_evidence_metrics_and_submission_matrix_are_exact() -> None:
+    payload = json.loads(EVIDENCE.read_text(encoding="utf-8"))
+    assert payload["source_integrity"] == {"files_checked": 19, "violations": 0}
+    assert payload["phase_1"]["detector_count"] == 47
+    assert payload["phase_2"]["fact_rows"] == 99_612
+    assert payload["phase_2"]["violations"] == 0
+    assert payload["phase_3"]["fact_rows"] == 109_888
+    assert payload["phase_3"]["quarantined_orders"] == 2_172
+    assert payload["phase_3"]["canonical_evidence_byte_identical"] is True
+    assert payload["artifact_hygiene"]["rejected_artifacts"] == 0
+    assert payload["artifact_hygiene"]["credential_pattern_matches"] == 0
+    assert len(payload["submission_matrix"]) == 25
+    assert all(item["present"] for item in payload["submission_matrix"])
+
+
+def test_acceptance_report_and_lifecycle_pins_are_consistent() -> None:
+    report = REPORT.read_text(encoding="utf-8")
+    readme = README.read_text(encoding="utf-8")
+    index = SESSION_INDEX.read_text(encoding="utf-8")
     phase_8_row = next(line for line in index.splitlines() if line.startswith("| 8 |"))
-    assert phase_8_row.rstrip().endswith("| implementation_complete_acceptance_pending |")
+    for text in (report, readme, phase_8_row):
+        assert TESTED_COMMIT in text
+        assert EVIDENCE_SHA256 in text
+    assert "evidence/phase_08/final_acceptance.json" in report
+    assert "docs/evidence/phase_08/final_acceptance.json" in readme
+    assert "93 passed" in report
+    assert "93 passed" in readme
+    assert "`PASSED`" in report
     assert "pending manual export" in phase_8_row
-    assert not (ROOT / "docs/evidence/phase_08/final_acceptance.json").exists()
-    assert not (ROOT / "docs/final_acceptance.md").exists()
+    assert "Acceptance evidence commit：pending" in phase_8_row
+    assert "metadata pin commit：pending" in phase_8_row
+    assert phase_8_row.rstrip().endswith(
+        "| implementation_complete_acceptance_pending |"
+    )

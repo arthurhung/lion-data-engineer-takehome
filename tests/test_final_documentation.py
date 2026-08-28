@@ -15,6 +15,12 @@ MAKEFILE = ROOT / "Makefile"
 PHASE_7_TRANSCRIPT = (
     ROOT / "docs/ai/transcripts/phase_07_reviewer_ai_collaboration.jsonl"
 )
+PHASE_8_EVIDENCE = ROOT / "docs/evidence/phase_08/final_acceptance.json"
+PHASE_8_REPORT = ROOT / "docs/final_acceptance.md"
+PHASE_8_TESTED_COMMIT = "7b75354fd4f4c51a24485c771412200d8dc57e4a"
+PHASE_8_EVIDENCE_SHA256 = (
+    "13da90163628e9f7627a33799e259ddc9a82736a025cc0d4bfaac46ac7b34ab7"
+)
 
 PHASE_7_METADATA = (
     "01a044f1-b53c-7171-9573-f874f78cdcc3",
@@ -40,6 +46,8 @@ REQUIRED_PATHS = (
     "docs/evidence/phase_02/evidence_manifest.json",
     "docs/evidence/phase_03/evidence_manifest.json",
     "docs/evidence/phase_04/review_manifest.json",
+    "docs/final_acceptance.md",
+    "docs/evidence/phase_08/final_acceptance.json",
 )
 
 TRANSCRIPTS = {
@@ -164,8 +172,9 @@ def test_current_lifecycle_and_historical_snapshot_are_unambiguous() -> None:
     assert "Phase 7 reviewer／AI文件 | `Completed`" in readme
     assert "Phase 7 transcript已匯出、驗證並索引" in readme
     assert "Phase 8 clean-room | `implementation_complete_acceptance_pending`" in readme
-    assert "Phase 8A只建立acceptance infrastructure" in readme
-    assert "尚未產生正式clean-room結果或evidence" in readme
+    assert "formal clean-room已`PASSED`" in readme
+    assert PHASE_8_TESTED_COMMIT in readme
+    assert PHASE_8_EVIDENCE_SHA256 in readme
     assert "implementation-time snapshot" in readme
     assert "不是目前repo狀態" in readme
     assert "`NO_DEPLOY`是Part B與Module F的技術結論" in readme
@@ -184,8 +193,10 @@ def test_current_lifecycle_and_historical_snapshot_are_unambiguous() -> None:
     assert "pending manual export" in phase_8_row
     assert "Acceptance evidence commit：pending" in phase_8_row
     assert "metadata pin commit：pending" in phase_8_row
-    assert not (ROOT / "docs/final_acceptance.md").exists()
-    assert not (ROOT / "docs/evidence/phase_08/final_acceptance.json").exists()
+    assert PHASE_8_TESTED_COMMIT in phase_8_row
+    assert PHASE_8_EVIDENCE_SHA256 in phase_8_row
+    assert PHASE_8_REPORT.exists()
+    assert PHASE_8_EVIDENCE.exists()
 
 
 def test_session_index_matches_transcript_files_and_git_history() -> None:

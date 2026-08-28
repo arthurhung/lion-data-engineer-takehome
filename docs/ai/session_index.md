@@ -16,13 +16,15 @@ pending文字是implementation-time snapshot，不是current repo lifecycle。
 | 5 / Part C | 2026-08-27 | Codex task `01a04266-4304-7132-98b2-2d24e5231d0d` | Microsoft Fabric architecture與Phase 4 validator closeout fix `00741db586d7ec299139dc2f63af1a1baea62185` | [`transcripts/phase_05_part_c_fabric_architecture.jsonl`](transcripts/phase_05_part_c_fabric_architecture.jsonl) | 703 | 6,200,032 | `63980ef6610efe0c54d736d4cebc1649b2f3886007c96664caa74f021c06dca1` | `3596e02c0dd801a8b20aa8c1a27dd9a73199dfcc` | `be17266ed19f04c8b86ed666c35784e1ec101cd0` | Part C SHA-256 `0b5def8a604969ab155d0b090d03774a87308c1ef0bdbf84e7e775cfd8618915`；implementation validator SHA-256 `ceaf85de5bbd64e6be2a00f6a628674ca95d34a1a7f5e1879de580a90e41f068`；current validator SHA-256 `c06d07b071df8bf5ade8d555db6b516208c075773f5d3bbf6b8b2217f7d7bd3b` | Completed |
 | 6 / Module F | 2026-08-27 | Codex task `01a042b2-1034-7cb0-8027-6fcc5415a4fa` | Leakage diagnosis；`NO_DEPLOY`；Phase 5 validator closeout fix `2f17f7d0ec7c9218cb664c257dba7734300b59f7` | [`transcripts/phase_06_module_f.jsonl`](transcripts/phase_06_module_f.jsonl) | 747 | 2,157,237 | `d6ac71ced5640a196ececcb74fadab7248ba1552834bd204f754edf8d93f4760` | `9ad55f2822048fd9dbd343eb38a535e06ad78628` | `0fbb4267f3a87f13be9df327635bf17271dde029` | Module F SHA-256 `6ddb7a7389d4a477383a5266cbdb07cae7d96c01693d1bbbfa5bcc820818218a`；validator SHA-256 `8bb9a2f86d25bacd32317e11c92ca4b052cbd005ea4db3922d6027dda06029bd`；original pipeline SHA-256 `5bdea2ba2cad82936189afdddbbf385f8fc7a612839e466622bacfe24f599c23` | Completed |
 | 7 | 2026-08-28 | Codex task／session `01a044f1-b53c-7171-9573-f874f78cdcc3` | Reviewer README、AI協作報告、session index及final documentation validator | [`transcripts/phase_07_reviewer_ai_collaboration.jsonl`](transcripts/phase_07_reviewer_ai_collaboration.jsonl) | 612 | 5,492,105 | `00970a65298bd7c52d6ebfbc56d38bd3223713cd47f5b362a4472471e502c26b` | `1886317fdb8c5e30257610e9d0ad5c4faf87b85e` | `515af728f64e9430dba7784fb9fa5627b98e316b` | Phase 7 transcript metadata verified | Completed |
-| 8 | 2026-08-28 | pending | Clean-room acceptance infrastructure；正式acceptance待infrastructure commit產生exact SHA後執行 | pending manual export | pending | pending | pending | pending | pending | Acceptance evidence commit：pending；metadata pin commit：pending | implementation_complete_acceptance_pending |
+| 8 | 2026-08-28 | pending | Clean-room acceptance infrastructure與formal acceptance；transcript closeout待人工完成 | pending manual export | pending | pending | pending | `7b75354fd4f4c51a24485c771412200d8dc57e4a` | pending | Tested commit `7b75354fd4f4c51a24485c771412200d8dc57e4a`；[`../evidence/phase_08/final_acceptance.json`](../evidence/phase_08/final_acceptance.json) SHA-256 `13da90163628e9f7627a33799e259ddc9a82736a025cc0d4bfaac46ac7b34ab7`；Acceptance evidence commit：pending；metadata pin commit：pending | implementation_complete_acceptance_pending |
 
 Phase 0～7目前均為`Completed`；Phase 1整體為`Completed after sentinel correction`。`NO_DEPLOY`是
 Part B／Module F技術結論，不是lifecycle失敗。Phase 7 transcript已完成人工匯出、metadata核對與
 closeout，closeout commit已由Phase 8 pin為
-`515af728f64e9430dba7784fb9fa5627b98e316b`。Phase 8目前只完成acceptance infrastructure
-implementation；正式tracked-only clean-room、acceptance evidence及AI evidence closeout均尚未發生。
+`515af728f64e9430dba7784fb9fa5627b98e316b`。Phase 8 formal tracked-only clean-room已對
+`7b75354fd4f4c51a24485c771412200d8dc57e4a`執行並`PASSED`，canonical acceptance evidence已建立；
+Phase 8 transcript、AI evidence closeout與metadata pin仍待人工完成，因此current lifecycle維持
+`implementation_complete_acceptance_pending`。
 
 Phase 5 狀態：`Completed`。
 
