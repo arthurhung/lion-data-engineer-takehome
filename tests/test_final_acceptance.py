@@ -17,7 +17,9 @@ REPORT = ROOT / "docs/final_acceptance.md"
 README = ROOT / "README.md"
 SESSION_INDEX = ROOT / "docs/ai/session_index.md"
 TESTED_COMMIT = "7b75354fd4f4c51a24485c771412200d8dc57e4a"
+EVIDENCE_COMMIT = "b6b5ccbeabf8e580b33d907820a933c2dc588ca4"
 EVIDENCE_SHA256 = "13da90163628e9f7627a33799e259ddc9a82736a025cc0d4bfaac46ac7b34ab7"
+EVIDENCE_BYTES = 6_562
 SPEC = importlib.util.spec_from_file_location("final_acceptance", SCRIPT)
 assert SPEC and SPEC.loader
 final_acceptance = importlib.util.module_from_spec(SPEC)
@@ -347,6 +349,7 @@ def test_promoted_formal_evidence_is_canonical_valid_and_pinned() -> None:
     payload = json.loads(raw)
     final_acceptance.validate_evidence(payload)
     assert raw == final_acceptance.canonical_json(payload)
+    assert len(raw) == EVIDENCE_BYTES
     assert hashlib.sha256(raw).hexdigest() == EVIDENCE_SHA256
     assert payload["status"] == "PASSED"
     assert payload["tested_commit"] == TESTED_COMMIT
@@ -406,6 +409,33 @@ def test_acceptance_report_and_lifecycle_pins_are_consistent() -> None:
     assert "93 passed" in report
     assert "93 passed" in readme
     assert "`PASSED`" in report
+    assert f"Tested infrastructure commit：`{TESTED_COMMIT}`" in report
+    assert f"Acceptance evidence commit：`{EVIDENCE_COMMIT}`" in report
+    assert "不是clean-room tested commit" in report
+    assert f"`tested_commit`維持`{TESTED_COMMIT}`" in report
+    assert (
+        "`93 passed`是tested infrastructure commit在\n"
+        "  tracked-only clean clone與fresh venv中的full suite結果"
+    ) in report
+    assert (
+        "`96 passed`是正式JSON、Reviewer Markdown與validators加入後，"
+        "在acceptance evidence commit工作樹執行的\n"
+        "  post-evidence full suite結果"
+    ) in report
+    assert "101個tracked files、58,943,598 tracked bytes" in report
+    assert "tested infrastructure commit的clean-room snapshot" in report
+    assert "evidence commit加入final JSON及Markdown後共有103個tracked files" in report
+    assert "47個detectors並產生7份canonical evidence files" in report
+    assert "Network dependency installation：本次formal run由人工opt-in設為enabled" in report
+    assert "只依clone內的\n  `pyproject.toml`安裝dependencies" in report
+    assert "不宣稱\n  未來仍會得到exact dependency resolution" in report
+    assert "`make phase3-acceptance`驗證`base → day1 → day2 → day3`" in report
+    assert (
+        "Transaction rollback、failed attempt behavior及stale attempt／"
+        "different-SHA regression，則由clean-room\n"
+        "  full test suite對Phase 3 incremental behavior提供coverage"
+    ) in report
+    assert "不宣稱`make phase3-acceptance`另行重跑\n  這些rollback fixtures" in report
     assert "pending manual export" in phase_8_row
     assert "Acceptance evidence commit：pending" in phase_8_row
     assert "metadata pin commit：pending" in phase_8_row
