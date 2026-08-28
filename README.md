@@ -15,7 +15,7 @@
 | Module D／E | 不適用 | 原題要求D／E／F三選一，本作業選擇Module F，並非交付缺漏 |
 | Phase 0～6 AI evidence | `Completed` | 8份實際transcript已匯出、核對並索引 |
 | Phase 7 reviewer／AI文件 | `Completed` | Reviewer與AI文件已完成，Phase 7 transcript已匯出、驗證並索引 |
-| Phase 8 clean-room | 尚未開始 | 保留給乾淨環境／全新output的最終重現 |
+| Phase 8 clean-room | `implementation_complete_acceptance_pending` | Phase 8A已建立tracked-only runner介面；正式acceptance須等待infrastructure commit SHA |
 
 Current lifecycle authority是本README與
 [`docs/ai/session_index.md`](docs/ai/session_index.md)。Part A／B／C／Module F正式文件、
@@ -58,6 +58,28 @@ make phase3-acceptance
 
 `make source-integrity`驗證19份原始檔；`make test`執行完整pytest；`make phase3-acceptance`會使用
 全新暫存DB重建兩次並核對canonical evidence。Runtime DuckDB、cache與一般output不納入Git。
+
+### Phase 8 tracked-only clean-room介面
+
+Phase 8A只建立acceptance infrastructure，尚未產生正式clean-room結果或evidence。Infrastructure經
+人工review並commit後，才可使用該exact 40-character SHA執行：
+
+```bash
+make final-acceptance \
+  ACCEPT_COMMIT=<40-character-infrastructure-commit-sha> \
+  ACCEPT_OUTPUT=/tmp/lion-phase8-final-acceptance.json \
+  ACCEPT_PYTHON=python3 \
+  ACCEPT_ALLOW_NETWORK=1
+```
+
+Runner以local `git clone --no-local`建立tracked-only clone，使用指定Python建立fresh virtual
+environment，並只從clone內的`pyproject.toml`安裝project及`dev` dependencies；不複製本repo現有
+`.venv`。Network install預設關閉，只有`ACCEPT_ALLOW_NETWORK=1`才明確允許package下載。
+`ACCEPT_COMMIT`與`ACCEPT_OUTPUT`均無預設值，output必須位於source repo外且不得已存在。
+
+本repo沒有dependency lock；正式evidence會記錄該次fresh environment實際resolved Python、pip、
+DuckDB、pandas、pytest及ruff版本。這能驗證指定commit在該次clean environment可重現，不表示未來
+所有時間、平台或package index狀態都會得到完全相同dependency resolution。
 
 ### Phase 1 profiling
 
@@ -107,6 +129,7 @@ fail。詳細batch counts、money、quarantine、SCD2與rerun checksum見正式r
 | Current Phase 5 validator | `c06d07b071df8bf5ade8d555db6b516208c075773f5d3bbf6b8b2217f7d7bd3b` |
 | Module F diagnosis | `6ddb7a7389d4a477383a5266cbdb07cae7d96c01693d1bbbfa5bcc820818218a` |
 | Module F validator | `8bb9a2f86d25bacd32317e11c92ca4b052cbd005ea4db3922d6027dda06029bd` |
+| Phase 7 AI evidence closeout commit | `515af728f64e9430dba7784fb9fa5627b98e316b` |
 
 Machine-readable evidence位於`docs/evidence/phase_01/`、`phase_02/`、`phase_03/`及`phase_04/`。
 上述pinning用來偵測文件整合造成的非預期變更，不取代SQL reconciliation、tests或人工review。
@@ -145,11 +168,13 @@ D／E／F三選一；四句選擇理由見Module F正式文件。
 - Part C沒有部署Fabric tenant，capacity、security propagation、latency與cost仍需POC。
 - Module F沒有執行原始或修正版模型，沒有本次AUC或production-like leakage experiment。
 - Module D／E依三選一規則未作答；不是遺漏必交項目。
-- Phase 8 clean-room尚未開始，本README不宣稱已完成最終clean-room acceptance。
+- Phase 8A只完成clean-room infrastructure；正式tracked-only acceptance及最終evidence尚未產生，
+  本README不宣稱已完成Phase 8。
 - Raw AI transcripts是完整開發session export，可能包含本機filesystem path及工具metadata。各closeout的
   credential pattern scan已通過，但不宣稱transcript已完全去識別化。
-- 原題若採private Git submission，保留raw transcript可維持audit fidelity；此repo不應因此被宣稱適合
-  直接公開。若未來改為public repo，應另做獨立privacy review，本Phase不執行該公開化流程。
+- 原題接受Git repo連結，repository visibility不是題目或Phase 8的pass／fail gate。無論public或
+  private，raw transcript仍需依實際可見範圍做獨立privacy review；既有pattern scan不能取代完整
+  privacy audit。本Phase不改寫transcript、Git history或repository visibility。
 
 ## 文件索引
 

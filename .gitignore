@@ -20,6 +20,10 @@ output/*
 !output/.gitkeep
 *.duckdb
 *.duckdb.wal
+*.parquet
+*.sqlite
+*.sqlite3
+*.log
 
 # Local secrets
 .env

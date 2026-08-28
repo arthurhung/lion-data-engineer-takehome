@@ -25,9 +25,8 @@ PHASE_7_METADATA = (
     "1886317fdb8c5e30257610e9d0ad5c4faf87b85e",
 )
 
-PHASE_7_CLOSEOUT_MARKER = (
-    "this evidence closeout commit; exact SHA to be pinned in Phase 8"
-)
+PHASE_7_CLOSEOUT = "515af728f64e9430dba7784fb9fa5627b98e316b"
+PHASE_7_CLOSEOUT_SUBJECT = "docs: record Phase 7 AI collaboration evidence"
 
 REQUIRED_PATHS = (
     "docs/part_a_model_design.md",
@@ -164,7 +163,9 @@ def test_current_lifecycle_and_historical_snapshot_are_unambiguous() -> None:
         assert "`Completed`" in row
     assert "Phase 7 reviewer／AI文件 | `Completed`" in readme
     assert "Phase 7 transcript已匯出、驗證並索引" in readme
-    assert "Phase 8 clean-room | 尚未開始" in readme
+    assert "Phase 8 clean-room | `implementation_complete_acceptance_pending`" in readme
+    assert "Phase 8A只建立acceptance infrastructure" in readme
+    assert "尚未產生正式clean-room結果或evidence" in readme
     assert "implementation-time snapshot" in readme
     assert "不是目前repo狀態" in readme
     assert "`NO_DEPLOY`是Part B與Module F的技術結論" in readme
@@ -175,7 +176,16 @@ def test_current_lifecycle_and_historical_snapshot_are_unambiguous() -> None:
     phase_7_row = _phase_row("7", index)
     assert phase_7_row.rstrip().endswith("| Completed |")
     assert "pending manual export" not in phase_7_row
-    assert PHASE_7_CLOSEOUT_MARKER in phase_7_row
+    assert PHASE_7_CLOSEOUT in phase_7_row
+    phase_8_row = _phase_row("8", index)
+    assert phase_8_row.rstrip().endswith(
+        "| implementation_complete_acceptance_pending |"
+    )
+    assert "pending manual export" in phase_8_row
+    assert "Acceptance evidence commit：pending" in phase_8_row
+    assert "metadata pin commit：pending" in phase_8_row
+    assert not (ROOT / "docs/final_acceptance.md").exists()
+    assert not (ROOT / "docs/evidence/phase_08/final_acceptance.json").exists()
 
 
 def test_session_index_matches_transcript_files_and_git_history() -> None:
@@ -230,7 +240,7 @@ def test_session_index_matches_transcript_files_and_git_history() -> None:
     assert f"{byte_size:,}" in phase_7_row
     assert digest in phase_7_row
     assert implementation in phase_7_row
-    assert PHASE_7_CLOSEOUT_MARKER in phase_7_row
+    assert PHASE_7_CLOSEOUT in phase_7_row
     assert "pending manual export" not in phase_7_row
 
     tracked = subprocess.run(
@@ -250,6 +260,31 @@ def test_session_index_matches_transcript_files_and_git_history() -> None:
         text=True,
     )
     assert commit.returncode == 0, implementation
+
+    closeout = subprocess.run(
+        ["git", "cat-file", "-e", f"{PHASE_7_CLOSEOUT}^{{commit}}"],
+        cwd=ROOT,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert closeout.returncode == 0, PHASE_7_CLOSEOUT
+    ancestor = subprocess.run(
+        ["git", "merge-base", "--is-ancestor", PHASE_7_CLOSEOUT, "HEAD"],
+        cwd=ROOT,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert ancestor.returncode == 0, PHASE_7_CLOSEOUT
+    subject = subprocess.run(
+        ["git", "show", "-s", "--format=%s", PHASE_7_CLOSEOUT],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+    assert subject == PHASE_7_CLOSEOUT_SUBJECT
 
 
 def test_canonical_and_document_checksums_are_pinned() -> None:
